@@ -1,4 +1,5 @@
 class Array
+  # taken for example from current gnuplot bindings
   def to_points
     return '' if self.empty?
     case self[0]

@@ -1,8 +1,19 @@
 module Gnuplot
-  class Terminal
-    QUOTED = %w{title output xlabel ylabel}
-    CLASS_OPTIONS = %w{persist}
 
+  # Some values of 'set key value' should be quoted to be read by gnuplot
+  QUOTED = %w{title output xlabel x2label ylabel y2label clabel cblabel zlabel}
+
+  ##
+  # === Overview
+  # Terminal keeps open pipe to gnuplot process, cares about naming datablocks and
+  # linestyles (just indexing with sequncial integers). All the output to gnuplot
+  # handled by this class. Terminal also handles options passed to gnuplot via
+  # 'set key value'.
+  class Terminal
+    ##
+    # ==== Parameters
+    # * *command* - may specify path to gnuplot executable if none exists in $PATH (env variable)
+    # * *options* - the only option in use now is :persist
     def initialize(command = 'gnuplot', **options)
       @cmd = 'gnuplot'
       @current_datablock = 0
@@ -11,12 +22,16 @@ module Gnuplot
       input = IO.popen(command, 'w')
       ObjectSpace.define_finalizer(self, proc { input.close_write })
       @in = input
-      @own_options = options.reject{ |k, _| CLASS_OPTIONS.include?(k.to_s) }
-      @external_options = []
-      apply_options(@own_options)
-      yield if block_given?
+      @options_applied = []
+      yield(self) if block_given?
     end
 
+    ##
+    # ==== Overview
+    # Prints datablock to this gnuplot terminal
+    # ==== Parameters
+    # * *name* - passing this may be useful to update data before replot
+    # * *data* - data stored in datablock
     def store_datablock(name = nil, data)
       name ||= "$DATA#{@current_datablock += 1}"
       @in.puts "#{name} << EOD"
@@ -25,6 +40,14 @@ module Gnuplot
       name
     end
 
+    ##
+    # ==== Overview
+    # Recursive function that converts Ruby options to gnuplot
+    # ==== Parameters
+    # *option* - an option that should be converted
+    # ==== Examples
+    #   ['png', size: [300, 300]] => 'png size 300,300'
+    #   0..100 => '[0:100]'
     def option_to_string(option)
       return '' if !!option == option #check for boolean
       case option
@@ -39,8 +62,19 @@ module Gnuplot
       end
     end
 
-    def apply_options(opts)
-      opts.each do |key, value|
+    ##
+    # ==== Overview
+    # Applies given options to current gnuplot instance;
+    # for {opt1: val1, .. , optN: valN} it will output to gnuplot
+    #   set opt1 val1
+    #   ..
+    #   set optN valN
+    # ==== Parameters
+    # *options* - hash of options to set
+    # ==== Examples
+    #   set({term: ['qt', size: [100, 100]]})
+    def set(options)
+      options.each do |key, value|
         if value
           if QUOTED.include?(key.to_s)
             @in.puts("set #{key} '#{option_to_string(value)}'")
@@ -51,19 +85,29 @@ module Gnuplot
           unset(key)
         end
       end
-      @external_options += opts.keys - @own_options.keys
+      @options_applied = (options.keys + @options_applied).uniq
     end
 
-    def restore_options
-      unset(@external_options)
-      @external_options = []
-      apply_options(@own_options)
+    ##
+    # ==== Overview
+    # Unset all options
+    def reset_options
+      unset(@options_applied)
+      @options_applied = []
     end
 
+    ##
+    # ==== Overview
+    # Unset some options
+    # ==== Parameters
+    # **options* - Array of options need to unset
     def unset(*options)
       options.flatten.each { |key| @in.puts "unset #{key}"}
     end
 
+    ##
+    # ==== Overview
+    # Short way to output datablock, plot etc
     def <<(a)
       case a
         when Datablock
@@ -76,23 +120,18 @@ module Gnuplot
       end
     end
 
+    ##
+    # ==== Overview
+    # Just puts a to gnuplot pipe
     def puts(a)
       @in.puts(a)
     end
 
+    ##
+    # ==== Overview
+    # Call replot on gnuplot. This will execute last plot once again with rereading data
     def replot
       @in.puts('replot')
     end
   end
 end
-
-=begin
-$LOAD_PATH << './lib';require 'gnuplot';include Gnuplot
-x = (0..50).to_a.map{|xx| xx/10.0}
-y = x.map{ |xx| Math.exp(xx) }
-data = [x, y]
-datablock = Datablock.new(data, true)
-dataset = Dataset.new(datablock, title: 'test datablocks')
-plot = Plot.new(dataset, title: 'ololo')
-Plot.new([data, with: 'lines'], title: "plot title").plot
-=end
