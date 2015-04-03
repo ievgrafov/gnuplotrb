@@ -1,0 +1,3 @@
+= Gnuplot
+
+This is part of ruby gnuplot gem. It already can plot something (see samples) but many features still waiting for implementation.
