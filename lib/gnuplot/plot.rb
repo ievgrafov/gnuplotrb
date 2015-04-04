@@ -25,33 +25,49 @@ module Gnuplot
     # options passed here have priority above already given to ::new
     def plot(term = nil, **options)
       @last_terminal = term || @last_terminal || Terminal.new
-      # resetting is a bad way, will interfere multiplot
-      # think about its importance
-      @last_terminal.reset_options
-      @last_terminal.set(@options.merge(options))
+      opts = @options.merge(options)
+      @last_terminal.set(opts)
       @last_terminal.puts(@cmd + @datasets.map{ |dataset| dataset.to_s(@last_terminal) }.join(' , '))
+      @last_terminal.unset(opts.keys)
     end
 
     ##
     # ==== Overview
-    # Example of method which outputs plot to specific terminal (possibly some file)
+    # Method which outputs plot to specific terminal (possibly some file)
     # ==== Parameters
+    # * *terminal* - string corresponding to terminal type (png, html, jpeg etc)
     # * *path* - path to output file, if none given it will output to temp file
     # and then read it and return binary data with contents of file
-    # * *options* - used in 'set term png <options here>'
+    # * *options* - used in 'set term <term type> <options here>'
     # ==== Example
-    # #to_png(size: [300, 500])
-    def to_png(path = nil, *options)
+    # plot.to_png(size: [300, 500])
+    # plot.to_svg(size: [100, 100])
+    # plot.to_dumb(size: [30, 15])
+    def to_specific_term(terminal, path = nil, **options)
       if path
-        result = self.plot(Terminal.new, term: ['png', options], output: path)
+        result = self.plot(Terminal.new, term: [terminal, options], output: path)
       else
-        path = Dir::Tmpname.make_tmpname('png', 0)
-        plot(Terminal.new, term: ['png', options], output: path)
+        path = Dir::Tmpname.make_tmpname(terminal, 0)
+        plot(Terminal.new, term: [terminal, options], output: path)
         sleep(0.1) until File.exist?(path)
-        puts path
         result = File.binread(path)
+        File.delete(path)
       end
       result
+    end
+
+    ##
+    # ==== Overview
+    # Used for handling methods like #to_<term>. Possibly
+    # will be used to handle calls like
+    #   plot.option_name = value
+    #   plot.option_name(value)
+    #   value = plot.option_name
+    def method_missing(meth_id, *args)
+      meth = meth_id.id2name
+      if meth[0..2] == 'to_'
+        to_specific_term(meth[3..-1], *args)
+      end
     end
   end
 end
