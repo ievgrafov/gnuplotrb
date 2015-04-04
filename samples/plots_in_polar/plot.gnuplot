@@ -1,6 +1,6 @@
-set xrange [-10:10]
-set title "Math function example"
-set ylabel "x"
-set xlabel "x*sin(x)"
-set term qt persist
-plot x*sin(x) with lines lw 4
+set title 'Plot in polar example'
+set polar
+set samples 1000
+set term png size 700, 700
+set output './result.png'
+plot abs(sin(3*t)) with filledcurves
