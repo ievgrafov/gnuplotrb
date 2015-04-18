@@ -53,5 +53,7 @@ module Gnuplot
         @name = @last_terminal.store_datablock(@data) unless @is_file
       end
     end
+
+    alias_method :to_s, :name
   end
 end
