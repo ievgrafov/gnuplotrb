@@ -1,0 +1,15 @@
+notifications:
+  email: false
+language: ruby
+rvm:
+  - 2.0.0
+before_install:
+  - sudo add-apt-repository "deb http://cz.archive.ubuntu.com/ubuntu vivid main universe"
+  - sudo apt-get update -q
+  - sudo rm -rf /etc/dpkg/dpkg.cfg.d/multiarch
+  - sudo apt-get install gnuplot5
+  - bundle install
+install:
+  - bundle exec rake install
+script:
+  - bundle exec rake spec

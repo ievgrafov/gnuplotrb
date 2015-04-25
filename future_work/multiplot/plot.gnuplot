@@ -1,5 +1,6 @@
 set style data histograms
-set term qt size 450,700
+set term png size 450,700
+set output './result.png'
 set xtics nomirror rotate by -45
 $DATA << EOD
 "1891-1900" 234081 181288 18167
@@ -16,3 +17,4 @@ plot $DATA using 2:xtic(1) title 'Austria'
 plot $DATA using 3:xtic(1) title 'Hungary'
 plot $DATA using 4:xtic(1) title 'Belgium'
 unset multiplot
+unset output

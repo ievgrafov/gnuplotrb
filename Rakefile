@@ -6,6 +6,7 @@ require 'rubocop/rake_task'
 
 RSpec::Core::RakeTask.new(:spec) do |spec|
   spec.pattern = FileList['spec/**/*_spec.rb'].uniq
+  spec.rspec_opts = '--format documentation'
 end
 
 RDoc::Task.new do |rdoc|

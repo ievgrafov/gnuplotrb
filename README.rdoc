@@ -1,3 +1,5 @@
 = Gnuplot
 
 This is part of ruby gnuplot gem. It already can plot something (see samples) but many features still waiting for implementation.
+
+{<img src="https://travis-ci.org/dilcom/pilot-gnuplot.svg?branch=master" alt="Build Status" />}[https://travis-ci.org/dilcom/pilot-gnuplot]
