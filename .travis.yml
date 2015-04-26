@@ -3,6 +3,9 @@ notifications:
 language: ruby
 rvm:
   - 2.0.0
+addons:
+  code_climate:
+    repo_token: 9756087a9525152fe5b1e6eceb4fe64225ae3badac13ba93317928f9efe1273f
 before_install:
   - sudo add-apt-repository "deb http://cz.archive.ubuntu.com/ubuntu vivid main universe"
   - sudo apt-get update -q
