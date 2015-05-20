@@ -1,5 +1,5 @@
 
-                Plotting to different terminals
+                        Plotting to png
 
     1 +-+-------+---------+---------+---------+-------+-+
       +         +         +         +         +         +

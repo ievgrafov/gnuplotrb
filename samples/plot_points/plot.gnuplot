@@ -1,3 +1,5 @@
+set term png size 600,600
+set output './gnuplot.png'
 $DATA << EOD
 0 0
 1 1
@@ -6,5 +8,5 @@ $DATA << EOD
 4 16
 5 25
 EOD
-set term qt persist
-plot $DATA with lines
+plot $DATA with points title 'Points'
+unset output

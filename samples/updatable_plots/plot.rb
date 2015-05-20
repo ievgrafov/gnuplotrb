@@ -1,4 +1,4 @@
-require '../helper'
+require 'gnuplot'
 include Gnuplot
 
 x = (0..500).map{ |xx| xx/1000.0 }

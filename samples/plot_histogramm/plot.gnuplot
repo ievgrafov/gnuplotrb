@@ -1,3 +1,5 @@
+set term png size 600,600
+set output './gnuplot.png'
 set title "Histogram example"
 set style data histograms
 set xtics nomirror rotate by -45
@@ -14,3 +16,4 @@ EOD
 plot $DATA using 2:xtic(1) title 'Austria',\
      $DATA using 3:xtic(1) title 'Hungary',\
      $DATA using 4:xtic(1) title 'Belgium'
+unset output

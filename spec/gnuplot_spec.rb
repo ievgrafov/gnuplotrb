@@ -1,5 +1,6 @@
 require 'spec_helper.rb'
-require 'digest'
+
+$RSPEC_TEST = true
 
 describe Gnuplot do
   before do
@@ -10,13 +11,16 @@ describe Gnuplot do
     expect(@awesome).to be_truthy
   end
 
-  it 'should plot just as gnuplot itself' do
-    Dir.chdir('spec/plot_to_image_file') do
-      require 'plot_to_image_file/plot.rb'
-      system('gnuplot plot.gnuplot')
-      gnuplot_md5 = Digest::MD5.hexdigest(File.read('gnuplot.png'))
-      gem_md5 = Digest::MD5.hexdigest(File.read('gnuplot_gem.png'))
-      expect(gnuplot_md5).to eq(gem_md5)
+  context 'check plots' do
+    samples = Dir.glob('./samples/plot*')
+    samples.each do |path|
+      it "should pass #{path} test" do
+        Dir.chdir(path) do
+          require "#{Dir.pwd}/plot.rb"
+          system('gnuplot plot.gnuplot')
+          expect(compare_images('gnuplot.png', 'gnuplot_gem.png')).to eq(0)
+        end
+      end
     end
   end
 end

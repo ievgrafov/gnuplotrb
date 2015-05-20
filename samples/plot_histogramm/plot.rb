@@ -1,4 +1,4 @@
-require '../helper'
+require 'gnuplot'
 include Gnuplot
 
 titles = %w{decade Austria Hungary  Belgium}
@@ -17,4 +17,6 @@ datasets = (1..3).map do |col|
   y = data.map { |row| row[col] }
   Dataset.new([x, y], using: '2:xtic(1)', title: titles[col])
 end
-Plot.new(*datasets, title:  'Histogram example', style: 'data histograms', xtics: 'nomirror rotate by -45', term: ['qt', persist: true]).plot
+plot = Plot.new(*datasets, title:  'Histogram example', style: 'data histograms', xtics: 'nomirror rotate by -45', term: ['qt', persist: true])
+
+$RSPEC_TEST ? plot.to_png('./gnuplot_gem.png', size: [600, 600]) : plot.plot
