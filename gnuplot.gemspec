@@ -1,16 +1,16 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'gnuplot/version'
+require 'pilot-gnuplot/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = 'gnuplot'
+  spec.name          = 'pilot-gnuplot'
   spec.version       = Gnuplot::VERSION
   spec.authors       = ['Ivan Evgrafov']
   spec.email         = ['dilcom3107@gmail.com']
 
   spec.summary       = 'Pilot ruby bindings for gnuplot'
-  spec.description   = 'Renewed ruby bindings for gnuplot. Started at GSoC 2015.'
+  spec.description   = 'Renewed ruby bindings for gnuplot. Started at GSoC 2015. Name pilot-gnuplot is temporary. The new one will be chosen before pushing gem to RubyGems.'
   spec.homepage      = 'https://github.com/dilcom/pilot-gnuplot'
   spec.license       = 'MIT'
 
@@ -23,4 +23,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rdoc', '~> 4.2'
   spec.add_development_dependency 'rubocop', '~> 0.29'
   spec.add_development_dependency 'codeclimate-test-reporter'
+  spec.add_development_dependency 'chunky_png'
 end

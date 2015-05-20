@@ -1,4 +1,4 @@
-require 'gnuplot'
+require 'pilot-gnuplot'
 include Gnuplot
 
 x = (0..5).to_a

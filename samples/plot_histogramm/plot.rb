@@ -1,4 +1,4 @@
-require 'gnuplot'
+require 'pilot-gnuplot'
 include Gnuplot
 
 titles = %w{decade Austria Hungary  Belgium}

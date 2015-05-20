@@ -1,6 +1,6 @@
 require 'codeclimate-test-reporter'
 CodeClimate::TestReporter.start
-require 'gnuplot'
+require 'pilot-gnuplot'
 require 'digest'
 require 'chunky_png'
 
