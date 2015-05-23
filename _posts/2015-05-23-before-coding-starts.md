@@ -43,4 +43,4 @@ So anytime the project may be checked for such characteristics as:
 
 In nearest feature I'm going to start moving along my timeline and next week I will end implementation of Terminal, Dataset and Datablock classes. I also want to spend some time to make my existing code safe in terms of functional style.
 
-Hope I'll like it when the gem will come to its working state.
+Hope you'll like it when the gem will come to its working state.
