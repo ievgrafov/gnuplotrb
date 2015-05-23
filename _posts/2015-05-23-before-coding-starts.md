@@ -31,7 +31,7 @@ I expect it will both make code safe and allow users to avoid unnecessary copyin
 
 As I already mentioned in my proposal, I was going to setup continuos integration tools for my repository. During my preparations to coding phase I worked on installing gnuplot 5.0 at [Travis CI](https://travis-ci.org/) virtual machine and successed.
 
-I also wrote some tests with RSpec. This tests are based on [examples](https://github.com/dilcom/pilot-gnuplot/tree/master/samples) I already have. All of them use both command line and gem to plot some graphs and them compare them pixel-by-pixel. Test considered as passed if comparison found no different pixels.
+I also wrote some tests with RSpec. This tests are based on [examples](https://github.com/dilcom/pilot-gnuplot/tree/master/samples) I already have. All of them use both command line and gem to plot some graphs and them compare them using [ChunkyPNG](http://chunkypng.com/)'s #eql? method. Test considered as passed if images are equal.
 
 So anytime the project may be checked for such characteristics as:
 
