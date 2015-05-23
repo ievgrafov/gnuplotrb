@@ -3,12 +3,9 @@ require 'spec_helper.rb'
 $RSPEC_TEST = true
 
 describe Gnuplot do
-  before do
-    @awesome = true
-  end
 
   it 'should be awesome' do
-    expect(@awesome).to be_truthy
+    expect(awesome?).to be_truthy
   end
 
   context 'check plots' do
@@ -18,7 +15,7 @@ describe Gnuplot do
         Dir.chdir(path) do
           require "#{Dir.pwd}/plot.rb"
           system('gnuplot plot.gnuplot')
-          expect(compare_images('gnuplot.png', 'gnuplot_gem.png')).to eq(0)
+          expect(same_images?('gnuplot.png', 'gnuplot_gem.png')).to be_truthy
         end
       end
     end
