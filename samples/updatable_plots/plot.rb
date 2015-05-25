@@ -15,5 +15,5 @@ y = x.map{ |xx| Math.exp(-xx) }
 #datablock.update!([x, y])
 #plot.plot
 
-plot2 = plot.update_data(datablock, datablock.update([x, y]))
+plot2 = plot.update_datablock(datablock, datablock.update([x, y]))
 plot2.plot
