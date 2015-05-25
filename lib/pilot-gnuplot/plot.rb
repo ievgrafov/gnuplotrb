@@ -108,5 +108,45 @@ module Gnuplot
           Plot.new(*@datasets, @options.merge(meth.to_sym => args))
       end
     end
+
+    ##
+    # ==== Overview
+    # Create new Plot object and replace given datablock with the new one.
+    # ==== Examples
+    #   new_datablock = old_datablock.update(new_data) # create new datablock with updated data
+    #   new_plot = plot.update_datablock(old_datablock, new_datablock) # create new plot with updated data
+    def update_datablock(old_one, new_one)
+      Plot.new(*@datasets.map{|dataset| dataset.update_datablock(old_one, new_one)}, @options)
+    end
+
+    ##
+    # ==== Overview
+    # Replace given datablock with the new one in existing Plot object.
+    # ==== Examples
+    #   new_datablock = old_datablock.update(new_data) # create new datablock with updated data
+    #   plot.update_datablock!(old_datablock, new_datablock) # replace old_datablock with new_datablock in plot
+    def update_datablock!(old_one, new_one)
+      @datasets.map!{|dataset| dataset.update_datablock(old_one, new_one)}
+    end
+
+    ##
+    # ==== Overview
+    # Create new Plot object and replace given dataset with the new one.
+    # ==== Examples
+    #   new_dataset = old_dataset.title('Such title') # create new dataset with updated data
+    #   new_plot = plot.update_dataset(old_dataset, new_dataset) # create new plot with updated data
+    def update_dataset(old_one, new_one)
+      Plot.new(*@datasets.map{|dataset| (dataset === old_one) ? new_one : dataset}, @options)
+    end
+
+    ##
+    # ==== Overview
+    # Replace given dataset with the new one in existing Plot object.
+    # ==== Examples
+    #   new_dataset = old_dataset.title('Such title') # create new dataset with updated title
+    #   plot.update_dataset!(old_dataset, new_dataset) # replace old_dataset with new_dataset in plot
+    def update_dataset!(old_one, new_one)
+      @datasets.map!{|dataset| (dataset === old_one) ? new_one : dataset}
+    end
   end
 end
