@@ -1,9 +1,6 @@
 require 'spec_helper.rb'
 
-$RSPEC_TEST = true
-
 describe Gnuplot do
-
   it 'should be awesome' do
     expect(awesome?).to be_truthy
   end
