@@ -1,17 +1,19 @@
 module Gnuplot
   ##
   # === Overview
-  # Plot correspond to simple 2d visualisation
+  # Plot correspond to simple 2D visualisation
   class Plot
     ##
     # ==== Parameters
-    # * *datasets* are either instances of Dataset class or [data, **dataset_options] arrays
-    # * *options* will be considered as 'settable' options of gnuplot ('set xrange [1:10]' for { xrange: 1..10 }, "set title 'plot'" for { title: 'plot' } etc)
+    # * *datasets* are either instances of Dataset class or
+    # [data, **dataset_options] arrays
+    # * *options* will be considered as 'settable' options of gnuplot
+    # ('set xrange [1:10]' for { xrange: 1..10 }, "set title 'plot'" for { title: 'plot' } etc)
     def initialize(*datasets, **options)
-      @datasets = datasets.map{ |dataset| dataset.is_a?(Dataset) ? dataset : Dataset.new(*dataset) }
-      @options = options
+      @datasets = datasets.map{ |ds| ds.is_a?(Dataset) ? ds.clone : Dataset.new(*ds) }
+      @options = options.clone
       @cmd = 'plot '
-      @terminal = nil
+      @terminal = Terminal.new
       yield(self) if block_given?
     end
 
@@ -21,13 +23,13 @@ module Gnuplot
     # or just builds its own Terminal with plot and options
     # ==== Parameters
     # * *term* - Terminal to plot to
-    # * *options* - will be considered as 'settable' options of gnuplot ('set xrange [1:10]', 'set title 'plot'' etc);
+    # * *options* - will be considered as 'settable' options of gnuplot
+    # ('set xrange [1:10]', 'set title 'plot'' etc);
     # options passed here have priority above already given to ::new
-    def plot(term = nil, **options)
-      term ||= (@terminal ||= Terminal.new)
+    def plot(term = @terminal, **options)
       opts = @options.merge(options)
       term.set(opts)
-      term.puts(@cmd + @datasets.map{ |dataset| dataset.to_s(term) }.join(' , '))
+      term.puts(@cmd + @datasets.map { |dataset| dataset.to_s(term) }.join(' , '))
       term.unset(opts.keys)
     end
 
@@ -47,11 +49,11 @@ module Gnuplot
     #   plot.to_dumb(size: [30, 15])
     def to_specific_term(terminal, path = nil, **options)
       if path
-        result = self.plot(Terminal.new, term: [terminal, options], output: path)
+        result = plot(term: [terminal, options], output: path)
       else
         path = Dir::Tmpname.make_tmpname(terminal, 0)
-        plot(Terminal.new, term: [terminal, options], output: path)
-        sleep(0.1) until File.exist?(path)
+        plot(term: [terminal, options], output: path)
+        sleep(0.01) until File.exist?(path)
         result = File.binread(path)
         File.delete(path)
       end
@@ -85,8 +87,10 @@ module Gnuplot
     # ===== Parameters
     # * *options* - set of options related to terminal (size, font etc).
     # ===== Examples
-    #   plot.to_png(size: [300, 500], font: ['arial', 12]) # options are specific for png term
-    #   plot.to_svg(size: [100, 100], fname: 'Arial', fsize: 12) # options are specific for svg term
+    #   # options specific for png term
+    #   plot.to_png(size: [300, 500], font: ['arial', 12])
+    #   # options specific for svg term
+    #   plot.to_svg(size: [100, 100], fname: 'Arial', fsize: 12)
     #   plot.to_dumb(size: [30, 15])
     def method_missing(meth_id, *args)
       meth = meth_id.id2name
@@ -99,54 +103,37 @@ module Gnuplot
         value = value[0] if value && value.size == 1
         return value
       end
-      case meth[-1, 1]
-        when '!' then
-          @options[meth[0..-2].to_sym] = args
-        when '=' then
-          super
-        else
-          Plot.new(*@datasets, @options.merge(meth.to_sym => args))
+      Plot.new(*@datasets, @options.merge(meth.to_sym => args))
+    end
+
+    def update_dataset(position = 0, data, **options)
+      replace_dataset(position, @datasets[position].update(data, **options))
+    end
+
+    def replace_dataset(position = 0, dataset)
+      Plot.new(*@datasets.clone.tap { |arr| arr[position] = dataset }, **@options)
+    end
+
+    def add_dataset(dataset)
+      Plot.new(*@datasets, dataset, **@options)
+    end
+
+    def remove_dataset(position = -1)
+      Plot.new(*@datasets.clone.tap { |arr| arr.delete_at(position) }, **@options)
+    end
+
+    def replot
+      @terminal.replot
+    end
+
+    def options(**options)
+      if options.empty?
+        @options.clone
+      else
+        Plot.new(*@datasets, **@options.merge(options))
       end
     end
 
-    ##
-    # ==== Overview
-    # Create new Plot object and replace given datablock with the new one.
-    # ==== Examples
-    #   new_datablock = old_datablock.update(new_data) # create new datablock with updated data
-    #   new_plot = plot.update_datablock(old_datablock, new_datablock) # create new plot with updated data
-    def update_datablock(old_one, new_one)
-      Plot.new(*@datasets.map{|dataset| dataset.update_datablock(old_one, new_one)}, @options)
-    end
-
-    ##
-    # ==== Overview
-    # Replace given datablock with the new one in existing Plot object.
-    # ==== Examples
-    #   new_datablock = old_datablock.update(new_data) # create new datablock with updated data
-    #   plot.update_datablock!(old_datablock, new_datablock) # replace old_datablock with new_datablock in plot
-    def update_datablock!(old_one, new_one)
-      @datasets.map!{|dataset| dataset.update_datablock(old_one, new_one)}
-    end
-
-    ##
-    # ==== Overview
-    # Create new Plot object and replace given dataset with the new one.
-    # ==== Examples
-    #   new_dataset = old_dataset.title('Such title') # create new dataset with updated data
-    #   new_plot = plot.update_dataset(old_dataset, new_dataset) # create new plot with updated data
-    def update_dataset(old_one, new_one)
-      Plot.new(*@datasets.map{|dataset| (dataset === old_one) ? new_one : dataset}, @options)
-    end
-
-    ##
-    # ==== Overview
-    # Replace given dataset with the new one in existing Plot object.
-    # ==== Examples
-    #   new_dataset = old_dataset.title('Such title') # create new dataset with updated title
-    #   plot.update_dataset!(old_dataset, new_dataset) # replace old_dataset with new_dataset in plot
-    def update_dataset!(old_one, new_one)
-      @datasets.map!{|dataset| (dataset === old_one) ? new_one : dataset}
-    end
+    attr_reader :terminal
   end
 end
