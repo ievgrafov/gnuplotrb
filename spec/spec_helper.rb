@@ -10,13 +10,12 @@ SimpleCov.start CodeClimate::TestReporter.configuration.profile
 
 require 'pilot-gnuplot'
 
-
 include ChunkyPNG::Color
 include Gnuplot
 $RSPEC_TEST = true
 
 def same_images?(*imgs)
-  imgs.map{ |img| ChunkyPNG::Image.from_file(img).pixels}.inject(:==)
+  imgs.map { |img| ChunkyPNG::Image.from_file(img).pixels }.inject(&:==)
 end
 
 def awesome?
