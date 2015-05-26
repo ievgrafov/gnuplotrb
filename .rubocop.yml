@@ -1,0 +1,6 @@
+AllCops:
+  Include:
+    - 'lib/**/*'
+  Exclude:
+    - 'samples/**/*'
+    - 'future_work/**/*'
