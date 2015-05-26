@@ -8,65 +8,52 @@ module Gnuplot
   class Datablock
     ##
     # ==== Parameters
-    # * *data* - anything with +#to_points+ method
-    # * *is_file* set to true will force this datablock to store its data in temporary file
-    # * *options* are for inner use (to create new Datablock from existing one)
-    def initialize(data, is_file = false, **options)
+    # * *data* - sequence of anything with +#to_points+ method
+    # * *is_file* set to true will force this datablock to store its data
+    # in temporary file
+    def initialize(data, is_file = false)
       @is_file = is_file
-      if options[:copy_file]
+      data_str = data.to_points
+      if @is_file
         name = Dir::Tmpname.make_tmpname('tmp_data', 0)
-        FileUtils.cp(options[:old_file_name], name)
+        File.write(name, data_str)
         @name = name
         ObjectSpace.define_finalizer(self, proc { File.delete(name) })
-        update!(data)
       else
-        data = data.to_points
-        if @is_file
-          name = Dir::Tmpname.make_tmpname('tmp_data', 0)
-          File.write(name, data)
-          @name = name
-          ObjectSpace.define_finalizer(self, proc { File.delete(name) })
-        else
-          @data = data
-        end
+        @data = data_str
       end
       yield(self) if block_given?
     end
 
     ##
     # ==== Overview
-    # Add points to existing datablock
-    # ==== Parameters
-    # * *data* - anything with +#to_points+ method
-    def update!(data)
-      if @is_file
-        File.open(@name, 'a') { |f| f.puts "\n#{data.to_points}"}
-      else
-        @data += data.to_points
-      end
-    end
-
-    ##
-    # ==== Overview
     # Instantiate one more Datablock with updated data
+    # if data stored in here-doc. Append update to file
+    # if data stored there.
     # ==== Parameters
     # * *data* - anything with +#to_points+ method
     def update(data)
+      data_str = data.to_points
       if @is_file
-        Datablock.new(data, true, copy_file: true, old_file_name: @name)
+        File.open(@name, 'a') { |f| f.puts "\n#{data_str}" }
+        self
       else
-        Datablock.new(@data + data.to_points, false)
+        Datablock.new(@data + data_str, false)
       end
     end
 
     ##
     # ==== Overview
     # Returns quoted filename if datablock stored in file and outputs
-    # datablock to gnuplot if not
-    # *gnuplot_term* should be given if datablock not saved in file
+    # datablock to gnuplot otherwise.
+    # *gnuplot_term* should be given if datablock not stored in file
     def name(gnuplot_term = nil)
-      raise ArgumentError.new('No terminal given to output datablock') unless @is_file unless gnuplot_term
+      fail(ArgumentError, 'No terminal given to output datablock') unless @is_file unless gnuplot_term
       @is_file ? "'#{@name}'" : gnuplot_term.store_datablock(@data)
+    end
+
+    def clone
+      @is_file ? self : super
     end
 
     alias_method :to_s, :name
