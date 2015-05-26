@@ -22,9 +22,8 @@ module Gnuplot
               else
                 data.is_a?(Datablock) ? data.clone : Datablock.new(data, options[:file])
               end
-      @options = options.reject { |k, _| RUBY_OPTIONS.include?(k.to_s) }
-                        .sort_by { |key, _| OPTION_ORDER.find_index(key.to_s) || 999 }
-                        .to_h
+      @options = Hash[options.reject { |k, _| RUBY_OPTIONS.include?(k.to_s) }
+                        .sort_by { |key, _| OPTION_ORDER.find_index(key.to_s) || 999 }]
       yield(self) if block_given?
     end
 
