@@ -70,15 +70,12 @@ module Gnuplot
     # ===== Overview
     # You may set options using #option_name(option_value) method.
     # A new object will be constructed with selected option set.
-    # You may also change existing object instead of creating a new one:
-    # #options_name!(option_value) will do so.
     # And finally you can get current value of any option using
     # #options_name without arguments.
     # ===== Examples
     #   new_plot = plot.title('Awesome plot')
     #   plot.title # >nil
     #   new_plot.title # >'Awesome plot'
-    #   plot.title!('One more awesome plot')
     #   plot.title # >'One more awesome plot'
     #
     # ==== Plotting to specific term
@@ -172,7 +169,8 @@ module Gnuplot
     ##
     # ==== Overview
     # Create new Plot object where current Plot's
-    # options are merged with given.
+    # options are merged with given. If no options
+    # given it will just return existing set of options.
     # ==== Parameters
     # * *options* - options to add
     # ==== Example
