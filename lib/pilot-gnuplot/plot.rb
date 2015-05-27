@@ -31,6 +31,7 @@ module Gnuplot
       term.set(opts)
       term.puts(@cmd + @datasets.map { |dataset| dataset.to_s(term) }.join(' , '))
       term.unset(opts.keys)
+      self
     end
 
     ##
@@ -44,9 +45,9 @@ module Gnuplot
     # and then read it and return binary data with contents of file
     # * *options* - used in 'set term <term type> <options here>'
     # ==== Examples
-    #   plot.to_png(size: [300, 500])
-    #   plot.to_svg(size: [100, 100])
-    #   plot.to_dumb(size: [30, 15])
+    #   plot.to_png('./result.png', size: [300, 500])
+    #   contents = plot.to_svg(size: [100, 100])
+    #   plot.to_dumb('./result.txt', size: [30, 15])
     def to_specific_term(terminal, path = nil, **options)
       if path
         result = plot(term: [terminal, options], output: path)
@@ -88,10 +89,9 @@ module Gnuplot
     # * *options* - set of options related to terminal (size, font etc).
     # ===== Examples
     #   # options specific for png term
-    #   plot.to_png(size: [300, 500], font: ['arial', 12])
+    #   plot.to_png('./result.png', size: [300, 500], font: ['arial', 12])
     #   # options specific for svg term
-    #   plot.to_svg(size: [100, 100], fname: 'Arial', fsize: 12)
-    #   plot.to_dumb(size: [30, 15])
+    #   content = plot.to_svg(size: [100, 100], fname: 'Arial', fsize: 12)
     def method_missing(meth_id, *args)
       meth = meth_id.id2name
       return to_specific_term(meth[3..-1], *args) if meth[0..2] == 'to_'
@@ -104,26 +104,84 @@ module Gnuplot
       end
     end
 
+    ##
+    # ==== Overview
+    # Create new Plot object where dataset at *position* will
+    # be replaced with the new one created from it by updating.
+    # ==== Parameters
+    # * *position* - position of dataset which you need to update
+    # (by default first dataset is updated)
+    # * *data* - data to update dataset with
+    # * *options* - options to update dataset with
+    # ==== Example
+    #   TODO add examples (and specs!)
     def update_dataset(position = 0, data, **options)
       replace_dataset(position, @datasets[position].update(data, **options))
     end
 
+    ##
+    # ==== Overview
+    # Create new Plot object where dataset at *position* will
+    # be replaced with the given one.
+    # ==== Parameters
+    # * *position* - position of dataset which you need to update
+    # (by default first dataset is replaced)
+    # * *dataset* - dataset to replace the old one
+    # ==== Example
+    #   TODO add examples (and specs!)
     def replace_dataset(position = 0, dataset)
       Plot.new(*@datasets.clone.tap { |arr| arr[position] = dataset }, **@options)
     end
 
+    ##
+    # ==== Overview
+    # Create new Plot object where given dataset will
+    # be appended to dataset list.
+    # ==== Parameters
+    # * *dataset* - dataset to add
+    # ==== Example
+    #   TODO add examples (and specs!)
     def add_dataset(dataset)
       Plot.new(*@datasets, dataset, **@options)
     end
 
+    ##
+    # ==== Overview
+    # Create new Plot object where given dataset will
+    # be appended to dataset list.
+    # ==== Parameters
+    # * *position* - position of dataset that should be
+    # removed (by default last dataset is removed)
+    # ==== Example
+    #   TODO add examples (and specs!)
     def remove_dataset(position = -1)
       Plot.new(*@datasets.clone.tap { |arr| arr.delete_at(position) }, **@options)
     end
 
+    ##
+    # ==== Overview
+    # Replot self. Usable is cases then Plot contains
+    # datasets which store data in files. Replot may be
+    # used in this case to update plot after data update.
+    # # ==== Example
+    #   TODO add examples (and specs!)
     def replot
       @terminal.replot
     end
 
+    ##
+    # ==== Overview
+    # Create new Plot object where current Plot's
+    # options are merged with given.
+    # ==== Parameters
+    # * *options* - options to add
+    # ==== Example
+    #   sin_graph = Plot.new(['sin(x)', title: 'Sin'], title: 'Sin plot from 0 to 3', xrange: 0..3)
+    #   sin_graph.plot
+    #   sin_graph_update = sin_graph.options(title: 'Sin plot from -10 to 10', xrange: -10..10)
+    #   sin_graph_update.plot
+    #   # you may also consider this as
+    #   # sin_graph.title(...).xrange(...)
     def options(**options)
       if options.empty?
         @options.clone
