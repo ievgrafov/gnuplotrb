@@ -53,7 +53,7 @@ module Gnuplot
       else
         path = Dir::Tmpname.make_tmpname(terminal, 0)
         plot(term: [terminal, options], output: path)
-        sleep(0.01) until File.exist?(path)
+        sleep(0.01) until File.size?(path)
         result = File.binread(path)
         File.delete(path)
       end
@@ -95,8 +95,7 @@ module Gnuplot
     def method_missing(meth_id, *args)
       meth = meth_id.id2name
       if meth[0..2] == 'to_'
-        to_specific_term(meth[3..-1], *args)
-        return self
+        return to_specific_term(meth[3..-1], *args)
       end
       if args.empty?
         value = @options[meth.to_sym]
