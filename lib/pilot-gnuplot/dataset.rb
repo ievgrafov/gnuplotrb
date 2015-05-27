@@ -11,9 +11,15 @@ module Gnuplot
     OPTION_ORDER = %w(index using axes title)
 
     ##
+    # ==== Overview
+    # Creates new dataset out of given string with
+    # math function or filename. If *data* isn't a string
+    # it will create datablock to store data.
     # ==== Parameters
-    # *data* - String, Datablock or something with method
-    # +#to_points+ (used inside +Datablock::new+)
+    # * *data* - String, Datablock or something with method
+    # * *options* - hash of options specific for gnuplot 
+    # dataset, and some special options ('file: true' will
+    # make data to be stored inside temporary file.
     def initialize(data, **options)
       @not_datablock = data.is_a? String
       @data = if @not_datablock
@@ -29,7 +35,7 @@ module Gnuplot
 
     ##
     # ==== Overview
-    # Converts dataset to string containing gnuplot dataset
+    # Converts dataset to string containing gnuplot dataset.
     # ==== Parameters
     # * *terminal* - must be given if Datablock does not use temp file
     def to_s(terminal = nil)
@@ -52,6 +58,11 @@ module Gnuplot
 
     ##
     # ==== Overview
+    # Creates new dataset with updated data (given
+    # data is appended to existing) and merged options.
+    # ==== Parameters
+    # * *data* - data to append to existing
+    # * *options* - hash to merge with existing options
     def update(data, **options)
       if @not_datablock
         # in this case copy should not be done
@@ -64,6 +75,7 @@ module Gnuplot
 
     ##
     # ==== Overview
+    # Own implementation of #clone 
     def clone
       if @not_datablock
         super
@@ -74,6 +86,13 @@ module Gnuplot
 
     ##
     # ==== Overview
+    # Create new Dataset object with given options
+    # merged with existing options if any given. It
+    # will return existing options otherwise.
+    # ==== Parameters
+    # * *options* - options to add
+    # ==== Example
+    # TODO add example and spec 
     def options(**options)
       if options.empty?
         @options.clone
@@ -84,6 +103,15 @@ module Gnuplot
 
     ##
     # ==== Overview
+    # You may set options using #option_name(option_value) method.
+    # A new object will be constructed with selected option set.
+    # And finally you can get current value of any option using
+    # #options_name without arguments.
+    # ===== Examples
+    #   new_dataset = dataset.title('Awesome plot')
+    #   dataset.title # >nil
+    #   new_dataset.title # >'Awesome plot'
+    #   dataset.title # >'One more awesome plot'
     def method_missing(meth_id, *args)
       meth = meth_id.id2name
       if args.empty?
