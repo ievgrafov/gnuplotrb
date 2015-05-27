@@ -1,0 +1,15 @@
+notifications:
+  email: false
+language: objective-c 
+rvm:
+  - 2.0
+  - 2.1
+  - 2.2
+before_install:
+  - brew update
+  - brew install gnuplot
+  - bundle install
+install:
+  - bundle exec rake install
+script:
+  - bundle exec rake spec
