@@ -10,7 +10,7 @@ module Gnuplot
     # * *options* will be considered as 'settable' options of gnuplot
     # ('set xrange [1:10]' for { xrange: 1..10 }, "set title 'plot'" for { title: 'plot' } etc)
     def initialize(*datasets, **options)
-      @datasets = datasets.map{ |ds| ds.is_a?(Dataset) ? ds.clone : Dataset.new(*ds) }
+      @datasets = datasets.map { |ds| ds.is_a?(Dataset) ? ds.clone : Dataset.new(*ds) }
       @options = options.clone
       @cmd = 'plot '
       @terminal = Terminal.new
@@ -94,15 +94,14 @@ module Gnuplot
     #   plot.to_dumb(size: [30, 15])
     def method_missing(meth_id, *args)
       meth = meth_id.id2name
-      if meth[0..2] == 'to_'
-        return to_specific_term(meth[3..-1], *args)
-      end
+      return to_specific_term(meth[3..-1], *args) if meth[0..2] == 'to_'
       if args.empty?
         value = @options[meth.to_sym]
         value = value[0] if value && value.size == 1
-        return value
+        value
+      else
+        Plot.new(*@datasets, @options.merge(meth.to_sym => args))
       end
-      Plot.new(*@datasets, @options.merge(meth.to_sym => args))
     end
 
     def update_dataset(position = 0, data, **options)
