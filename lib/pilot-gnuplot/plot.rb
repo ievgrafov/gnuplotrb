@@ -192,10 +192,18 @@ module Gnuplot
       if options.empty?
         @options
       else
-        Plot.new(@datasets, **@options.merge(options))
+        Plot.new(@datasets, @options.merge(options))
       end
     end
 
     attr_reader :terminal
+    attr_reader :datasets
+
+    ##
+    # ==== Overview
+    # Get a dataset number *position*
+    def [](*args)
+      @datasets[*args]
+    end
   end
 end
