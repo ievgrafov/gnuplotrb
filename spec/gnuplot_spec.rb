@@ -5,10 +5,11 @@ describe Gnuplot do
     expect(awesome?).to be_truthy
   end
 
-  context 'check plots' do
+  context 'check examples' do
     samples = Dir.glob('./samples/plot*')
     samples.each do |path|
-      it "should pass #{path} test" do
+      name = path[10..-1]
+      it "should work with #{name} example" do
         Dir.chdir(path) do
           require "#{Dir.pwd}/plot.rb"
           system('gnuplot plot.gnuplot')
