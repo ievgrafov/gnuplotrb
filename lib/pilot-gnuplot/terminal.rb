@@ -1,5 +1,6 @@
 module Gnuplot
-  # Some values of 'set key value' should be quoted to be read by gnuplot
+  # Some values of options should be quoted to be read by gnuplot
+  # TODO update list with data from gnuplot documentation !!!
   QUOTED = %w(title output xlabel x2label ylabel y2label clabel cblabel zlabel)
 
   ##
