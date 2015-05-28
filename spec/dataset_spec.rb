@@ -81,4 +81,43 @@ describe Dataset do
       new_options.each { |key, value| expect(new_dataset.send(key)).to eql(value) }
     end
   end
+
+  context 'updating' do
+    before do
+      x = (0..10).to_a
+      y = x.map { |xx| Math.exp(-xx) }
+      @data = [x, y]
+      @options = Hamster.hash(title: 'Gnuplot::Dataset', with: 'lines')
+      @sinx = Dataset.new('sin(x)', @options)
+      @dataset = Dataset.new([x, y])
+      @temp_file_dataset = Dataset.new([x, y], file: true)
+    end
+
+    it 'should update options' do
+      # works just as Dataset#options(...)
+      new_options = Hamster.hash(title: 'Some new title', with: 'lines', lt: 3)
+      new_dataset = @sinx.update(new_options)
+      @options.each { |key, value| expect(@sinx.send(key)).to eql(value) }
+      new_options.each { |key, value| expect(new_dataset.send(key)).to eql(value) }
+    end
+
+    it 'should do nothing if no options given and no data update needed' do
+      expect(@dataset.update).to equal(@dataset)
+      expect(@sinx.update('some new data')).to equal(@sinx)
+    end
+
+    it 'should update datablock stored in here-doc' do
+      updated = @dataset.update(@data)
+      expect(updated.data).to_not equal(@dataset.data)
+    end
+
+    it 'should update datablock stored in temp file' do
+      filename = @temp_file_dataset.data.name[1..-2] # avoid '' on ends
+      size_before_update = File.size(filename)
+      updated = @temp_file_dataset.update(@data)
+      size_after_update = File.size(filename)
+      expect(updated.data).to equal(@temp_file_dataset.data)
+      expect(size_after_update).to be > size_before_update
+    end
+  end
 end
