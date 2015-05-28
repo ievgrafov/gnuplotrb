@@ -9,20 +9,19 @@ module Gnuplot
     ##
     # ==== Parameters
     # * *data* - sequence of anything with +#to_points+ method
-    # * *is_file* set to true will force this datablock to store its data
-    # in temporary file
-    def initialize(data, is_file = false)
-      @is_file = is_file
+    # * *stored_in_file* true here will force this datablock to store its data
+    #   in temporary file
+    def initialize(data, stored_in_file = false)
+      @stored_in_file = stored_in_file
       data_str = data.to_points
-      if @is_file
-        name = Dir::Tmpname.make_tmpname('tmp_data', 0)
-        File.write(name, data_str)
-        @name = name
+      if @stored_in_file
+        @file_name = Dir::Tmpname.make_tmpname('tmp_data', 0)
+        File.write(@file_name, data_str)
+        name = @file_name
         ObjectSpace.define_finalizer(self, proc { File.delete(name) })
       else
         @data = data_str
       end
-      yield(self) if block_given?
     end
 
     ##
@@ -34,8 +33,8 @@ module Gnuplot
     # * *data* - anything with +#to_points+ method
     def update(data)
       data_str = data.to_points
-      if @is_file
-        File.open(@name, 'a') { |f| f.puts "\n#{data_str}" }
+      if @stored_in_file
+        File.open(@file_name, 'a') { |f| f.puts "\n#{data_str}" }
         self
       else
         Datablock.new(@data + data_str, false)
@@ -48,12 +47,21 @@ module Gnuplot
     # datablock to gnuplot otherwise.
     # *gnuplot_term* should be given if datablock not stored in file
     def name(gnuplot_term = nil)
-      fail(ArgumentError, 'No terminal given to output datablock') unless @is_file unless gnuplot_term
-      @is_file ? "'#{@name}'" : gnuplot_term.store_datablock(@data)
+      if @stored_in_file
+        "'#{@file_name}'"
+      else
+        fail(ArgumentError, 'No terminal given to output datablock') unless gnuplot_term
+        gnuplot_term.store_datablock(@data)
+      end
     end
 
+    ## ==== Overview
+    # Overridden #clone. Since datablock which store data
+    # in temporary files should not be cloned (otherwise it will cause
+    # double attempt to delete file), this #clone returns self for such
+    # cases. For other cases it just calls default #clone.
     def clone
-      @is_file ? self : super
+      @stored_in_file ? self : super
     end
 
     alias_method :to_s, :name
