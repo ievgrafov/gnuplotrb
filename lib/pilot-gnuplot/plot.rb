@@ -147,7 +147,7 @@ module Gnuplot
     # ==== Example
     #   TODO add examples (and specs!)
     def add_dataset(dataset)
-      Plot.new(@datasets.add(dataset), @options)
+      Plot.new(@datasets.add(dataset.is_a?(Dataset) ? dataset : Dataset.new(*dataset)), @options)
     end
 
     ##
