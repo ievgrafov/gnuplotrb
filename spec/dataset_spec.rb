@@ -52,4 +52,33 @@ describe Dataset do
       expect(dataset.to_s).to eql("#{dataset.data.name} title 'Dataset title'")
     end
   end
+
+  context 'options handling' do
+    before do
+      @options = Hamster.hash(title: 'Gnuplot::Dataset', with: 'lines')
+      @dataset = Dataset.new('sin(x)', @options)
+    end
+
+    it 'should allow to get option value by name' do
+      @options.each { |key, value| expect(@dataset.send(key)).to eql(value) }
+    end
+
+    it 'should allow to safely set option value by name' do
+      new_with = 'points'
+      new_dataset = @dataset.with(new_with)
+      expect(@dataset.with).to equal(@options[:with])
+      expect(new_dataset.with).to equal(new_with)
+    end
+
+    it 'should allow to get all the options' do
+      expect(@dataset.options).to eql(@options)
+    end
+
+    it 'should allow to safely set several options at once' do
+      new_options = Hamster.hash(title: 'Some new title', with: 'lines', lt: 3)
+      new_dataset = @dataset.options(new_options)
+      @options.each { |key, value| expect(@dataset.send(key)).to eql(value) }
+      new_options.each { |key, value| expect(new_dataset.send(key)).to eql(value) }
+    end
+  end
 end
