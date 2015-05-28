@@ -10,8 +10,16 @@ module Gnuplot
     # * *options* will be considered as 'settable' options of gnuplot
     # ('set xrange [1:10]' for { xrange: 1..10 }, "set title 'plot'" for { title: 'plot' } etc)
     def initialize(*datasets, **options)
-      @datasets = datasets.map { |ds| ds.is_a?(Dataset) ? ds.clone : Dataset.new(*ds) }
-      @options = options.clone
+      @datasets = if datasets[0].is_a? Hamster::Vector
+                    datasets[0]
+                  else
+                    Hamster::Vector.new(datasets).map { |ds| ds.is_a?(Dataset) ? ds.clone : Dataset.new(*ds) }
+                  end
+      @options = if datasets.last.is_a? Hamster::Hash
+                   datasets.last
+                 else
+                   Hamster.hash(options)
+                 end
       @cmd = 'plot '
       @terminal = Terminal.new
       yield(self) if block_given?
@@ -97,7 +105,7 @@ module Gnuplot
         value = value[0] if value && value.size == 1
         value
       else
-        Plot.new(*@datasets, @options.merge(meth.to_sym => args))
+        Plot.new(@datasets, @options.merge(meth.to_sym => args))
       end
     end
 
@@ -127,7 +135,7 @@ module Gnuplot
     # ==== Example
     #   TODO add examples (and specs!)
     def replace_dataset(position = 0, dataset)
-      Plot.new(*@datasets.clone.tap { |arr| arr[position] = dataset }, **@options)
+      Plot.new(@datasets.set(position, dataset), @options)
     end
 
     ##
@@ -139,7 +147,7 @@ module Gnuplot
     # ==== Example
     #   TODO add examples (and specs!)
     def add_dataset(dataset)
-      Plot.new(*@datasets, dataset, **@options)
+      Plot.new(@datasets.add(dataset), @options)
     end
 
     ##
@@ -152,7 +160,7 @@ module Gnuplot
     # ==== Example
     #   TODO add examples (and specs!)
     def remove_dataset(position = -1)
-      Plot.new(*@datasets.clone.tap { |arr| arr.delete_at(position) }, **@options)
+      Plot.new(@datasets.delete_at(position), @options)
     end
 
     ##
@@ -182,9 +190,9 @@ module Gnuplot
     #   # sin_graph.title(...).xrange(...)
     def options(**options)
       if options.empty?
-        @options.clone
+        @options
       else
-        Plot.new(*@datasets, **@options.merge(options))
+        Plot.new(@datasets, **@options.merge(options))
       end
     end
 
