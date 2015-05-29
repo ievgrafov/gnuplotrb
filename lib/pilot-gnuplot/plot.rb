@@ -123,7 +123,7 @@ module Gnuplot
     def update_dataset(position = 0, data, **options)
       old_ds = @datasets[position]
       new_ds = old_ds.update(data, **options)
-      (new_ds === old_ds) ? self : replace_dataset(position, new_ds)
+      new_ds.equal?(old_ds) ? self : replace_dataset(position, new_ds)
     end
 
     ##
