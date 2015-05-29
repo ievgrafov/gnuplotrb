@@ -120,9 +120,9 @@ module Gnuplot
     # * *options* - options to update dataset with
     # ==== Example
     #   TODO add examples (and specs!)
-    def update_dataset(position = 0, data, **options)
+    def update_dataset(position = 0, data: nil, **options)
       old_ds = @datasets[position]
-      new_ds = old_ds.update(data, **options)
+      new_ds = old_ds.update(data, options)
       new_ds.equal?(old_ds) ? self : replace_dataset(position, new_ds)
     end
 
