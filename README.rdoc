@@ -5,3 +5,17 @@ This is part of ruby gnuplot gem. It already can plot something (see samples) bu
 {<img src="https://travis-ci.org/dilcom/pilot-gnuplot.svg?branch=master" alt="Build Status" />}[https://travis-ci.org/dilcom/pilot-gnuplot]
 {<img src="https://codeclimate.com/github/dilcom/pilot-gnuplot/badges/gpa.svg" />}[https://codeclimate.com/github/dilcom/pilot-gnuplot]
 {<img src="https://codeclimate.com/github/dilcom/pilot-gnuplot/badges/coverage.svg" />}[https://codeclimate.com/github/dilcom/pilot-gnuplot]
+
+
+== Installation
+While gem isn't on rubygems, it may be installed from source.
+=== Dependencies
+You will require {gnuplot 5.0}[http://www.gnuplot.info/download.html] to use that gem.
+=== Gem installation
+  git clone https://github.com/dilcom/pilot-gnuplot.git
+  cd pilot-gnuplot
+  bundle install
+  rake install
+
+== Examples
+You may find several examples in {samples directory}[https://github.com/dilcom/pilot-gnuplot/tree/master/samples]
