@@ -14,6 +14,13 @@ You may plot in cartesian or polar coordinates and set functions with parametric
 I think [examples from repository](https://github.com/dilcom/pilot-gnuplot/tree/master/samples) are more informative.
 Most of them are used to test gnuplot gem in specs so you may be sure they work since Travis CI builds are successful.
 
+#### Plotting data from existing file
+
+When you need to plot data from file you should not read it and them pass to gem as data. All you need is to pass file name.
+In this case file is *not* read by Ruby and piped out to Gnuplot. Only its *name* piped out to Gnuplot. And Gnuplot takes care of reading and plotting itself. Plotting from datafiles with gnuplot gem works as fast as with Gnuplot itself.
+
+More information and samples of that case may be found in [mailing list](https://groups.google.com/forum/#!topic/sciruby-dev/lhWvb5hWc3k).
+
 ### Installation during development (before uploading gem to RubyGems)
 
 #### Dependencies:
