@@ -64,6 +64,31 @@ module Gnuplot
 
     ##
     # ==== Overview
+    # Converts given options to gnuplot format;
+    # for {opt1: val1, .. , optN: valN} it return
+    #   set opt1 val1
+    #   ..
+    #   set optN valN
+    # ==== Parameters
+    # *options* - hash of options to convert
+    def options_hash_to_string(options)
+      result = ""
+      options.each do |key, value|
+        if value
+          if QUOTED.include?(key.to_s)
+            result += "set #{key} '#{option_to_string(value)}'\n"
+          else
+            result += "set #{key} #{option_to_string(value)}\n"
+          end
+        else
+          result += "unset #{key}\n"
+        end
+      end
+      result
+    end
+
+    ##
+    # ==== Overview
     # Applies given options to current gnuplot instance;
     # for {opt1: val1, .. , optN: valN} it will output to gnuplot
     #   set opt1 val1
@@ -74,17 +99,7 @@ module Gnuplot
     # ==== Examples
     #   set({term: ['qt', size: [100, 100]]})
     def set(options)
-      options.each do |key, value|
-        if value
-          if QUOTED.include?(key.to_s)
-            @in.puts("set #{key} '#{option_to_string(value)}'")
-          else
-            @in.puts("set #{key} #{option_to_string(value)}")
-          end
-        else
-          unset(key)
-        end
-      end
+      @in.puts(options_hash_to_string(options))
     end
 
     ##
