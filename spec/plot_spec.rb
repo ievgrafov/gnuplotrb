@@ -119,26 +119,46 @@ describe Plot do
     end
 
     it 'should create new Plot (and new datablock) if you update data stored in memory' do
-     current = File.join('spec', 'plot.png')
-     updated = File.join('spec', 'updated_plot.png')
-     new_plot = @plot_data_inmemory.update_dataset(data: @data)
-     expect(new_plot).to_not be_equal(@plot_data_inmemory)
-     @plot_data_inmemory.to_png(current, size: [200,200])
-     new_plot.to_png(updated, size: [200,200])
-     expect(same_images?(current, updated)).to be_falsy
+      current = File.join('spec', 'plot.png')
+      updated = File.join('spec', 'updated_plot.png')
+      new_plot = @plot_data_inmemory.update_dataset(data: @data)
+      expect(new_plot).to_not be_equal(@plot_data_inmemory)
+      @plot_data_inmemory.to_png(current, size: [200,200])
+      new_plot.to_png(updated, size: [200,200])
+      expect(same_images?(current, updated)).to be_falsy
     end
 
     it 'should not create new Plot (and new datablock) if you update data stored in temp file' do
-     old = File.join('spec', 'old_plot.png')
-     current = File.join('spec', 'plot.png')
-     updated = File.join('spec', 'updated_plot.png')
-     @plot_data_tempfile.to_png(old, size: [200,200])
-     new_plot = @plot_data_tempfile.update_dataset(data: @data)
-     expect(new_plot).to be_equal(@plot_data_tempfile)
-     @plot_data_tempfile.to_png(current, size: [200,200])
-     new_plot.to_png(updated, size: [200,200])
-     expect(same_images?(current, updated)).to be_truthy
-     expect(same_images?(current, old)).to be_falsy
+      old = File.join('spec', 'old_plot.png')
+      current = File.join('spec', 'plot.png')
+      updated = File.join('spec', 'updated_plot.png')
+      @plot_data_tempfile.to_png(old, size: [200,200])
+      new_plot = @plot_data_tempfile.update_dataset(data: @data)
+      expect(new_plot).to be_equal(@plot_data_tempfile)
+      @plot_data_tempfile.to_png(current, size: [200,200])
+      new_plot.to_png(updated, size: [200,200])
+      expect(same_images?(current, updated)).to be_truthy
+      expect(same_images?(current, old)).to be_falsy
+    end
+
+    it 'should allow to get datasets using []' do
+      (0..1).each { |i| expect(@plot_two_ds[i]).to be_equal(@plot_two_ds.datasets[i]) }
+      expect(@plot_two_ds[0..-1]).to be_eql(@plot_two_ds.datasets)
+    end
+  end
+
+  context 'check #replot' do
+    pending
+    it 'should just call #plot when used on new Plot' do
+      
+    end
+
+    it 'should replot when data in file updated' do
+
+    end
+
+    it 'should replot when data in datablock (tempfile) updated' do
+
     end
   end
 end
