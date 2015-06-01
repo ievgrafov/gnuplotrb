@@ -58,4 +58,92 @@ describe Plot do
       expect(new_plot.options).to eql(@options.merge(new_options))
     end
   end
+
+  context 'modifying datasets' do
+    before do
+      @plot_math = Plot.new(['sin(x)', title: 'Just a sin'])
+      @dataset = Dataset.new('exp(-x)')
+      @plot_two_ds = Plot.new(['cos(x)'], ['x*x'])
+      @options = {title: 'Example dataset'}
+      @plot_datafile = Plot.new(['points.data'])
+      @data = [1, 2, 3, 4]
+      @plot_data_inmemory = Plot.new([@data])
+      @plot_data_tempfile = Plot.new([@data, file: true])
+    end
+
+    it 'should create new Plot when user adds a dataset' do
+      new_plot = @plot_math.add_dataset(@dataset)
+      expect(new_plot).to_not be_equal(@plot_math)
+    end
+
+    it 'should create new Plot when user removes a dataset' do
+      new_plot = @plot_two_ds.remove_dataset
+      expect(new_plot).to_not be_equal(@plot_two_ds)
+    end
+
+    it 'should remove dataset exactly at given position' do
+      (0..1).each do |i|
+        j = i == 0 ? 1 : 0
+        new_plot = @plot_two_ds.remove_dataset(i)
+        expect(new_plot.datasets[0].data).to be_eql(@plot_two_ds.datasets[j].data)
+      end
+    end
+
+    it 'should create new Plot when user replaces a dataset' do
+      new_plot = @plot_two_ds.replace_dataset(@dataset)
+      expect(new_plot).to_not be_equal(@plot_two_ds)
+    end
+
+    it 'should remplace dataset exactly at given position' do
+      (0..1).each do |i|
+        new_plot = @plot_two_ds.replace_dataset(i, @dataset)
+        expect(new_plot.datasets[i].data).to be_eql(@dataset.data)
+      end
+    end
+
+    it 'should allow to update dataset at given position with options' do
+      (0..1).each do |i|
+        new_plot = @plot_two_ds.update_dataset(i, @options)
+        expect(new_plot.datasets[i].options.to_h).to be_eql(@options)
+        expect(new_plot.datasets[i]).to_not equal(@plot_two_ds.datasets[i])
+      end
+    end
+
+    it 'should not update Plot if neither data nor options update needed' do
+      # data and options are empty so no update needed
+      expect(@plot_math.update_dataset).to be_equal(@plot_math)
+      # dataset with math formula could not to be updated
+      expect(@plot_math.update_dataset(data: @data)).to be_equal(@plot_math)
+      # dataset with data from existing file could not to be updated
+      expect(@plot_datafile.update_dataset(data: @data)).to be_equal(@plot_datafile)
+    end
+
+    it 'should create new Plot (and new datablock) if you update data stored in memory' do
+     current = 'plot.png'
+     updated = 'updated_plot.png'
+     new_plot = @plot_data_inmemory.update_dataset(data: @data)
+     expect(new_plot).to_not be_equal(@plot_data_inmemory)
+     @plot_data_inmemory.to_png(current, size: [200,200])
+     new_plot.to_png(updated, size: [200,200])
+     expect(same_images?(current, updated)).to be_falsy
+     File.delete(current)
+     File.delete(updated)
+    end
+
+    it 'should not create new Plot (and new datablock) if you update data stored in temp file' do
+     old = 'old_plot.png'
+     current = 'plot.png'
+     updated = 'updated_plot.png'
+     @plot_data_tempfile.to_png(old, size: [200,200])
+     new_plot = @plot_data_tempfile.update_dataset(data: @data)
+     expect(new_plot).to be_equal(@plot_data_tempfile)
+     @plot_data_tempfile.to_png(current, size: [200,200])
+     new_plot.to_png(updated, size: [200,200])
+     expect(same_images?(current, updated)).to be_truthy
+     expect(same_images?(current, old)).to be_falsy
+     File.delete(old)
+     File.delete(current)
+     File.delete(updated)
+    end
+  end
 end
