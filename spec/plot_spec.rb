@@ -119,21 +119,19 @@ describe Plot do
     end
 
     it 'should create new Plot (and new datablock) if you update data stored in memory' do
-     current = 'plot.png'
-     updated = 'updated_plot.png'
+     current = File.join('spec', 'plot.png')
+     updated = File.join('spec', 'updated_plot.png')
      new_plot = @plot_data_inmemory.update_dataset(data: @data)
      expect(new_plot).to_not be_equal(@plot_data_inmemory)
      @plot_data_inmemory.to_png(current, size: [200,200])
      new_plot.to_png(updated, size: [200,200])
      expect(same_images?(current, updated)).to be_falsy
-     File.delete(current)
-     File.delete(updated)
     end
 
     it 'should not create new Plot (and new datablock) if you update data stored in temp file' do
-     old = 'old_plot.png'
-     current = 'plot.png'
-     updated = 'updated_plot.png'
+     old = File.join('spec', 'old_plot.png')
+     current = File.join('spec', 'plot.png')
+     updated = File.join('spec', 'updated_plot.png')
      @plot_data_tempfile.to_png(old, size: [200,200])
      new_plot = @plot_data_tempfile.update_dataset(data: @data)
      expect(new_plot).to be_equal(@plot_data_tempfile)
@@ -141,9 +139,6 @@ describe Plot do
      new_plot.to_png(updated, size: [200,200])
      expect(same_images?(current, updated)).to be_truthy
      expect(same_images?(current, old)).to be_falsy
-     File.delete(old)
-     File.delete(current)
-     File.delete(updated)
     end
   end
 end
