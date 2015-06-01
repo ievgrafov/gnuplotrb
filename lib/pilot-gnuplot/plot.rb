@@ -36,7 +36,7 @@ module Gnuplot
       File.delete(opts[:output]) if opts[:output] && File.file?(opts[:output])
       term.puts(@cmd + @datasets.map { |dataset| dataset.to_s(term) }.join(' , '))
       if opts[:output]
-        sleep 0.001 until File.file?(opts[:output]) && File.size(opts[:output])
+        sleep 0.001 until File.file?(opts[:output]) && File.size(opts[:output]) > 100
       end
       term.unset(opts.keys)
       self
@@ -63,7 +63,7 @@ module Gnuplot
         path = Dir::Tmpname.make_tmpname(terminal, 0)
         plot(term: [terminal, options], output: path)
         result = File.binread(path)
-        File.delete(path)
+        FileUtils.rm_r(path)
       end
       result
     end
