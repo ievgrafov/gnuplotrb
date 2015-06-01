@@ -33,7 +33,11 @@ module Gnuplot
     def plot(term = @terminal, **options)
       opts = @options.merge(options)
       term.set(opts)
+      File.delete(opts[:output]) if opts[:output] && File.file?(opts[:output])
       term.puts(@cmd + @datasets.map { |dataset| dataset.to_s(term) }.join(' , '))
+      if opts[:output]
+        sleep 0.001 until File.file?(opts[:output]) && File.size(opts[:output])
+      end
       term.unset(opts.keys)
       self
     end
@@ -54,14 +58,10 @@ module Gnuplot
     #   plot.to_dumb('./result.txt', size: [30, 15])
     def to_specific_term(terminal, path = nil, **options)
       if path
-        File.delete(path) if File.file?(path)
         result = plot(term: [terminal, options], output: path)
-        # wait until gnuplot finally plot the file
-        sleep 0.001 until File.file?(path) && File.size(path)
       else
         path = Dir::Tmpname.make_tmpname(terminal, 0)
         plot(term: [terminal, options], output: path)
-        sleep(0.01) until File.size?(path)
         result = File.binread(path)
         File.delete(path)
       end
@@ -171,6 +171,7 @@ module Gnuplot
     # used in this case to update plot after data update.
     # # ==== Example
     #   TODO add examples (and specs!)
+    #   TODO rewrite again (changes were stashed)
     def replot
       @terminal.replot
     end
