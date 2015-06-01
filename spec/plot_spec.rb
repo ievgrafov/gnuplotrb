@@ -57,6 +57,5 @@ describe Plot do
       expect(new_plot).to be_an_instance_of(Plot)
       expect(new_plot.options).to eql(@options.merge(new_options))
     end
-    # TODO add specs for different options types (hash/array/bool/string/range)
   end
 end
