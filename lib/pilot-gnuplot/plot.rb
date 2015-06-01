@@ -58,7 +58,10 @@ module Gnuplot
     #   plot.to_dumb('./result.txt', size: [30, 15])
     def to_specific_term(terminal, path = nil, **options)
       if path
+        File.delete(path) if File.file?(path)
         result = plot(term: [terminal, options], output: path)
+        # wait until gnuplot finally plot the file
+        sleep 0.001 until File.file?(path) && File.size(path)
       else
         path = Dir::Tmpname.make_tmpname(terminal, 0)
         plot(term: [terminal, options], output: path)
