@@ -21,7 +21,7 @@ In this case file is *not* read by Ruby and piped out to Gnuplot. Only its *name
 
 More information and samples of that case may be found in [mailing list](https://groups.google.com/forum/#!topic/sciruby-dev/lhWvb5hWc3k).
 
-### Installation during development (before uploading gem to RubyGems)
+### Installation (variant used during development)
 
 #### Dependencies:
 - Ruby 2.0.0+
