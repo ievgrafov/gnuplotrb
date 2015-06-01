@@ -15,11 +15,7 @@ module Gnuplot
                   else
                     Hamster::Vector.new(datasets).map { |ds| ds.is_a?(Dataset) ? ds.clone : Dataset.new(*ds) }
                   end
-      @options = if datasets.last.is_a? Hamster::Hash
-                   datasets.last
-                 else
-                   Hamster.hash(options)
-                 end
+      @options = Hamster.hash(options)
       @cmd = 'plot '
       @terminal = Terminal.new
       yield(self) if block_given?
