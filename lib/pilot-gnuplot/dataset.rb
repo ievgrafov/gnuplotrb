@@ -70,7 +70,12 @@ module Gnuplot
     # * *options* - hash to merge with existing options
     def update(data = nil, **options)
       if data && @type == :datablock
-        Dataset.new(@data.update(data), @options.merge(options))
+        new_datablock = @data.update(data)
+        if new_datablock == @data
+          self
+        else
+          Dataset.new(@data.update(data), @options.merge(options))
+        end
       else
         if options.empty?
           return self
