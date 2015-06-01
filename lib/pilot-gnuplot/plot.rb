@@ -16,6 +16,7 @@ module Gnuplot
                     Hamster::Vector.new(datasets).map { |ds| ds.is_a?(Dataset) ? ds.clone : Dataset.new(*ds) }
                   end
       @options = Hamster.hash(options)
+      @already_plotted = false
       @cmd = 'plot '
       @terminal = Terminal.new
       yield(self) if block_given?
@@ -39,6 +40,7 @@ module Gnuplot
         sleep 0.001 until File.file?(opts[:output]) && File.size(opts[:output]) > 100
       end
       term.unset(opts.keys)
+      @already_plotted = true
       self
     end
 
@@ -171,9 +173,8 @@ module Gnuplot
     # used in this case to update plot after data update.
     # # ==== Example
     #   TODO add examples (and specs!)
-    #   TODO rewrite again (changes were stashed)
     def replot
-      @terminal.replot
+      @already_plotted ? @terminal.replot : plot
     end
 
     ##
