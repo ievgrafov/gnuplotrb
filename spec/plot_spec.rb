@@ -1,6 +1,16 @@
 require 'spec_helper.rb'
 
 describe Plot do
+  before(:all) do
+    @tmp_dir = File.join('spec', 'tmp')
+    Dir.mkdir(@tmp_dir)
+    @datafile_path = File.join('spec', 'points.data')
+  end
+
+  after(:all) do
+    FileUtils.rm_rf(@tmp_dir)
+  end
+
   context 'creation' do
     before do
       @title = 'Awesome spec'
@@ -65,16 +75,10 @@ describe Plot do
       @dataset = Dataset.new('exp(-x)')
       @plot_two_ds = Plot.new(['cos(x)'], ['x*x'])
       @options = {title: 'Example dataset'}
-      @plot_datafile = Plot.new(['points.data'])
+      @plot_datafile = Plot.new([@datafile_path])
       @data = [1, 2, 3, 4]
       @plot_data_inmemory = Plot.new([@data])
       @plot_data_tempfile = Plot.new([@data, file: true])
-      @tmp_dir = File::join('spec', 'tmp')
-      Dir.mkdir(@tmp_dir)
-    end
-
-    after do
-      FileUtils.rm_r(@tmp_dir)
     end
 
     it 'should create new Plot when user adds a dataset' do
@@ -154,17 +158,44 @@ describe Plot do
   end
 
   context 'check #replot' do
-    pending
     it 'should just call #plot when used on new Plot' do
-      
+      paths = (0..1).map { |i| File.join(@tmp_dir, "#{i}plot.png") }
+      Plot.new(['sin(x)'], term: ['png', size: [300,300]], output: paths[0]).plot
+      Plot.new(['sin(x)'], term: ['png', size: [300,300]], output: paths[1]).replot
+      expect(same_images?(*paths)).to be_truthy
     end
 
     it 'should replot when data in file updated' do
-
+      new_file_path = File.join(@tmp_dir, 'points.data')
+      FileUtils.cp(@datafile_path, new_file_path)
+      paths = (0..1).map { |i| File.join(@tmp_dir, "#{i}plot.png") }
+      plot = Plot.new([new_file_path], term: ['png', size: [300,300]], output: paths[0])
+      # plot png before data update
+      plot.plot
+      # copy png because new will be created under the same name
+      FileUtils.cp(paths[0], paths[1])
+      # update data
+      File.open(new_file_path, 'a') { |f| f.puts("\n10 10") }
+      # and replot png
+      plot.replot
+      expect(same_images?(*paths)).to be_falsy
     end
 
-    it 'should replot when data in datablock (tempfile) updated' do
-
+    it 'should replot when data in Datablock (tempfile) updated' do
+      count = 10000
+      x = count.times.map { |xx| xx / 100.0}
+      y = x.map { |xx| (xx**2)*Math.sin(xx) }
+      paths = (0..1).map { |i| File.join(@tmp_dir, "#{i}plot.png") }
+      plot = Plot.new([[x[0..count/2], y[0..count/2]], title: 'x^2*sin(x)', with: 'lines', file: true], term: ['png', size: [300,300]], output: paths[0])
+      # plot png before data update
+      plot.plot
+      # copy png because new one will be created under the same name
+      FileUtils.cp(paths[0], paths[1])
+      # update data
+      plot.update_dataset(data: [x[count/2..-1], y[count/2..-1]])
+      # and replot png
+      plot.replot
+      expect(same_images?(*paths)).to be_falsy
     end
   end
 end
