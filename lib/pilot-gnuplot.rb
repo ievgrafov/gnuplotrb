@@ -6,6 +6,7 @@ require 'pilot-gnuplot/terminal'
 require 'pilot-gnuplot/datablock'
 require 'pilot-gnuplot/dataset'
 require 'pilot-gnuplot/plot'
+require 'pilot-gnuplot/splot'
 require 'pilot-gnuplot/mixins'
 
 ##

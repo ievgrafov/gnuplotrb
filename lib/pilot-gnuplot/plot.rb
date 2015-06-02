@@ -204,6 +204,8 @@ module Gnuplot
       @datasets[*args]
     end
 
+    ##
+    # TODO docs here
     def plot_command(term, full_command, options)
       File.delete(options[:output]) if options[:output] && File.file?(options[:output])
       term.set(options)
