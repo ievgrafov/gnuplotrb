@@ -17,7 +17,7 @@ module Gnuplot
       if @stored_in_file
         @file_name = Dir::Tmpname.make_tmpname('tmp_data', 0)
         File.write(@file_name, data_str)
-        name = @file_name
+        name = File.join(Dir.pwd, @file_name)
         ObjectSpace.define_finalizer(self, proc { File.delete(name) })
       else
         @data = data_str
