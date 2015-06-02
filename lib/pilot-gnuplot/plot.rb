@@ -3,6 +3,8 @@ module Gnuplot
   # === Overview
   # Plot correspond to simple 2D visualisation
   class Plot
+    attr_reader :terminal
+    attr_reader :datasets
     ##
     # ==== Parameters
     # * *datasets* are either instances of Dataset class or
@@ -13,7 +15,7 @@ module Gnuplot
       @datasets = if datasets[0].is_a? Hamster::Vector
                     datasets[0]
                   else
-                    Hamster::Vector.new(datasets).map { |ds| ds.is_a?(Dataset) ? ds.clone : Dataset.new(*ds) }
+                    Hamster::Vector.new(datasets).map { |ds| convert_to_dataset(ds) }
                   end
       @options = Hamster.hash(options)
       @already_plotted = false
@@ -145,8 +147,10 @@ module Gnuplot
     # ==== Example
     #   TODO add examples (and specs!)
     def add_dataset(dataset)
-      Plot.new(@datasets.add(dataset.is_a?(Dataset) ? dataset : Dataset.new(*dataset)), @options)
+      Plot.new(@datasets.add(convert_to_dataset(dataset)), @options)
     end
+
+    alias_method :<<, :add_dataset
 
     ##
     # ==== Overview
@@ -194,14 +198,15 @@ module Gnuplot
       end
     end
 
-    attr_reader :terminal
-    attr_reader :datasets
-
     ##
     # ==== Overview
     # Get a dataset number *position*
     def [](*args)
       @datasets[*args]
+    end
+
+    def convert_to_dataset(source)
+      source.is_a?(Dataset) ? source : Dataset.new(*source)
     end
 
     ##
