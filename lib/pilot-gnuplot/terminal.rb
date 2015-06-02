@@ -100,6 +100,7 @@ module Gnuplot
     #   set({term: ['qt', size: [100, 100]]})
     def set(options)
       @in.puts(options_hash_to_string(options))
+      self
     end
 
     ##
@@ -109,6 +110,7 @@ module Gnuplot
     # **options* - Array of options need to unset
     def unset(*options)
       options.flatten.each { |key| @in.puts "unset #{key}" }
+      self
     end
 
     ##
@@ -132,6 +134,7 @@ module Gnuplot
     # Just puts a to gnuplot pipe
     def puts(a)
       @in.puts(a)
+      self
     end
 
     ##
@@ -140,6 +143,7 @@ module Gnuplot
     # with rereading data.
     def replot
       @in.puts('replot')
+      self
     end
   end
 end
