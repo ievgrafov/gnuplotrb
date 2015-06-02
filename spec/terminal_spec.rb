@@ -1,13 +1,11 @@
 require 'spec_helper.rb'
 
 describe Terminal do
-  context 'creation' do
+  before do
+    @terminal = Terminal.new
   end
 
   context 'options handling' do
-    before do
-      @terminal = Terminal.new
-    end
 
     it 'should work with String as option value' do
       options = {term: 'qt'}
