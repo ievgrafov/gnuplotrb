@@ -86,6 +86,11 @@ describe Plot do
       expect(new_plot).to_not be_equal(@plot_math)
     end
 
+    it 'should create new Plot when user adds a dataset using #<<' do
+      new_plot = @plot_math << @dataset
+      expect(new_plot).to_not be_equal(@plot_math)
+    end
+
     it 'should create new Plot when user removes a dataset' do
       new_plot = @plot_two_ds.remove_dataset
       expect(new_plot).to_not be_equal(@plot_two_ds)
