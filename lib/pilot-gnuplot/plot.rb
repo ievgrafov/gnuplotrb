@@ -33,13 +33,8 @@ module Gnuplot
     # options passed here have priority above already given to ::new
     def plot(term = @terminal, **options)
       opts = @options.merge(options)
-      term.set(opts)
-      File.delete(opts[:output]) if opts[:output] && File.file?(opts[:output])
-      term.puts(@cmd + @datasets.map { |dataset| dataset.to_s(term) }.join(' , '))
-      if opts[:output]
-        sleep 0.001 until File.file?(opts[:output]) && File.size(opts[:output]) > 100
-      end
-      term.unset(opts.keys)
+      full_command = @cmd + @datasets.map { |dataset| dataset.to_s(term) }.join(' , ')
+      plot_command(term, full_command, opts)
       @already_plotted = true
       self
     end
@@ -65,7 +60,7 @@ module Gnuplot
         path = Dir::Tmpname.make_tmpname(terminal, 0)
         plot(term: [terminal, options], output: path)
         result = File.binread(path)
-        FileUtils.rm_r(path)
+        File.delete(path)
       end
       result
     end
@@ -174,7 +169,7 @@ module Gnuplot
     # # ==== Example
     #   TODO add examples (and specs!)
     def replot
-      @already_plotted ? @terminal.replot : plot
+      @already_plotted ? plot_command(@terminal, 'replot', @options) : plot
     end
 
     ##
@@ -207,6 +202,16 @@ module Gnuplot
     # Get a dataset number *position*
     def [](*args)
       @datasets[*args]
+    end
+
+    def plot_command(term, full_command, options)
+      File.delete(options[:output]) if options[:output] && File.file?(options[:output])
+      term.set(options)
+          .puts(full_command)
+          .unset(options.keys)
+      if options[:output]
+        sleep 0.001 until File.file?(options[:output]) && File.size(options[:output]) > 100
+      end
     end
   end
 end
