@@ -119,14 +119,14 @@ module Gnuplot
     # The method is under construction.
     def <<(a)
       case a
-      when Datablock
-        store_datablock(a)
+      when Dataset
+        Plot.new(a).plot(self)
       when Plot
         a.plot(self)
       else
         @in << a.to_s
-        self
       end
+      self
     end
 
     ##
@@ -141,8 +141,10 @@ module Gnuplot
     # ==== Overview
     # Call replot on gnuplot. This will execute last plot once again
     # with rereading data.
-    def replot
+    def replot(**options)
+      set(options)
       @in.puts('replot')
+      unset(options.keys)
       self
     end
   end
