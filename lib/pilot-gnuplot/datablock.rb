@@ -13,7 +13,7 @@ module Gnuplot
     #   in temporary file
     def initialize(data, stored_in_file = false)
       @stored_in_file = stored_in_file
-      data_str = data.to_points
+      data_str = data.to_gnuplot_points
       if @stored_in_file
         @file_name = Dir::Tmpname.make_tmpname('tmp_data', 0)
         File.write(@file_name, data_str)
@@ -32,7 +32,7 @@ module Gnuplot
     # ==== Parameters
     # * *data* - anything with +#to_points+ method
     def update(data)
-      data_str = data.to_points
+      data_str = data.to_gnuplot_points
       if @stored_in_file
         File.open(@file_name, 'a') { |f| f.puts "\n#{data_str}" }
         self

@@ -1,6 +1,6 @@
 class Array
   # taken for example from current gnuplot bindings
-  def to_points
+  def to_gnuplot_points
     return '' if self.empty?
     case self[0]
     when Array
@@ -14,7 +14,7 @@ class Array
 end
 
 class String
-  def to_points
+  def to_gnuplot_points
     return self.clone
   end
 end
