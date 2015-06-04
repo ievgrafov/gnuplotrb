@@ -206,7 +206,7 @@ module Gnuplot
     end
 
     def convert_to_dataset(source)
-      source.is_a?(Dataset) ? source : Dataset.new(*source)
+      source.is_a?(Dataset) ? source.clone : Dataset.new(*source)
     end
 
     ##
