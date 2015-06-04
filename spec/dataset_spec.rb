@@ -106,6 +106,12 @@ describe Dataset do
       expect(@sinx.update('some new data')).to equal(@sinx)
     end
 
+    it 'should update if options are given and no data update needed' do
+      updated = @dataset.update(@options)
+      expect(updated).to_not equal(@dataset)
+      @options.each { |key, value| expect(updated.send(key)).to eql(value) }
+    end
+
     it 'should update datablock stored in here-doc' do
       updated = @dataset.update(@data)
       expect(updated.data).to_not equal(@dataset.data)

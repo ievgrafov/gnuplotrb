@@ -5,8 +5,7 @@ module Gnuplot
   # this 'x*sin(x)' or filename) and options related to original dataset
   # in gnuplot (with, title, using etc).
   class Dataset
-    # This constant is needed to separate ruby and gnuplot options
-    RUBY_OPTIONS = %w(file)
+    attr_reader :data
     # order is significant for some options
     OPTION_ORDER = %w(index using axes title)
 
@@ -20,7 +19,7 @@ module Gnuplot
     # * *options* - hash of options specific for gnuplot
     #   dataset, and some special options ('file: true' will
     #   make data to be stored inside temporary file).
-    def initialize(data, **options)
+    def initialize(data, file: false, **options)
       @type, @data = if data.is_a? String
                        if File.exist?(data)
                          [:datafile, "'#{data}'"]
@@ -31,10 +30,10 @@ module Gnuplot
                        if data.is_a? Datablock
                          [:datablock, data.clone]
                        else
-                         [:datablock, Datablock.new(data, options[:file])]
+                         [:datablock, Datablock.new(data, file)]
                        end
                      end
-      @options = Hamster.hash(options.reject { |k, _| RUBY_OPTIONS.include?(k.to_s) })
+      @options = Hamster.hash(options)
       yield(self) if block_given?
     end
 
@@ -72,16 +71,12 @@ module Gnuplot
       if data && @type == :datablock
         new_datablock = @data.update(data)
         if new_datablock == @data
-          self
+          update_options(options)
         else
           Dataset.new(@data.update(data), @options.merge(options))
         end
       else
-        if options.empty?
-          return self
-        else
-          Dataset.new(@data, @options.merge(options))
-        end
+        update_options(options)
       end
     end
 
@@ -93,6 +88,14 @@ module Gnuplot
         Dataset.new(@data, **@options)
       else
         super
+      end
+    end
+
+    def update_options(**options)
+      if options.empty?
+        return self
+      else
+        Dataset.new(@data, @options.merge(options))
       end
     end
 
@@ -109,7 +112,7 @@ module Gnuplot
       if options.empty?
         @options
       else
-        Dataset.new(@data, **@options.merge(options))
+        Dataset.new(@data, @options.merge(options))
       end
     end
 
@@ -134,7 +137,5 @@ module Gnuplot
         options(meth_sym => args)
       end
     end
-
-    attr_reader :data
   end
 end
