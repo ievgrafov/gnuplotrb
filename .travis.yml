@@ -1,13 +1,18 @@
 notifications:
   email: false
-language: objective-c 
+language: ruby
 rvm:
   - 2.0
   - 2.1
   - 2.2
+addons:
+  code_climate:
+    repo_token: 9756087a9525152fe5b1e6eceb4fe64225ae3badac13ba93317928f9efe1273f
 before_install:
-  - brew update
-  - brew install gnuplot
+  - sudo add-apt-repository "deb http://cz.archive.ubuntu.com/ubuntu vivid main universe"
+  - sudo apt-get update -q
+  - sudo rm -rf /etc/dpkg/dpkg.cfg.d/multiarch
+  - sudo apt-get install gnuplot5
   - bundle install
 install:
   - bundle exec rake install
