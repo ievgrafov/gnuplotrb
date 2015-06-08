@@ -102,13 +102,14 @@ module Gnuplot
         term = meth[3..-1]
         super unless Terminal::valid_terminal?(term)
         to_specific_term(term, *args)
-      end
-      if args.empty?
-        value = @options[meth.to_sym]
-        value = value[0] if value && value.size == 1
-        value
       else
-        Plot.new(@datasets, @options.merge(meth.to_sym => args))
+        if args.empty?
+          value = @options[meth.to_sym]
+          value = value[0] if value && value.size == 1
+          value
+        else
+          Plot.new(@datasets, @options.merge(meth.to_sym => args))
+        end
       end
     end
 
