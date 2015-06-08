@@ -12,21 +12,49 @@ module Gnuplot
   class Terminal
     attr_reader :available_terminals
     attr_reader :version
+
+    class << self
+      def command
+        @@command ||= 'gnuplot'
+      end
+
+      def command=(cmd)
+        @@command = cmd
+        @@version = nil
+        @@available_terminals = nil
+      end
+
+      def version
+        @@version ||= IO.popen("#{command} --version")
+                        .read
+                        .match(/gnuplot ([^ ]+)/)[1]
+                        .to_f
+      end
+
+      def available_terminals
+        @@available_terminals = Open3.capture2e(command, :stdin_data => "set term\n")
+                                    .first
+                                    .scan(/[:\n] +([a-z][^ ]+)/)
+                                    .map(&:first)
+      end
+
+      def valid_terminal?(terminal)
+        available_terminals.include?(terminal)
+      end
+    end
+
     ##
     # ==== Parameters
-    # * *command* - may specify path to gnuplot executable if none exists
-    # in $PATH (env variable)
     # * *options* - the only option in use now is :persist
-    def initialize(command = 'gnuplot', **options)
-      @cmd = 'gnuplot'
+    def initialize(**options)
+      @cmd = Terminal::command
       @current_datablock = 0
       @current_style = 0
-      command += ' -persist' if options[:persist]
-      @version, @available_terminals = Terminal::get_gnuplot_info(command)
-      if @version < 5.0
+      @cmd += ' -persist' if options[:persist]
+      if Terminal::version < 5.0
         fail(ArgumentError, "Your Gnuplot version is #{@version}, please update it to at least 5.0")
       end
-      input = IO.popen(command, 'w')
+      input = IO.popen(@cmd, 'w')
       ObjectSpace.define_finalizer(self, proc { input.close_write })
       @in = input
       yield(self) if block_given?
@@ -81,8 +109,7 @@ module Gnuplot
       result = ""
       if options[:term]
         term = options[:term].is_a?(Array) ? options[:term][0] : options[:term]
-        correct = available_terminals.include?(term)
-        fail(ArgumentError, 'Seems like your Gnuplot does not support that terminal, please see supported terminals with Terminal#available_terminals') unless correct
+        fail(ArgumentError, 'Seems like your Gnuplot does not support that terminal, please see supported terminals with Terminal#available_terminals') unless Terminal.valid_terminal?(term)
       end
       options.each do |key, value|
         if value
@@ -157,18 +184,6 @@ module Gnuplot
       @in.puts('replot')
       unset(options.keys)
       self
-    end
-
-    def self.get_gnuplot_info(command = 'gnuplot')
-      version = IO.popen("#{command} --version")
-                   .read
-                   .match(/gnuplot ([^ ]+)/)[1]
-                   .to_f
-      available_terminals = Open3.capture2e(command, :stdin_data => "set term\n")
-                                  .first
-                                  .scan(/[:\n] +([a-z][^ ]+)/)
-                                  .map(&:first)
-      [version, available_terminals]
     end
   end
 end
