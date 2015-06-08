@@ -21,6 +21,7 @@ module Gnuplot
       @already_plotted = false
       @cmd = 'plot '
       @terminal = Terminal.new
+      Terminal::validate_options(@options)
       yield(self) if block_given?
     end
 
@@ -97,7 +98,11 @@ module Gnuplot
     #   content = plot.to_svg(size: [100, 100], fname: 'Arial', fsize: 12)
     def method_missing(meth_id, *args)
       meth = meth_id.id2name
-      return to_specific_term(meth[3..-1], *args) if meth[0..2] == 'to_'
+      if meth[0..2] == 'to_'
+        term = meth[3..-1]
+        super unless Terminal::valid_terminal?(term)
+        to_specific_term(term, *args)
+      end
       if args.empty?
         value = @options[meth.to_sym]
         value = value[0] if value && value.size == 1

@@ -41,6 +41,14 @@ module Gnuplot
       def valid_terminal?(terminal)
         available_terminals.include?(terminal)
       end
+
+      def validate_options(options)
+        if options[:term]
+          term = options[:term].is_a?(Array) ? options[:term][0] : options[:term]
+          fail(ArgumentError, 'Seems like your Gnuplot does not support that terminal, please see supported terminals with Terminal#available_terminals') unless Terminal.valid_terminal?(term)
+        end
+        # TODO other options validating 
+      end
     end
 
     ##
@@ -107,10 +115,6 @@ module Gnuplot
     # *options* - hash of options to convert
     def options_hash_to_string(options)
       result = ""
-      if options[:term]
-        term = options[:term].is_a?(Array) ? options[:term][0] : options[:term]
-        fail(ArgumentError, 'Seems like your Gnuplot does not support that terminal, please see supported terminals with Terminal#available_terminals') unless Terminal.valid_terminal?(term)
-      end
       options.each do |key, value|
         if value
           if QUOTED.include?(key.to_s)
@@ -137,6 +141,7 @@ module Gnuplot
     # ==== Examples
     #   set({term: ['qt', size: [100, 100]]})
     def set(options)
+      Terminal::validate_options(options)
       @in.puts(options_hash_to_string(options))
       self
     end
