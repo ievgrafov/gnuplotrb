@@ -60,7 +60,7 @@ module Gnuplot
       @current_style = 0
       @cmd += ' -persist' if options[:persist]
       if Terminal::version < 5.0
-        fail(ArgumentError, "Your Gnuplot version is #{@version}, please update it to at least 5.0")
+        fail(ArgumentError, "Your Gnuplot version is #{Terminal::version}, please update it to at least 5.0")
       end
       input = IO.popen(@cmd, 'w')
       ObjectSpace.define_finalizer(self, proc { input.close_write })
