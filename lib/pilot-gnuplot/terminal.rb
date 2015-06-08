@@ -10,58 +10,81 @@ module Gnuplot
   # handled by this class. Terminal also handles options passed to gnuplot via
   # 'set key value'.
   class Terminal
-    attr_reader :available_terminals
-    attr_reader :version
-
     class << self
-      def command
-        @@command ||= 'gnuplot'
+      ##
+      # ==== Overview
+      # Get path that should be used to run gnuplot executable.
+      # Default value: 'gnuplot'
+      def gnuplot_path
+       self.gnuplot_path = 'gnuplot' unless defined?(@@gnuplot_path)
+       @@gnuplot_path
       end
 
-      def command=(cmd)
-        @@command = cmd
-        @@version = nil
-        @@available_terminals = nil
-      end
-
-      def version
-        @@version ||= IO.popen("#{command} --version")
-                        .read
-                        .match(/gnuplot ([^ ]+)/)[1]
-                        .to_f
-      end
-
+      ##
+      # ==== Overview
+      # Get list of terminals available for that gnuplot.
       def available_terminals
-        @@available_terminals = Open3.capture2e(command, :stdin_data => "set term\n")
-                                    .first
-                                    .scan(/[:\n] +([a-z][^ ]+)/)
-                                    .map(&:first)
+        @@available_terminals
       end
 
+      ##
+      # ==== Overview
+      # Set path to gnuplot executable.
+      def gnuplot_path=(path)
+        validate_version(path)
+        opts = { stdin_data: "set term\n" }
+        @@available_terminals = Open3.capture2e(path, **opts)
+                                     .first
+                                     .scan(/[:\n] +([a-z][^ ]+)/)
+                                     .map(&:first)
+
+        @@gnuplot_path = path
+      end
+
+      ##
+      # ==== Overview
+      # Get gnuplot version. Uses #gnuplot_path to find
+      # gnuplot executable.
+      def validate_version(path)
+        @@version = IO.popen("#{path} --version")
+                     .read
+                     .match(/gnuplot ([^ ]+)/)[1]
+                     .to_f
+        fail(ArgumentError, "Your Gnuplot version is #{@@version}, please update it to at least 5.0") if @@version < 5.0
+      end
+
+      ##
+      # ==== Overview
+      # Check if given terminal available for use. 
+      # ==== Arguments
+      # * *terminal* - terminal to check (e.g. 'png', 'qt', 'gif')
       def valid_terminal?(terminal)
         available_terminals.include?(terminal)
       end
 
+      ##
+      # ==== Overview
+      # Check if given options are valid for gnuplot.
+      # Raises ArgumentError if invalid options found.
+      # ==== Arguments
+      # * *options* - Hash of options to check (e.g. {term: 'qt', title: 'Plot title'})
+      #
+      # Now checks only terminal name.
       def validate_options(options)
         if options[:term]
           term = options[:term].is_a?(Array) ? options[:term][0] : options[:term]
           fail(ArgumentError, 'Seems like your Gnuplot does not support that terminal, please see supported terminals with Terminal#available_terminals') unless Terminal.valid_terminal?(term)
         end
-        # TODO other options validating 
       end
     end
 
     ##
     # ==== Parameters
-    # * *options* - the only option in use now is :persist
-    def initialize(**options)
-      @cmd = Terminal::command
+    # * *persist* - gnuplot's -persist option
+    def initialize(persist: false)
+      @cmd = Terminal::gnuplot_path
       @current_datablock = 0
-      @current_style = 0
-      @cmd += ' -persist' if options[:persist]
-      if Terminal::version < 5.0
-        fail(ArgumentError, "Your Gnuplot version is #{Terminal::version}, please update it to at least 5.0")
-      end
+      @cmd += ' -persist' if persist
       input = IO.popen(@cmd, 'w')
       ObjectSpace.define_finalizer(self, proc { input.close_write })
       @in = input
