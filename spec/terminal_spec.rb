@@ -84,4 +84,13 @@ describe Terminal do
       expect(same_images?(*@paths)).to be_truthy
     end
   end
+
+  context 'check correctness of a terminal' do
+    it 'should raise an error when trying to use incorrect terminal' do
+      plot0 = Plot.new(term: 'incorrect_term')
+      expect { plot0.plot }.to raise_error(ArgumentError)
+      plot1 = Plot.new(term: ['incorrect_term', size: [300,300]])
+      expect { plot1.plot }.to raise_error(ArgumentError)
+    end
+  end
 end

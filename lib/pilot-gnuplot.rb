@@ -1,5 +1,6 @@
 require 'tempfile'
 require 'hamster'
+require 'open3'
 
 require 'pilot-gnuplot/version'
 require 'pilot-gnuplot/terminal'
