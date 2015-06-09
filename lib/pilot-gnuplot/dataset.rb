@@ -50,14 +50,9 @@ module Gnuplot
     # ==== Overview
     # Create string from own options
     def options_to_string
-      @options.sort_by { |key, _| OPTION_ORDER.find_index(key.to_s) || 999 }.map do |key, value|
-        value = '' if value.is_a?(TrueClass)
-        if QUOTED.include?(key.to_s)
-          "#{key} '#{value}'"
-        else
-          "#{key} #{value}"
-        end
-      end.join(' ')
+      @options.sort_by { |key, _| OPTION_ORDER.find_index(key.to_s) || 999 }
+              .map { |key, value| option_to_string(key, value) }
+              .join(' ')
     end
 
     ##
