@@ -108,7 +108,7 @@ module Gnuplot
           value = value[0] if value && value.size == 1
           value
         else
-          Plot.new(@datasets, @options.merge(meth.to_sym => args))
+          self.class.new(@datasets, @options.merge(meth.to_sym => args))
         end
       end
     end
@@ -141,7 +141,7 @@ module Gnuplot
     # ==== Example
     #   TODO add examples (and specs!)
     def replace_dataset(position = 0, dataset)
-      Plot.new(@datasets.set(position, dataset), @options)
+      self.class.new(@datasets.set(position, dataset), @options)
     end
 
     ##
@@ -153,7 +153,7 @@ module Gnuplot
     # ==== Example
     #   TODO add examples (and specs!)
     def add_dataset(dataset)
-      Plot.new(@datasets.add(convert_to_dataset(dataset)), @options)
+      self.class.new(@datasets.add(convert_to_dataset(dataset)), @options)
     end
 
     alias_method :<<, :add_dataset
@@ -168,7 +168,7 @@ module Gnuplot
     # ==== Example
     #   TODO add examples (and specs!)
     def remove_dataset(position = -1)
-      Plot.new(@datasets.delete_at(position), @options)
+      self.class.new(@datasets.delete_at(position), @options)
     end
 
     ##
@@ -200,7 +200,7 @@ module Gnuplot
       if options.empty?
         @options
       else
-        Plot.new(@datasets, @options.merge(options))
+        self.class.new(@datasets, @options.merge(options))
       end
     end
 
