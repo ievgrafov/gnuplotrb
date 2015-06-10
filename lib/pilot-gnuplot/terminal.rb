@@ -6,80 +6,11 @@ module Gnuplot
   # handled by this class. Terminal also handles options passed to gnuplot via
   # 'set key value'.
   class Terminal
-    class << self
-      ##
-      # ==== Overview
-      # Get path that should be used to run gnuplot executable.
-      # Default value: 'gnuplot'
-      def gnuplot_path
-       self.gnuplot_path = 'gnuplot' unless defined?(@@gnuplot_path)
-       @@gnuplot_path
-      end
-
-      ##
-      # ==== Overview
-      # Get list of terminals available for that gnuplot.
-      def available_terminals
-        @@available_terminals
-      end
-
-      ##
-      # ==== Overview
-      # Set path to gnuplot executable.
-      def gnuplot_path=(path)
-        validate_version(path)
-        opts = { stdin_data: "set term\n" }
-        @@available_terminals = Open3.capture2e(path, **opts)
-                                     .first
-                                     .scan(/[:\n] +([a-z][^ ]+)/)
-                                     .map(&:first)
-
-        @@gnuplot_path = path
-      end
-
-      ##
-      # ==== Overview
-      # Get gnuplot version. Uses #gnuplot_path to find
-      # gnuplot executable.
-      def validate_version(path)
-        @@version = IO.popen("#{path} --version")
-                     .read
-                     .match(/gnuplot ([^ ]+)/)[1]
-                     .to_f
-        fail(ArgumentError, "Your Gnuplot version is #{@@version}, please update it to at least 5.0") if @@version < 5.0
-      end
-
-      ##
-      # ==== Overview
-      # Check if given terminal available for use. 
-      # ==== Arguments
-      # * *terminal* - terminal to check (e.g. 'png', 'qt', 'gif')
-      def valid_terminal?(terminal)
-        available_terminals.include?(terminal)
-      end
-
-      ##
-      # ==== Overview
-      # Check if given options are valid for gnuplot.
-      # Raises ArgumentError if invalid options found.
-      # ==== Arguments
-      # * *options* - Hash of options to check (e.g. {term: 'qt', title: 'Plot title'})
-      #
-      # Now checks only terminal name.
-      def validate_options(options)
-        terminal = options[:term]
-        if terminal
-          terminal = terminal[0] if terminal.is_a?(Array)
-          fail(ArgumentError, 'Seems like your Gnuplot does not support that terminal, please see supported terminals with Terminal#available_terminals') unless valid_terminal?(terminal)
-        end
-      end
-    end
-
     ##
     # ==== Parameters
     # * *persist* - gnuplot's -persist option
     def initialize(persist: false)
-      @cmd = Terminal::gnuplot_path
+      @cmd = Settings::gnuplot_path
       @current_datablock = 0
       @cmd += ' -persist' if persist
       input = IO.popen(@cmd, 'w')
@@ -115,7 +46,7 @@ module Gnuplot
       result = ""
       options.each do |key, value|
         if value
-          result += "set #{option_to_string(key, value)}\n"
+          result += "set #{OptionsHelper::option_to_string(key, value)}\n"
         else
           result += "unset #{key}\n"
         end
@@ -135,7 +66,7 @@ module Gnuplot
     # ==== Examples
     #   set({term: ['qt', size: [100, 100]]})
     def set(options)
-      Terminal::validate_options(options)
+      OptionsHelper::validate_terminal_options(options)
       @in.puts(options_hash_to_string(options))
       self
     end

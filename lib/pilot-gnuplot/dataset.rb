@@ -51,7 +51,7 @@ module Gnuplot
     # Create string from own options
     def options_to_string
       @options.sort_by { |key, _| OPTION_ORDER.find_index(key.to_s) || 999 }
-              .map { |key, value| option_to_string(key, value) }
+              .map { |key, value| OptionsHelper::option_to_string(key, value) }
               .join(' ')
     end
 

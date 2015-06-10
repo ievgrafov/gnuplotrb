@@ -21,7 +21,7 @@ module Gnuplot
       @already_plotted = false
       @cmd = 'plot '
       @terminal = Terminal.new
-      Terminal::validate_options(@options)
+      OptionsHelper::validate_terminal_options(@options)
       yield(self) if block_given?
     end
 
@@ -100,7 +100,7 @@ module Gnuplot
       meth = meth_id.id2name
       if meth[0..2] == 'to_'
         term = meth[3..-1]
-        super unless Terminal::valid_terminal?(term)
+        super unless OptionsHelper::valid_terminal?(term)
         to_specific_term(term, *args)
       else
         if args.empty?

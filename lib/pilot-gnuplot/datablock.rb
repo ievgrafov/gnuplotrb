@@ -8,9 +8,9 @@ module Gnuplot
   class Datablock
     ##
     # ==== Parameters
-    # * *data* - sequence of anything with +#to_points+ method
+    # * *data* - sequence of anything with +#to_gnuplot_points+ method.
     # * *stored_in_file* true here will force this datablock to store its data
-    #   in temporary file
+    #   in temporary file.
     def initialize(data, stored_in_file = false)
       @stored_in_file = stored_in_file
       data_str = data.to_gnuplot_points
@@ -30,7 +30,7 @@ module Gnuplot
     # if data stored in here-doc. Append update to file
     # if data stored there.
     # ==== Parameters
-    # * *data* - anything with +#to_points+ method
+    # * *data* - anything with +#to_gnuplot_points+ method
     def update(data)
       data_str = data.to_gnuplot_points
       if @stored_in_file
@@ -43,9 +43,9 @@ module Gnuplot
 
     ##
     # ==== Overview
-    # Returns quoted filename if datablock stored in file and outputs
-    # datablock to gnuplot otherwise.
-    # *gnuplot_term* should be given if datablock not stored in file
+    # Returns quoted filename if datablock stored in file or outputs
+    # datablock to gnuplot and returns its name otherwise.
+    # *gnuplot_term* should be given if datablock not stored in file.
     def name(gnuplot_term = nil)
       if @stored_in_file
         "'#{@file_name}'"
