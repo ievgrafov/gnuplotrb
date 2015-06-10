@@ -51,7 +51,7 @@ module Gnuplot
     # Create string from own options
     def options_to_string
       @options.sort_by { |key, _| OPTION_ORDER.find_index(key.to_s) || 999 }
-              .map { |key, value| OptionsHelper::option_to_string(key, value) }
+              .map { |key, value| OptionsHelper.option_to_string(key, value) }
               .join(' ')
     end
 
@@ -77,7 +77,7 @@ module Gnuplot
 
     ##
     # ==== Overview
-    # Own implementation of #clone 
+    # Own implementation of #clone
     def clone
       if @type == :datablock
         Dataset.new(@data, **@options)
@@ -102,7 +102,7 @@ module Gnuplot
     # ==== Parameters
     # * *options* - options to add
     # ==== Example
-    # TODO add example and spec 
+    # TODO: add example and spec
     def options(**options)
       if options.empty?
         @options

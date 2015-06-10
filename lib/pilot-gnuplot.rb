@@ -16,6 +16,4 @@ require 'pilot-gnuplot/mixins'
 # === Overview
 # Ruby bindings for gnuplot.
 module Gnuplot
-
 end
-

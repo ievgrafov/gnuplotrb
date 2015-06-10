@@ -21,7 +21,7 @@ module Gnuplot
       @already_plotted = false
       @cmd = 'plot '
       @terminal = Terminal.new
-      OptionsHelper::validate_terminal_options(@options)
+      OptionsHelper.validate_terminal_options(@options)
       yield(self) if block_given?
     end
 
@@ -100,7 +100,7 @@ module Gnuplot
       meth = meth_id.id2name
       if meth[0..2] == 'to_'
         term = meth[3..-1]
-        super unless OptionsHelper::valid_terminal?(term)
+        super unless OptionsHelper.valid_terminal?(term)
         to_specific_term(term, *args)
       else
         if args.empty?
@@ -108,7 +108,7 @@ module Gnuplot
           value = value[0] if value && value.size == 1
           value
         else
-          self.class.new(@datasets, @options.merge(meth.to_sym => args))
+          options(meth.to_sym => args)
         end
       end
     end
@@ -190,9 +190,9 @@ module Gnuplot
     # ==== Parameters
     # * *options* - options to add
     # ==== Example
-    #   sin_graph = Plot.new(['sin(x)', title: 'Sin'], title: 'Sin plot from 0 to 3', xrange: 0..3)
+    #   sin_graph = Plot.new(['sin(x)', title: 'Sin'], title: 'Sin on [0:3]', xrange: 0..3)
     #   sin_graph.plot
-    #   sin_graph_update = sin_graph.options(title: 'Sin plot from -10 to 10', xrange: -10..10)
+    #   sin_graph_update = sin_graph.options(title: 'Sin on [-10:10]', xrange: -10..10)
     #   sin_graph_update.plot
     #   # you may also consider this as
     #   # sin_graph.title(...).xrange(...)
@@ -216,15 +216,14 @@ module Gnuplot
     end
 
     ##
-    # TODO docs here
+    # TODO: docs here
     def plot_command(term, full_command, options)
-      File.delete(options[:output]) if options[:output] && File.file?(options[:output])
+      output = options[:output]
+      File.delete(output) if output && File.file?(output)
       term.set(options)
           .puts(full_command)
           .unset(options.keys)
-      if options[:output]
-        sleep 0.001 until File.file?(options[:output]) && File.size(options[:output]) > 100
-      end
+      sleep 0.001 until File.file?(output) && File.size(output) > 100 if output
     end
   end
 end

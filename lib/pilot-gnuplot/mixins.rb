@@ -15,6 +15,6 @@ end
 
 class String
   def to_gnuplot_points
-    return self.clone
+    clone
   end
 end

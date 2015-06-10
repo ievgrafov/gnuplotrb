@@ -1,16 +1,16 @@
 module Gnuplot
   ##
   # === Overview
-  # Terminal keeps open pipe to gnuplot process, cares about naming datablocks and
-  # linestyles (just indexing with sequncial integers). All the output to gnuplot
-  # handled by this class. Terminal also handles options passed to gnuplot via
-  # 'set key value'.
+  # Terminal keeps open pipe to gnuplot process, cares about naming datablocks
+  # and linestyles (just indexing with sequncial integers). All the output
+  # to gnuplot handled by this class. Terminal also handles options passed
+  # to gnuplot via 'set key value'.
   class Terminal
     ##
     # ==== Parameters
     # * *persist* - gnuplot's -persist option
     def initialize(persist: false)
-      @cmd = Settings::gnuplot_path
+      @cmd = Settings.gnuplot_path
       @current_datablock = 0
       @cmd += ' -persist' if persist
       input = IO.popen(@cmd, 'w')
@@ -43,10 +43,10 @@ module Gnuplot
     # ==== Parameters
     # *options* - hash of options to convert
     def options_hash_to_string(options)
-      result = ""
+      result = ''
       options.each do |key, value|
         if value
-          result += "set #{OptionsHelper::option_to_string(key, value)}\n"
+          result += "set #{OptionsHelper.option_to_string(key, value)}\n"
         else
           result += "unset #{key}\n"
         end
@@ -66,7 +66,7 @@ module Gnuplot
     # ==== Examples
     #   set({term: ['qt', size: [100, 100]]})
     def set(options)
-      OptionsHelper::validate_terminal_options(options)
+      OptionsHelper.validate_terminal_options(options)
       @in.puts(options_hash_to_string(options))
       self
     end
