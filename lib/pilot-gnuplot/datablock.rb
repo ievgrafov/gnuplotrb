@@ -7,7 +7,7 @@ module Gnuplot
   # to constructor and keeps datablock name or path to file where it is stored.
   class Datablock
     ##
-    # ==== Parameters
+    # ====== Parameters
     # * *data* - sequence of anything with +#to_gnuplot_points+ method.
     # * *stored_in_file* true here will force this datablock to store its data
     #   in temporary file.
@@ -25,11 +25,11 @@ module Gnuplot
     end
 
     ##
-    # ==== Overview
+    # ====== Overview
     # Instantiate one more Datablock with updated data
     # if data stored in here-doc. Append update to file
     # if data stored there.
-    # ==== Parameters
+    # ====== Parameters
     # * *data* - anything with +#to_gnuplot_points+ method
     def update(data)
       data_str = data.to_gnuplot_points
@@ -42,7 +42,7 @@ module Gnuplot
     end
 
     ##
-    # ==== Overview
+    # ====== Overview
     # Returns quoted filename if datablock stored in file or outputs
     # datablock to gnuplot and returns its name otherwise.
     # * *gnuplot_term* should be given if datablock not stored in file.
@@ -58,7 +58,7 @@ module Gnuplot
     alias_method :to_s, :name
 
     ##
-    # ==== Overview
+    # ====== Overview
     # Overridden #clone. Since datablock which store data
     # in temporary files should not be cloned (otherwise it will cause
     # double attempt to delete file), this #clone returns self for such

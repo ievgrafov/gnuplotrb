@@ -13,17 +13,17 @@ module Gnuplot
     OPTION_ORDER = %w(index using axes title)
 
     ##
-    # ==== Overview
+    # ====== Overview
     # Creates new dataset out of given string with
     # math function or filename. If *data* isn't a string
     # it will create datablock to store data.
-    # ==== Parameters
+    # ====== Parameters
     # * *data* - String, Datablock or something acceptable by
     #   Datablock.new as data (e.g. [x,y] where x and y are arrays)
     # * *options* - hash of options specific for gnuplot
     #   dataset, and some special options ('file: true' will
     #   make data to be stored inside temporary file).
-    # ==== Examples
+    # ====== Examples
     # Math function:
     #   Dataset.new('x*sin(x)', with: 'lines', lw: 4)
     # File with points:
@@ -53,13 +53,13 @@ module Gnuplot
     end
 
     ##
-    # ==== Overview
+    # ====== Overview
     # Converts Dataset to string containing gnuplot dataset.
-    # ==== Parameters
+    # ====== Parameters
     # * *terminal* - must be given if data given as Datablock and
     #   it does not use temp file so data should be piped out
     #   to gnuplot via terminal before use.
-    # ==== Examples
+    # ====== Examples
     #   Dataset.new('points.data', with: 'lines', title: 'Points from file').to_s
     #   #=> "'points.data' with lines title 'Points form file'"
     #   Dataset.new(points, with: 'points', title: 'Points').to_s
@@ -69,7 +69,7 @@ module Gnuplot
     end
 
     ##
-    # ==== Overview
+    # ====== Overview
     # Create string from own options
     def options_to_string
       @options.sort_by { |key, _| OPTION_ORDER.find_index(key.to_s) || 999 }
@@ -78,16 +78,16 @@ module Gnuplot
     end
 
     ##
-    # ==== Overview
+    # ====== Overview
     # Creates new dataset with updated data (given
     # data is appended to existing) and merged options.
     # Data is updated only if Dataset stores it in Datablock.
     # Method does nothing if no options given and data isn't stored
     # in in-memory Datablock.
-    # ==== Parameters
+    # ====== Parameters
     # * *data* - data to append to existing
     # * *options* - hash to merge with existing options
-    # ==== Examples
+    # ====== Examples
     # Updating dataset with Math formula or filename given:
     #   dataset = Dataset.new('file.data')
     #   dataset.update(data: 'asd')
@@ -117,7 +117,7 @@ module Gnuplot
     end
 
     ##
-    # ==== Overview
+    # ====== Overview
     # Own implementation of #clone. Creates new Dataset if
     # data stored in datablock and calls super otherwise.
     def clone
@@ -129,12 +129,12 @@ module Gnuplot
     end
 
     ##
-    # ==== Overview
+    # ====== Overview
     # Creates new dataset with existing options merged with
     # the given ones. Does nothing if no options given.
-    # ==== Parameters
+    # ====== Parameters
     # * *options* - hash to merge with existing options
-    # ==== Examples
+    # ====== Examples
     # Updating dataset with Math formula or filename given:
     #   dataset = Dataset.new('file.data')
     #   dataset.update_options(title: 'File')
@@ -148,12 +148,12 @@ module Gnuplot
     end
 
     ##
-    # ==== Overview
+    # ====== Overview
     # Creates new dataset with existing options merged with
     # the given ones. Returns existing if no options given.
-    # ==== Parameters
+    # ====== Parameters
     # * *options* - options to add
-    # ==== Examples
+    # ====== Examples
     # Updating options:
     #   dataset = Dataset.new('file.data')
     #   dataset.options(title: 'File')
@@ -171,12 +171,12 @@ module Gnuplot
     end
 
     ##
-    # ==== Overview
+    # ====== Overview
     # You may set options using #option_name(option_value) method.
     # A new object will be constructed with selected option set.
     # And finally you can get current value of any option using
     # #options_name without arguments.
-    # ===== Examples
+    # ====== Examples
     #   dataset = Dataset.new('file.data')
     #   dataset.title #=> nil
     #   new_dataset = dataset.title('Awesome plot')

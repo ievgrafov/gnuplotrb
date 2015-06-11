@@ -1,6 +1,6 @@
 module Gnuplot
   ##
-  # ==== Overview
+  # ====== Overview
   # This module contains methods which are used by several classes
   # to handle and convert their options.
   module OptionsHelper
@@ -10,12 +10,12 @@ module Gnuplot
     QUOTED_OPTIONS = %w(title output xlabel x2label ylabel y2label clabel cblabel zlabel rgb)
 
     ##
-    # ==== Overview
+    # ====== Overview
     # Recursive function that converts Ruby option to gnuplot string
-    # ==== Parameters
+    # ====== Parameters
     # * *key* - name of option in gnuplot
     # * *option* - an option that should be converted
-    # ==== Examples
+    # ====== Examples
     #   option_to_string(['png', size: [300, 300]]) #=> 'png size 300,300'
     #   option_to_string(xrange: 0..100) #=> 'xrange [0:100]'
     #   option_to_string(multiplot: true) #=> 'multiplot'
@@ -39,19 +39,19 @@ module Gnuplot
     end
 
     ##
-    # ==== Overview
+    # ====== Overview
     # Check if given terminal available for use.
-    # ==== Arguments
+    # ====== Arguments
     # * *terminal* - terminal to check (e.g. 'png', 'qt', 'gif')
     def self.valid_terminal?(terminal)
       Settings.available_terminals.include?(terminal)
     end
 
     ##
-    # ==== Overview
+    # ====== Overview
     # Check if given options are valid for gnuplot.
     # Raises ArgumentError if invalid options found.
-    # ==== Arguments
+    # ====== Arguments
     # * *options* - Hash of options to check
     #   (e.g. {term: 'qt', title: 'Plot title'})
     #

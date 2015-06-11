@@ -8,7 +8,7 @@ module Gnuplot
     # required to have modern gnuplot installed.
     MIN_GNUPLOT_VERSION = 5.0
     ##
-    # ==== Overview
+    # ====== Overview
     # Get path that should be used to run gnuplot executable.
     # Default value: 'gnuplot'
     def self.gnuplot_path
@@ -17,7 +17,7 @@ module Gnuplot
     end
 
     ##
-    # ==== Overview
+    # ====== Overview
     # Set path to gnuplot executable.
     def self.gnuplot_path=(path)
       validate_version(path)
@@ -30,7 +30,7 @@ module Gnuplot
     end
 
     ##
-    # ==== Overview
+    # ====== Overview
     # Get list of terminals (png, html, qt, jpeg etc)
     # available for that gnuplot.
     def self.available_terminals
@@ -38,7 +38,7 @@ module Gnuplot
     end
 
     ##
-    # ==== Overview
+    # ====== Overview
     # Get gnuplot version. Uses gnuplot_path to find
     # gnuplot executable.
     def self.version
@@ -47,10 +47,10 @@ module Gnuplot
     end
 
     ##
-    # ==== Overview
+    # ====== Overview
     # Validates gnuplot version. Compares current gnuplot's
     # version with ::MIN_GNUPLOT_VERSION.
-    # ==== Arguments
+    # ====== Arguments
     # * *path* - path to gnuplot executable.
     def self.validate_version(path)
       @version = IO.popen("#{path} --version")

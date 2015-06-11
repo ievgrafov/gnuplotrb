@@ -1,13 +1,19 @@
 module Gnuplot
   ##
   # === Overview
-  # Terminal keeps open pipe to gnuplot process, cares about naming datablocks
-  # and linestyles (just indexing with sequncial integers). All the output
+  # Terminal keeps open pipe to gnuplot process, cares about naming in-memory
+  # datablocks (just indexing with sequential integers). All the output
   # to gnuplot handled by this class. Terminal also handles options passed
-  # to gnuplot via 'set key value'.
+  # to gnuplot as 'set key value'.
   class Terminal
     ##
-    # ==== Parameters
+    # ====== Overview
+    # Creates new Terminal connected with gnuplot.
+    # Uses Settings::gnuplot_path to find gnuplot
+    # executable. Each time you create Terminal it starts new
+    # gnuplot subprocess which is closed after GC deletes
+    # linked Terminal object.
+    # ====== Arguments
     # * *persist* - gnuplot's -persist option
     def initialize(persist: false)
       @cmd = Settings.gnuplot_path
@@ -20,13 +26,22 @@ module Gnuplot
     end
 
     ##
-    # ==== Overview
-    # Prints datablock to this gnuplot terminal
-    # ==== Parameters
-    # * *name* - passing this may be useful to update data before replot
+    # ====== Overview
+    # Outputs datablock to this gnuplot terminal.
+    # ====== Arguments
     # * *data* - data stored in datablock
-    def store_datablock(name = nil, data)
-      name ||= "$DATA#{@current_datablock += 1}"
+    # ====== Examples
+    #   datablock = Datablock.new([[1, 2, 3], [1, 4, 9]])
+    #   Terminal.new.store_datablock(datablock)
+    #   #=> returns '$DATA1'
+    #   #=> outputs to gnuplot:
+    #   #=>   $DATA1 << EOD
+    #   #=>   1 1
+    #   #=>   2 4
+    #   #=>   3 9
+    #   #=>   EOD
+    def store_datablock(data)
+      name = "$DATA#{@current_datablock += 1}"
       @in.puts "#{name} << EOD"
       @in.puts data
       @in.puts 'EOD'
@@ -34,14 +49,14 @@ module Gnuplot
     end
 
     ##
-    # ==== Overview
+    # ====== Overview
     # Converts given options to gnuplot format;
-    # for {opt1: val1, .. , optN: valN} it return
+    # for {opt1: val1, .. , optN: valN} it returns
     #   set opt1 val1
     #   ..
     #   set optN valN
-    # ==== Parameters
-    # *options* - hash of options to convert
+    # ====== Arguments
+    # * *options* - hash of options to convert
     def options_hash_to_string(options)
       result = ''
       options.each do |key, value|
@@ -55,16 +70,17 @@ module Gnuplot
     end
 
     ##
-    # ==== Overview
+    # ====== Overview
     # Applies given options to current gnuplot instance;
     # for {opt1: val1, .. , optN: valN} it will output to gnuplot
     #   set opt1 val1
     #   ..
     #   set optN valN
-    # ==== Parameters
+    # ====== Arguments
     # *options* - hash of options to set
-    # ==== Examples
+    # ====== Examples
     #   set({term: ['qt', size: [100, 100]]})
+    #   #=> output: "set term qt size 100,100\n"
     def set(options)
       OptionsHelper.validate_terminal_options(options)
       @in.puts(options_hash_to_string(options))
@@ -72,41 +88,42 @@ module Gnuplot
     end
 
     ##
-    # ==== Overview
+    # ====== Overview
     # Unset some options
-    # ==== Parameters
-    # **options* - Array of options need to unset
+    # ====== Arguments
+    # * **options* - Array of options need to unset
     def unset(*options)
       options.flatten.each { |key| @in.puts "unset #{key}" }
       self
     end
 
     ##
-    # ==== Overview
-    # Short way to output datablock, plot etc.
-    # The method is under construction.
-    def <<(a)
-      case a
+    # ====== Overview
+    # Short way to plot Datablock, Plot or Splot object.
+    # Other items will be just piped out to gnuplot.
+    def <<(item)
+      case item
       when Dataset
-        Plot.new(a).plot(self)
+        Plot.new(item).plot(self)
       when Plot
-        a.plot(self)
+        item.plot(self)
       else
-        @in << a.to_s
+        @in << item.to_s
       end
       self
     end
 
     ##
-    # ==== Overview
-    # Just puts a to gnuplot pipe
-    def puts(a)
-      @in.puts(a)
+    # ====== Overview
+    # Just puts *command* to gnuplot pipe and returns self
+    # to allow chaining.
+    def puts(command)
+      @in.puts(command)
       self
     end
 
     ##
-    # ==== Overview
+    # ====== Overview
     # Call replot on gnuplot. This will execute last plot once again
     # with rereading data.
     def replot(**options)
