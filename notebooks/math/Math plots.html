@@ -183,17 +183,19 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ruby"><pre><span class="nb">require</span> <span class="s1">&#39;pilot-gnuplot&#39;</span>
 <span class="kp">include</span> <span class="no">Gnuplot</span>
 
-<span class="no">Plot</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="o">[</span><span class="s1">&#39;x*sin(x)&#39;</span><span class="p">,</span> <span class="ss">with</span><span class="p">:</span> <span class="s1">&#39;lines&#39;</span><span class="p">,</span> <span class="ss">lt</span><span class="p">:</span> <span class="p">{</span> <span class="ss">rgb</span><span class="p">:</span> <span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="ss">lw</span><span class="p">:</span> <span class="mi">3</span> <span class="p">}</span><span class="o">]</span><span class="p">,</span>
-         <span class="ss">xrange</span><span class="p">:</span> <span class="o">-</span><span class="mi">10</span><span class="o">..</span><span class="mi">10</span><span class="p">,</span>
-         <span class="ss">title</span><span class="p">:</span> <span class="s1">&#39;Math function example&#39;</span><span class="p">,</span> 
-         <span class="ss">ylabel</span><span class="p">:</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span>
-         <span class="ss">xlabel</span><span class="p">:</span> <span class="s1">&#39;x*sin(x)&#39;</span><span class="p">)</span>
+<span class="no">Plot</span><span class="o">.</span><span class="n">new</span><span class="p">(</span>
+  <span class="o">[</span><span class="s1">&#39;x*sin(x)&#39;</span><span class="p">,</span> <span class="ss">with</span><span class="p">:</span> <span class="s1">&#39;lines&#39;</span><span class="p">,</span> <span class="ss">lt</span><span class="p">:</span> <span class="p">{</span> <span class="ss">rgb</span><span class="p">:</span> <span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="ss">lw</span><span class="p">:</span> <span class="mi">3</span> <span class="p">}</span><span class="o">]</span><span class="p">,</span>
+  <span class="ss">xrange</span><span class="p">:</span> <span class="o">-</span><span class="mi">10</span><span class="o">..</span><span class="mi">10</span><span class="p">,</span>
+  <span class="ss">title</span><span class="p">:</span> <span class="s1">&#39;Math function example&#39;</span><span class="p">,</span> 
+  <span class="ss">ylabel</span><span class="p">:</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span>
+  <span class="ss">xlabel</span><span class="p">:</span> <span class="s1">&#39;x*sin(x)&#39;</span>
+  <span class="p">)</span>
 </pre></div>
 
 </div>
@@ -204,7 +206,7 @@ div#notebook {
 <div class="output">
 
 
-<div class="output_area"><div class="prompt output_prompt">Out[10]:</div>
+<div class="output_area"><div class="prompt output_prompt">Out[1]:</div>
 
 <div class="output_svg output_subarea output_execute_result">
 <?xml version="1.0" encoding="utf-8"  standalone="no"?>
@@ -392,13 +394,15 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ruby"><pre><span class="n">polar</span> <span class="o">=</span> <span class="no">Plot</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="o">[</span><span class="s1">&#39;abs(sin(3*t))&#39;</span><span class="p">,</span> <span class="ss">with</span><span class="p">:</span> <span class="s1">&#39;filledcurves&#39;</span><span class="p">,</span> <span class="ss">lt</span><span class="p">:</span> <span class="p">{</span> <span class="ss">rgb</span><span class="p">:</span> <span class="s1">&#39;red&#39;</span> <span class="p">}</span><span class="o">]</span><span class="p">,</span>
-                 <span class="ss">title</span><span class="p">:</span> <span class="s1">&#39;Plot in polar example&#39;</span><span class="p">,</span>
-                 <span class="ss">polar</span><span class="p">:</span> <span class="kp">true</span><span class="p">,</span>
-                 <span class="ss">samples</span><span class="p">:</span> <span class="mi">500</span><span class="p">)</span>
+<div class=" highlight hl-ruby"><pre><span class="n">polar</span> <span class="o">=</span> <span class="no">Plot</span><span class="o">.</span><span class="n">new</span><span class="p">(</span>
+  <span class="o">[</span><span class="s1">&#39;abs(sin(3*t))&#39;</span><span class="p">,</span> <span class="ss">with</span><span class="p">:</span> <span class="s1">&#39;filledcurves&#39;</span><span class="p">,</span> <span class="ss">lt</span><span class="p">:</span> <span class="p">{</span> <span class="ss">rgb</span><span class="p">:</span> <span class="s1">&#39;red&#39;</span> <span class="p">}</span><span class="o">]</span><span class="p">,</span>
+  <span class="ss">title</span><span class="p">:</span> <span class="s1">&#39;Plot in polar example&#39;</span><span class="p">,</span>
+  <span class="ss">polar</span><span class="p">:</span> <span class="kp">true</span><span class="p">,</span>
+  <span class="ss">samples</span><span class="p">:</span> <span class="mi">500</span>
+  <span class="p">)</span>
 <span class="n">polar</span><span class="o">.</span><span class="n">to_png</span><span class="p">(</span><span class="s1">&#39;polar.png&#39;</span><span class="p">,</span> <span class="ss">size</span><span class="p">:</span> <span class="o">[</span><span class="mi">500</span><span class="p">,</span> <span class="mi">500</span><span class="o">]</span><span class="p">)</span>
 <span class="no">File</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;polar.png&#39;</span><span class="p">)</span>
 </pre></div>
@@ -411,7 +415,7 @@ div#notebook {
 <div class="output">
 
 
-<div class="output_area"><div class="prompt output_prompt">Out[13]:</div>
+<div class="output_area"><div class="prompt output_prompt">Out[2]:</div>
 
 
 <div class="output_png output_subarea output_execute_result">
@@ -436,15 +440,17 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[20]:</div>
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ruby"><pre><span class="n">parametric</span> <span class="o">=</span> <span class="no">Plot</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="o">[</span><span class="s1">&#39;1.5*cos(t) - cos(30*t), 1.5*sin(t) - sin(30*t)&#39;</span><span class="p">,</span> <span class="ss">title</span><span class="p">:</span> <span class="s1">&#39;Parametric curve&#39;</span><span class="p">,</span> <span class="ss">lw</span><span class="p">:</span> <span class="mi">2</span><span class="o">]</span><span class="p">,</span>
-                      <span class="ss">title</span><span class="p">:</span> <span class="s1">&#39;Parametric plot example&#39;</span><span class="p">,</span>
-                      <span class="ss">parametric</span><span class="p">:</span> <span class="kp">true</span><span class="p">,</span>
-                      <span class="ss">samples</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span>
-                      <span class="ss">xrange</span><span class="p">:</span> <span class="o">-</span><span class="mi">3</span><span class="o">..</span><span class="mi">3</span><span class="p">,</span>
-                      <span class="ss">yrange</span><span class="p">:</span> <span class="o">-</span><span class="mi">3</span><span class="o">..</span><span class="mi">3</span><span class="p">)</span>
+<div class=" highlight hl-ruby"><pre><span class="n">parametric</span> <span class="o">=</span> <span class="no">Plot</span><span class="o">.</span><span class="n">new</span><span class="p">(</span>
+  <span class="o">[</span><span class="s1">&#39;1.5*cos(t) - cos(30*t), 1.5*sin(t) - sin(30*t)&#39;</span><span class="p">,</span> <span class="ss">title</span><span class="p">:</span> <span class="s1">&#39;Parametric curve&#39;</span><span class="p">,</span> <span class="ss">lw</span><span class="p">:</span> <span class="mi">2</span><span class="o">]</span><span class="p">,</span>
+  <span class="ss">title</span><span class="p">:</span> <span class="s1">&#39;Parametric plot example&#39;</span><span class="p">,</span>
+  <span class="ss">parametric</span><span class="p">:</span> <span class="kp">true</span><span class="p">,</span>
+  <span class="ss">samples</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span>
+  <span class="ss">xrange</span><span class="p">:</span> <span class="o">-</span><span class="mi">3</span><span class="o">..</span><span class="mi">3</span><span class="p">,</span>
+  <span class="ss">yrange</span><span class="p">:</span> <span class="o">-</span><span class="mi">3</span><span class="o">..</span><span class="mi">3</span>
+  <span class="p">)</span>
 <span class="n">parametric</span><span class="o">.</span><span class="n">to_png</span><span class="p">(</span><span class="s1">&#39;parametric.png&#39;</span><span class="p">,</span> <span class="ss">size</span><span class="p">:</span> <span class="o">[</span><span class="mi">500</span><span class="p">,</span> <span class="mi">500</span><span class="o">]</span><span class="p">)</span>
 <span class="no">File</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;parametric.png&#39;</span><span class="p">)</span>
 </pre></div>
@@ -457,7 +463,7 @@ div#notebook {
 <div class="output">
 
 
-<div class="output_area"><div class="prompt output_prompt">Out[20]:</div>
+<div class="output_area"><div class="prompt output_prompt">Out[3]:</div>
 
 
 <div class="output_png output_subarea output_execute_result">
