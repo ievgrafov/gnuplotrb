@@ -1,5 +1,8 @@
 module Gnuplot
   module Settings
+    ##
+    # Since gem uses some modern gnuplot features it's
+    # required to have modern gnuplot installed.
     MIN_GNUPLOT_VERSION = 5.0
     ##
     # ==== Overview
@@ -25,7 +28,8 @@ module Gnuplot
 
     ##
     # ==== Overview
-    # Get list of terminals available for that gnuplot.
+    # Get list of terminals (png, html, qt, jpeg etc)
+    # available for that gnuplot.
     def self.available_terminals
       @available_terminals
     end
@@ -49,9 +53,9 @@ module Gnuplot
     # * *path* - path to gnuplot executable.
     def self.validate_version(path)
       @version = IO.popen("#{path} --version")
-                    .read
-                    .match(/gnuplot ([^ ]+)/)[1]
-                    .to_f
+                   .read
+                   .match(/gnuplot ([^ ]+)/)[1]
+                   .to_f
       message = "Your Gnuplot version is #{@version}, please update it to at least 5.0"
       fail(ArgumentError, message) if @version < MIN_GNUPLOT_VERSION
     end

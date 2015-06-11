@@ -6,12 +6,14 @@ module Gnuplot
 
     ##
     # ==== Overview
-    # Recursive function that converts Ruby options to gnuplot
+    # Recursive function that converts Ruby option to gnuplot string
     # ==== Parameters
-    # *option* - an option that should be converted
+    # * *key* - name of option in gnuplot
+    # * *option* - an option that should be converted
     # ==== Examples
-    #   ['png', size: [300, 300]] => 'png size 300,300'
-    #   0..100 => '[0:100]'
+    #   option_to_string(['png', size: [300, 300]]) #=> 'png size 300,300'
+    #   option_to_string(xrange: 0..100) #=> 'xrange [0:100]'
+    #   option_to_string(multiplot: true) #=> 'multiplot'
     def self.option_to_string(key = nil, option)
       return key.to_s if !!option == option # check for boolean
       value = case option
