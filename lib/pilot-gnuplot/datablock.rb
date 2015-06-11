@@ -45,7 +45,7 @@ module Gnuplot
     # ==== Overview
     # Returns quoted filename if datablock stored in file or outputs
     # datablock to gnuplot and returns its name otherwise.
-    # *gnuplot_term* should be given if datablock not stored in file.
+    # * *gnuplot_term* should be given if datablock not stored in file.
     def name(gnuplot_term = nil)
       if @stored_in_file
         "'#{@file_name}'"
@@ -55,7 +55,10 @@ module Gnuplot
       end
     end
 
-    ## ==== Overview
+    alias_method :to_s, :name
+
+    ##
+    # ==== Overview
     # Overridden #clone. Since datablock which store data
     # in temporary files should not be cloned (otherwise it will cause
     # double attempt to delete file), this #clone returns self for such
@@ -63,7 +66,5 @@ module Gnuplot
     def clone
       @stored_in_file ? self : super
     end
-
-    alias_method :to_s, :name
   end
 end

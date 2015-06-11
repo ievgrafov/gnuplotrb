@@ -5,8 +5,11 @@ module Gnuplot
   # this 'x*sin(x)' or filename) and options related to original dataset
   # in gnuplot (with, title, using etc).
   class Dataset
+    ##
+    # Data represented by this dataset
     attr_reader :data
-    # order is significant for some options
+    ##
+    # Order is significant for some options
     OPTION_ORDER = %w(index using axes title)
 
     ##
@@ -15,10 +18,23 @@ module Gnuplot
     # math function or filename. If *data* isn't a string
     # it will create datablock to store data.
     # ==== Parameters
-    # * *data* - String, Datablock or something with method
+    # * *data* - String, Datablock or something acceptable by
+    #   Datablock.new as data (e.g. [x,y] where x and y are arrays)
     # * *options* - hash of options specific for gnuplot
     #   dataset, and some special options ('file: true' will
     #   make data to be stored inside temporary file).
+    # ==== Examples
+    # Math function:
+    #   Dataset.new('x*sin(x)', with: 'lines', lw: 4)
+    # File with points:
+    #   Dataset.new('points.data', with: 'lines', title: 'Points from file')
+    # Some data (creates datablock stored in memory):
+    #   x = (0..5000).to_a
+    #   y = x.map {|xx| xx*xx }
+    #   points = [x, y]
+    #   Dataset.new(points, with: 'points', title: 'Points')
+    # The same data but datablock stores it in temp file:
+    #   Dataset.new(points, with: 'points', title: 'Points', file: true)
     def initialize(data, file: false, **options)
       @type, @data = if data.is_a? String
                        if File.exist?(data)
@@ -34,14 +50,20 @@ module Gnuplot
                        end
                      end
       @options = Hamster.hash(options)
-      yield(self) if block_given?
     end
 
     ##
     # ==== Overview
-    # Converts dataset to string containing gnuplot dataset.
+    # Converts Dataset to string containing gnuplot dataset.
     # ==== Parameters
-    # * *terminal* - must be given if Datablock does not use temp file
+    # * *terminal* - must be given if data given as Datablock and
+    #   it does not use temp file so data should be piped out
+    #   to gnuplot via terminal before use.
+    # ==== Examples
+    #   Dataset.new('points.data', with: 'lines', title: 'Points from file').to_s
+    #   #=> "'points.data' with lines title 'Points form file'"
+    #   Dataset.new(points, with: 'points', title: 'Points').to_s
+    #   #=> "$DATA1 with points title 'Points'"
     def to_s(terminal = nil)
       "#{@type == :datablock ? @data.name(terminal) : @data } #{options_to_string}"
     end
@@ -59,9 +81,28 @@ module Gnuplot
     # ==== Overview
     # Creates new dataset with updated data (given
     # data is appended to existing) and merged options.
+    # Data is updated only if Dataset stores it in Datablock.
+    # Method does nothing if no options given and data isn't stored
+    # in in-memory Datablock.
     # ==== Parameters
     # * *data* - data to append to existing
     # * *options* - hash to merge with existing options
+    # ==== Examples
+    # Updating dataset with Math formula or filename given:
+    #   dataset = Dataset.new('file.data')
+    #   dataset.update(data: 'asd')
+    #   #=> nothing updated
+    #   dataset.update(data: 'asd', title: 'File')
+    #   #=> Dataset.new('file.data', title: 'File')
+    # Updating dataset with data stored in Datablock:
+    #   in_memory_points = Dataset.new(points, title: 'Old one')
+    #   in_memory_points.update(data: some_update, title: 'Updated')
+    #   #=> Dataset.new(points + some_update, title: 'Updated')
+    #   temp_file_points = Dataset.new(points, title: 'Old one', file: true)
+    #   in_memory_points.update(data: some_update)
+    #   #=> data updated but no new dataset created
+    #   in_memory_points.update(data: some_update, title: 'Updated')
+    #   #=> data updated and new dataset with title 'Updated' returned
     def update(data = nil, **options)
       if data && @type == :datablock
         new_datablock = @data.update(data)
@@ -77,7 +118,8 @@ module Gnuplot
 
     ##
     # ==== Overview
-    # Own implementation of #clone
+    # Own implementation of #clone. Creates new Dataset if
+    # data stored in datablock and calls super otherwise.
     def clone
       if @type == :datablock
         Dataset.new(@data, **@options)
@@ -86,6 +128,17 @@ module Gnuplot
       end
     end
 
+    ##
+    # ==== Overview
+    # Creates new dataset with existing options merged with
+    # the given ones. Does nothing if no options given.
+    # ==== Parameters
+    # * *options* - hash to merge with existing options
+    # ==== Examples
+    # Updating dataset with Math formula or filename given:
+    #   dataset = Dataset.new('file.data')
+    #   dataset.update_options(title: 'File')
+    #   #=> Dataset.new('file.data', title: 'File')
     def update_options(**options)
       if options.empty?
         return self
@@ -96,13 +149,19 @@ module Gnuplot
 
     ##
     # ==== Overview
-    # Create new Dataset object with given options
-    # merged with existing options if any given. It
-    # will return existing options otherwise.
+    # Creates new dataset with existing options merged with
+    # the given ones. Returns existing if no options given.
     # ==== Parameters
     # * *options* - options to add
-    # ==== Example
-    # TODO: add example and spec
+    # ==== Examples
+    # Updating options:
+    #   dataset = Dataset.new('file.data')
+    #   dataset.options(title: 'File')
+    #   #=> Dataset.new('file.data', title: 'File')
+    # Get existing options:
+    #   dataset = Dataset.new('file.data', title: 'File', with: 'lines')
+    #   dataset.options
+    #   #=> { title: 'File', with: 'lines' }
     def options(**options)
       if options.empty?
         @options
@@ -118,10 +177,11 @@ module Gnuplot
     # And finally you can get current value of any option using
     # #options_name without arguments.
     # ===== Examples
+    #   dataset = Dataset.new('file.data')
+    #   dataset.title #=> nil
     #   new_dataset = dataset.title('Awesome plot')
-    #   dataset.title # >nil
-    #   new_dataset.title # >'Awesome plot'
-    #   dataset.title # >'One more awesome plot'
+    #   dataset.title #=> nil
+    #   new_dataset.title #=> 'Awesome plot'
     def method_missing(meth_id, *args)
       meth_sym = meth_id.id2name.to_sym
       if args.empty?
