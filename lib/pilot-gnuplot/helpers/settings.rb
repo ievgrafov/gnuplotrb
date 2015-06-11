@@ -1,4 +1,7 @@
 module Gnuplot
+  ##
+  # This module takes care of path to gnuplot executable
+  # and checking its version.
   module Settings
     ##
     # Since gem uses some modern gnuplot features it's
@@ -36,10 +39,8 @@ module Gnuplot
 
     ##
     # ==== Overview
-    # Get gnuplot version. Uses #gnuplot_path to find
+    # Get gnuplot version. Uses gnuplot_path to find
     # gnuplot executable.
-    # ==== Arguments
-    # * *path* - path to gnuplot executable; #gnuplot_path used as default.
     def self.version
       self.gnuplot_path = 'gnuplot' unless defined?(@gnuplot_path)
       @version

@@ -1,6 +1,11 @@
 module Gnuplot
+  ##
+  # ==== Overview
+  # This module contains methods which are used by several classes
+  # to handle and convert their options.
   module OptionsHelper
     # Some values of options should be quoted to be read by gnuplot
+    #
     # TODO: update list with data from gnuplot documentation !!!
     QUOTED_OPTIONS = %w(title output xlabel x2label ylabel y2label clabel cblabel zlabel rgb)
 
@@ -48,7 +53,7 @@ module Gnuplot
     # Raises ArgumentError if invalid options found.
     # ==== Arguments
     # * *options* - Hash of options to check
-    # (e.g. {term: 'qt', title: 'Plot title'})
+    #   (e.g. {term: 'qt', title: 'Plot title'})
     #
     # Now checks only terminal name.
     def self.validate_terminal_options(options)
