@@ -1,0 +1,50 @@
+== iRuby notebooks
+
+This notebooks are powered by {Ruby kernel}[https://github.com/SciRuby/iruby/] for {IPython/Jupyter}[https://jupyter.org/].
+I placed them here to show some gnuplot gem's capabilities and ways of using it together with iRuby.
+
+=== Installation
+To use gnuplot gem with iRuby you need to install them both.
+
+* iRuby installation is covered in its {README}[https://github.com/SciRuby/iruby/blob/master/README.md].
+  It also covers installation of iPython and other dependecies.
+* Gnuplot gem installation covered in {README}[https://github.com/dilcom/pilot-gnuplot#installation] too.
+
+=== Usage
+
+Now you can use gnuplot gem to plot graphs to files and just open them with File::open to make iRuby render them. Example:
+  plot = Plot.new('sin(x)')
+  plot.to_svg('plot.svg')
+  File.open('plot.svg')
+
+==== Advanced (not recommended)
+More natural way is to allow iRuby render Plot\Splot objects itself:
+  plot = Plot.new('sin(x)')
+  plot
+To do so iRuby {display module}[https://github.com/SciRuby/iruby/blob/master/lib/iruby/display.rb] should be updated a little.
+Since this update brokes old gnuplot gem support, I don't recommend using it now.
+I will implement gnuplot support in iRuby this or better way when the gem is mature.
+
+Update:
+Instead of
+  type { Gnuplot::Plot }
+  format 'image/svg+xml' do |obj|
+    Tempfile.open('plot') do |f|
+      terminal = obj['terminal'].to_s.split(' ')
+      terminal[0] = 'svg'
+      terminal << 'enhanced' unless terminal.include?('noenhanced')
+      obj.terminal terminal.join(' ')
+      obj.output f.path
+      Gnuplot.open do |io|
+        io << obj.to_gplot
+        io << obj.store_datasets
+      end
+      File.read(f.path)
+    end
+  end
+There should be
+  type { Gnuplot::Plot }
+  format 'image/svg+xml' do |obj|
+    obj.to_svg
+  end
+
