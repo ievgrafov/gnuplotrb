@@ -12,7 +12,7 @@ module Gnuplot
     ##
     # ====== Overview
     # Recursive function that converts Ruby option to gnuplot string
-    # ====== Parameters
+    # ====== Arguments
     # * *key* - name of option in gnuplot
     # * *option* - an option that should be converted
     # ====== Examples
