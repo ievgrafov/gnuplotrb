@@ -25,7 +25,6 @@ To do so iRuby {display module}[https://github.com/SciRuby/iruby/blob/master/lib
 Since this update brokes old gnuplot gem support, I don't recommend using it now.
 I will implement gnuplot support in iRuby this or better way when the gem is mature.
 
-Update:
 Instead of
   type { Gnuplot::Plot }
   format 'image/svg+xml' do |obj|
@@ -42,7 +41,7 @@ Instead of
       File.read(f.path)
     end
   end
-There should be
+In {display.rb}[https://github.com/SciRuby/iruby/blob/master/lib/iruby/display.rb] should be
   type { Gnuplot::Plot }
   format 'image/svg+xml' do |obj|
     obj.to_svg
