@@ -5,6 +5,10 @@ describe Gnuplot do
     expect(awesome?).to be_truthy
   end
 
+  it 'should know its version' do
+    expect(Settings.version).to be_a(Numeric)
+  end
+
   context 'check examples' do
     samples = Dir.glob('./samples/plot*')
     samples.each do |path|
