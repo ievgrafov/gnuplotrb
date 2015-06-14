@@ -14,7 +14,7 @@ Gem::Specification.new do |spec|
   spec.homepage      = 'https://github.com/dilcom/pilot-gnuplot'
   spec.license       = 'MIT'
 
-  spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(/^(test|spec|features|samples|work|notebooks)\//) }
+  spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(/^(test|spec|features|samples|future_work|notebooks|\..+)/) }
   spec.require_paths = ['lib']
 
   spec.add_runtime_dependency 'hamster', '~> 1.0'
