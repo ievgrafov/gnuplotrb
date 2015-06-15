@@ -38,8 +38,9 @@ module Gnuplot
     # * *options* - will be considered as 'settable' options of gnuplot
     #   ('set xrange [1:10]', 'set title 'plot'' etc);
     # Options passed here have priority over already existing.
-    def plot(term = @terminal, **options)
+    def plot(term = @terminal, multiplot_part: false, **options)
       opts = @options.merge(options)
+      opts = opts.reject { |key| ['term', 'output'].include?(key.to_s) } if multiplot_part
       full_command = @cmd + @datasets.map { |dataset| dataset.to_s(term) }.join(' , ')
       plot_command(term, full_command, opts)
       @already_plotted = true
