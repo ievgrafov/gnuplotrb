@@ -6,7 +6,11 @@ module Gnuplot
   # to gnuplot handled by this class. Terminal also handles options passed
   # to gnuplot as 'set key value'.
   class Terminal
+    include TerminalErrorHandler
+
     class << self
+      ##
+      # Close given gnuplot pipe
       def close_arg(stream)
         stream.puts 'exit'
         Process.waitpid(stream.pid)
@@ -28,18 +32,12 @@ module Gnuplot
       @cmd += ' -persist' if persist
       @cmd += ' 2>&1'
       stream = IO.popen(@cmd, 'w+')
-      Thread.new { stderr_handler(stream) }
-      ObjectSpace.define_finalizer(self, proc { close_arg(stream) } )
+      handle_stderr(stream)
+      ObjectSpace.define_finalizer(self, proc { Terminal::close_arg(stream) } )
       @in = stream
       yield(self) if block_given?
     end
 
-    def stderr_handler(stream)
-      until (line = stream.gets).nil? do
-        line.strip!
-        print "\n#Gnuplot error# #{line}" if line.size > 3
-      end
-    end
     ##
     # ====== Overview
     # Outputs datablock to this gnuplot terminal.
@@ -57,9 +55,9 @@ module Gnuplot
     #   #=>   EOD
     def store_datablock(data)
       name = "$DATA#{@current_datablock += 1}"
-      @in.puts "#{name} << EOD"
-      @in.puts data
-      @in.puts 'EOD'
+      self.puts "#{name} << EOD"
+      self.puts data
+      self.puts 'EOD'
       name
     end
 
@@ -108,7 +106,7 @@ module Gnuplot
     # ====== Arguments
     # * **options* - Array of options need to unset
     def unset(*options)
-      options.flatten.each { |key| @in.puts "unset #{key}" }
+      options.flatten.each { |key| self.puts "unset #{key}" }
       self
     end
 
@@ -123,7 +121,7 @@ module Gnuplot
       when Plot
         item.plot(self)
       else
-        @in << item.to_s
+        self.print(item.to_s)
       end
       self
     end
@@ -133,7 +131,16 @@ module Gnuplot
     # Just puts *command* to gnuplot pipe and returns self
     # to allow chaining.
     def puts(command)
-      @in.puts(command)
+      self.print("#{command}\n")
+    end
+
+    ##
+    # ====== Overview
+    # Just prints *command* to gnuplot pipe and returns self
+    # to allow chaining.
+    def print(command)
+      check_errors
+      @in.print(command)
       self
     end
 
@@ -143,7 +150,7 @@ module Gnuplot
     # with rereading data.
     def replot(**options)
       set(options)
-      @in.puts('replot')
+      self.puts('replot')
       unset(options.keys)
       sleep 0.01 until File.size?(options[:output]) if options[:output]
       self
@@ -152,7 +159,7 @@ module Gnuplot
     ##
     # ====== Overview
     # Send gnuplot command to turn it off and for its Process to quit.
-    # Closes pipe so Terminal object should not be used after #close cass.
+    # Closes pipe so Terminal object should not be used after #close call.
     def close
       Terminal::close_arg(@in)
     end
