@@ -6,6 +6,13 @@ module Gnuplot
   # to gnuplot handled by this class. Terminal also handles options passed
   # to gnuplot as 'set key value'.
   class Terminal
+    class << self
+      def close_arg(stream)
+        stream.puts 'exit'
+        Process.waitpid(stream.pid)
+      end
+    end
+
     ##
     # ====== Overview
     # Creates new Terminal connected with gnuplot.
@@ -19,12 +26,20 @@ module Gnuplot
       @cmd = Settings.gnuplot_path
       @current_datablock = 0
       @cmd += ' -persist' if persist
-      input = IO.popen(@cmd, 'w')
-      ObjectSpace.define_finalizer(self, proc { close })
-      @in = input
+      @cmd += ' 2>&1'
+      stream = IO.popen(@cmd, 'w+')
+      Thread.new { stderr_handler(stream) }
+      ObjectSpace.define_finalizer(self, proc { close_arg(stream) } )
+      @in = stream
       yield(self) if block_given?
     end
 
+    def stderr_handler(stream)
+      until (line = stream.gets).nil? do
+        line.strip!
+        print "\n#Gnuplot error# #{line}" if line.size > 3
+      end
+    end
     ##
     # ====== Overview
     # Outputs datablock to this gnuplot terminal.
@@ -139,10 +154,7 @@ module Gnuplot
     # Send gnuplot command to turn it off and for its Process to quit.
     # Closes pipe so Terminal object should not be used after #close cass.
     def close
-      unless @in.closed?
-        @in.puts 'exit'
-        Process.waitpid(@in.pid)
-      end
+      Terminal::close_arg(@in)
     end
   end
 end
