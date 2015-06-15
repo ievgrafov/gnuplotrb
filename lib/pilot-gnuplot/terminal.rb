@@ -20,7 +20,7 @@ module Gnuplot
       @current_datablock = 0
       @cmd += ' -persist' if persist
       input = IO.popen(@cmd, 'w')
-      ObjectSpace.define_finalizer(self, proc { input.close_write })
+      ObjectSpace.define_finalizer(self, proc { close })
       @in = input
       yield(self) if block_given?
     end
@@ -126,11 +126,18 @@ module Gnuplot
     # ====== Overview
     # Call replot on gnuplot. This will execute last plot once again
     # with rereading data.
-    def replot(**options)
-      set(options)
-      @in.puts('replot')
-      unset(options.keys)
-      self
+    # def replot(**options)
+    #   set(options)
+    #   @in.puts('replot')
+    #   unset(options.keys)
+    #   self
+    # end
+
+    def close
+      unless @in.closed?
+        @in.puts 'exit'
+        Process.waitpid(@in.pid)
+      end
     end
   end
 end

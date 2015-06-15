@@ -40,9 +40,11 @@ module Gnuplot
     # Options passed here have priority over already existing.
     def plot(term = @terminal, multiplot_part: false, **options)
       opts = @options.merge(options)
-      opts = opts.reject { |key| ['term', 'output'].include?(key.to_s) } if multiplot_part
+      opts = opts.reject { |key| [:term, :output].include?(key) } if multiplot_part
+      term = Terminal.new if opts[:output]
       full_command = @cmd + @datasets.map { |dataset| dataset.to_s(term) }.join(' , ')
       plot_command(term, full_command, opts)
+      term.close if opts[:output]
       @already_plotted = true
       self
     end
@@ -189,21 +191,7 @@ module Gnuplot
       self.class.new(@datasets.delete_at(position), @options)
     end
 
-    ##
-    # ====== Overview
-    # Replot self. Usable is cases then Plot contains
-    # datasets which store data in files. Replot may be
-    # used in this case to update plot after data update.
-    # ====== Arguments
-    # * *options* - set of options related to terminal (size, font etc).
-    #   Be careful, some terminals have their own specific options.
-    # # ====== Examples
-    #   plot.replot(output: './result.png',
-    #               term: ['png', size: [300, 500], font: ['arial', 12]],
-    #               title: 'Replotted')
-    def replot(**options)
-      @already_plotted ? plot_command(@terminal, 'replot', @options.merge(options)) : plot(options)
-    end
+    alias_method :replot, :plot
 
     ##
     # ====== Overview
@@ -247,12 +235,9 @@ module Gnuplot
     # Method for inner use.
     # Outputs given command and options to terminal.
     def plot_command(term, full_command, options)
-      output = options[:output]
-      File.delete(output) if output && File.file?(output)
       term.set(options)
           .puts(full_command)
           .unset(options.keys)
-      sleep 0.001 until File.file?(output) && File.size(output) > 100 if output
     end
 
     private :convert_to_dataset,

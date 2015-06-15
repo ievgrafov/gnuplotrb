@@ -76,14 +76,14 @@ describe Terminal do
       expect(same_images?(*@paths)).to be_truthy
     end
   end
-
-  context '#replot' do
-    it 'should replot last plotted graph on #replot call' do
-      @plot.plot(@terminal)
-      @terminal.replot(@options1)
-      expect(same_images?(*@paths)).to be_truthy
-    end
-  end
+  #
+  # context '#replot' do
+  #   it 'should replot last plotted graph on #replot call' do
+  #     @plot.plot(@terminal)
+  #     @terminal.replot(@options1)
+  #     expect(same_images?(*@paths)).to be_truthy
+  #   end
+  # end
 
   context 'check correctness of a terminal' do
     it 'should raise an error when trying to use incorrect terminal' do
