@@ -126,13 +126,18 @@ module Gnuplot
     # ====== Overview
     # Call replot on gnuplot. This will execute last plot once again
     # with rereading data.
-    # def replot(**options)
-    #   set(options)
-    #   @in.puts('replot')
-    #   unset(options.keys)
-    #   self
-    # end
+    def replot(**options)
+      set(options)
+      @in.puts('replot')
+      unset(options.keys)
+      sleep 0.01 until File.size?(options[:output]) if options[:output]
+      self
+    end
 
+    ##
+    # ====== Overview
+    # Send gnuplot command to turn it off and for its Process to quit.
+    # Closes pipe so Terminal object should not be used after #close cass.
     def close
       unless @in.closed?
         @in.puts 'exit'

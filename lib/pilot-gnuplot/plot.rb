@@ -38,13 +38,19 @@ module Gnuplot
     # * *options* - will be considered as 'settable' options of gnuplot
     #   ('set xrange [1:10]', 'set title 'plot'' etc);
     # Options passed here have priority over already existing.
-    def plot(term = @terminal, multiplot_part: false, **options)
+    def plot(term = nil, multiplot_part: false, **options)
       opts = @options.merge(options)
       opts = opts.reject { |key| [:term, :output].include?(key) } if multiplot_part
-      term = Terminal.new if opts[:output]
-      full_command = @cmd + @datasets.map { |dataset| dataset.to_s(term) }.join(' , ')
-      plot_command(term, full_command, opts)
-      term.close if opts[:output]
+      terminal = term || (opts[:output] ? Terminal.new : @terminal)
+      full_command = @cmd + @datasets.map { |dataset| dataset.to_s(terminal) }.join(' , ')
+      plot_command(terminal, full_command, opts)
+      if opts[:output]
+        # guaranteed wait for plotting to finish
+        terminal.close unless term
+        # not guaranteed wait for plotting to finish
+        # work bad with terminals like svg and html
+        sleep 0.01 until File.size?(opts[:output])
+      end
       @already_plotted = true
       self
     end
