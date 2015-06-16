@@ -26,7 +26,7 @@ module Gnuplot
     def plot(term = nil, **options)
       all_options = @options.merge(options)
       mp_options, plot_options = all_options.partition { |key, _value| mp_option?(key) }
-      plot_options = plot_options.merge(multiplot: mp_options)
+      plot_options = plot_options.merge(multiplot: mp_options.to_h)
       terminal = term || (plot_options[:output] ? Terminal.new : @terminal)
       terminal.set(plot_options)
       @plots.each { |graph| graph.plot(terminal, multiplot_part: true) }
