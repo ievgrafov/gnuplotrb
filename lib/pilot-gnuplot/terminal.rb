@@ -96,8 +96,7 @@ module Gnuplot
     #   #=> output: "set term qt size 100,100\n"
     def set(options)
       OptionsHelper.validate_terminal_options(options)
-      @in.puts(options_hash_to_string(options))
-      self
+      self.puts(options_hash_to_string(options))
     end
 
     ##
