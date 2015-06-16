@@ -132,6 +132,13 @@ module Gnuplot
     end
 
     ##
+    # Checks only for valid term.
+    def respond_to?(meth_id)
+      meth = meth_id.id2name
+      !(meth[0..2] == 'to_') || OptionsHelper.valid_terminal?(meth[3..-1])
+    end
+
+    ##
     # ====== Overview
     # Create new Plot object where dataset at *position* will
     # be replaced with the new one created from it by updating.

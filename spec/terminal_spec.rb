@@ -94,4 +94,8 @@ describe Terminal do
       expect { Plot.new.plot(term: ['incorrect_term']) }.to raise_error(ArgumentError)
     end
   end
+
+  context 'gnuplot error handling' do
+
+  end
 end
