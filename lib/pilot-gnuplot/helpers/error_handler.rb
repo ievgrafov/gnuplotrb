@@ -6,7 +6,7 @@ module Gnuplot
 
   ##
   # Error handler for classes which work with command line.
-  module TerminalErrorHandler
+  module ErrorHandler
     ##
     # ====== Overview
     # Check if there were errors in previous commands.

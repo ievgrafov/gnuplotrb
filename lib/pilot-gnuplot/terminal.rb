@@ -6,7 +6,7 @@ module Gnuplot
   # to gnuplot handled by this class. Terminal also handles options passed
   # to gnuplot as 'set key value'.
   class Terminal
-    include TerminalErrorHandler
+    include ErrorHandler
 
     class << self
       ##

@@ -20,7 +20,7 @@ module Gnuplot
       @datasets = if datasets[0].is_a? Hamster::Vector
                     datasets[0]
                   else
-                    Hamster::Vector.new(datasets).map { |ds| convert_to_dataset(ds) }
+                    Hamster::Vector.new(datasets).map { |ds| dataset_from_any(ds) }
                   end
       @options = Hamster.hash(options)
       @already_plotted = false
@@ -162,7 +162,7 @@ module Gnuplot
     #   sinx = Plot.new('sin(x)')
     #   cosx = sinx.replace_dataset(['cos(x)'])
     def replace_dataset(position = 0, dataset)
-      self.class.new(@datasets.set(position, convert_to_dataset(dataset)), @options)
+      self.class.new(@datasets.set(position, dataset_from_any(dataset)), @options)
     end
 
     ##
@@ -177,7 +177,7 @@ module Gnuplot
     #
     #   cosx_and_sinx = sinx << ['cos(x)']
     def add_dataset(dataset)
-      self.class.new(@datasets.add(convert_to_dataset(dataset)), @options)
+      self.class.new(@datasets.add(dataset_from_any(dataset)), @options)
     end
 
     alias_method :<<, :add_dataset
@@ -233,7 +233,7 @@ module Gnuplot
     # Method for inner use.
     # Check if given args is a dataset and returns it. Creates
     # new dataset from given args otherwise.
-    def convert_to_dataset(source)
+    def dataset_from_any(source)
       source.is_a?(Dataset) ? source.clone : Dataset.new(*source)
     end
 
@@ -246,7 +246,7 @@ module Gnuplot
           .unset(options.keys)
     end
 
-    private :convert_to_dataset,
+    private :dataset_from_any,
             :plot_command,
             :to_specific_term
   end
