@@ -10,7 +10,7 @@ describe Gnuplot do
   end
 
   context 'check examples' do
-    samples = Dir.glob('./samples/plot*')
+    samples = Dir.glob('./samples/*plot*')
     samples.each do |path|
       name = path[10..-1]
       it "should work with #{name} example" do

@@ -1,4 +1,5 @@
-throw(NotImplementedError, 'Not ready yet!')
+require 'pilot-gnuplot'
+include Gnuplot
 
 titles = %w{decade Austria Hungary  Belgium}
 data = [
@@ -14,6 +15,8 @@ data = [
 x = data.map(&:first)
 plots = (1..3).map do |col|
   y = data.map { |row| row[col] }
-  Plot.new([[x, y], using: '2:xtic(1)'], title: titles[col])
+  Plot.new([[x, y], using: '2:xtic(1)', title: titles[col]])
 end
-Multiplot.new(*plots, layout: [plots.size, 1], style: 'data histograms', xtics: 'nomirror rotate by -45', term: ['qt', persist: true]).plot
+mp = Multiplot.new(*plots, layout: [plots.size, 1], style: 'data histograms', xtics: 'nomirror rotate by -45', term: ['qt', persist: true, size: [400,800]])
+
+$RSPEC_TEST ? mp.to_png('./gnuplot_gem.png', size: [400,800]) : mp.plot

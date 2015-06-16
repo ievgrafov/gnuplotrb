@@ -1,6 +1,6 @@
 set style data histograms
-set term png size 450,700
-set output './result.png'
+set output './gnuplot.png'
+set term png size 400,800
 set xtics nomirror rotate by -45
 $DATA << EOD
 "1891-1900" 234081 181288 18167
