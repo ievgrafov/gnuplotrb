@@ -5,8 +5,9 @@ module Gnuplot
   end
 
   ##
-  # Error handler for classes which work with command line.
-  module ErrorHandler
+  # Mixin for classes that need to run subprocess and
+  # handle errors from its stderr.
+  module ErrorHandling
     ##
     # ====== Overview
     # Check if there were errors in previous commands.
@@ -35,6 +36,7 @@ module Gnuplot
       end
     end
 
-    private :check_errors, :handle_stderr
+    private :check_errors,
+            :handle_stderr
   end
 end

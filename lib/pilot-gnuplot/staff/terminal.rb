@@ -6,7 +6,7 @@ module Gnuplot
   # to gnuplot handled by this class. Terminal also handles options passed
   # to gnuplot as 'set key value'.
   class Terminal
-    include ErrorHandler
+    include ErrorHandling
 
     class << self
       ##
@@ -74,7 +74,7 @@ module Gnuplot
       result = ''
       options.each do |key, value|
         if value
-          result += "set #{OptionsHelper.option_to_string(key, value)}\n"
+          result += "set #{OptionHandling.option_to_string(key, value)}\n"
         else
           result += "unset #{key}\n"
         end
@@ -95,7 +95,7 @@ module Gnuplot
     #   set({term: ['qt', size: [100, 100]]})
     #   #=> output: "set term qt size 100,100\n"
     def set(options)
-      OptionsHelper.validate_terminal_options(options)
+      OptionHandling.validate_terminal_options(options)
       self.puts(options_hash_to_string(options))
     end
 
@@ -117,7 +117,7 @@ module Gnuplot
       case item
       when Dataset
         Plot.new(item).plot(self)
-      when Plot
+      when Plottable
         item.plot(self)
       else
         self.print(item.to_s)

@@ -5,6 +5,7 @@ module Gnuplot
   # this 'x*sin(x)' or filename) and options related to original dataset
   # in gnuplot (with, title, using etc).
   class Dataset
+    include OptionHandling
     ##
     # Data represented by this dataset
     attr_reader :data
@@ -72,9 +73,9 @@ module Gnuplot
     # ====== Overview
     # Create string from own options
     def options_to_string
-      @options.sort_by { |key, _| OPTION_ORDER.find_index(key.to_s) || 999 }
-              .map { |key, value| OptionsHelper.option_to_string(key, value) }
-              .join(' ')
+      options.sort_by { |key, _| OPTION_ORDER.find_index(key.to_s) || 999 }
+             .map { |key, value| OptionHandling.option_to_string(key, value) }
+             .join(' ')
     end
 
     ##
@@ -147,27 +148,8 @@ module Gnuplot
       end
     end
 
-    ##
-    # ====== Overview
-    # Creates new dataset with existing options merged with
-    # the given ones. Returns existing if no options given.
-    # ====== Parameters
-    # * *options* - options to add
-    # ====== Examples
-    # Updating options:
-    #   dataset = Dataset.new('file.data')
-    #   dataset.options(title: 'File')
-    #   #=> Dataset.new('file.data', title: 'File')
-    # Get existing options:
-    #   dataset = Dataset.new('file.data', title: 'File', with: 'lines')
-    #   dataset.options
-    #   #=> { title: 'File', with: 'lines' }
-    def options(**options)
-      if options.empty?
-        @options
-      else
-        Dataset.new(@data, @options.merge(options))
-      end
+    def new_with_options(options)
+      self.class.new(@data, options)
     end
 
     ##
@@ -183,14 +165,7 @@ module Gnuplot
     #   dataset.title #=> nil
     #   new_dataset.title #=> 'Awesome plot'
     def method_missing(meth_id, *args)
-      meth_sym = meth_id.id2name.to_sym
-      if args.empty?
-        value = @options[meth_sym]
-        value = value[0] if value && value.size == 1
-        value
-      else
-        options(meth_sym => args)
-      end
+      option(meth_id, *args)
     end
   end
 end
