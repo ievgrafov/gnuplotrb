@@ -42,10 +42,3 @@ module Gnuplot
     end
   end
 end
-
-=begin
-require 'pilot-gnuplot'
-include Gnuplot
-plots = [Plot.new('sin(x)'), Plot.new('cos(x)')]
-mp = Multiplot.new(*plots, layout: [2,1])
-=end
