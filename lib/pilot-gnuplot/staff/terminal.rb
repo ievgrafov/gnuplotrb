@@ -7,6 +7,7 @@ module Gnuplot
   # to gnuplot as 'set key value'.
   class Terminal
     include ErrorHandling
+    OPTION_ORDER = [:term, :output, :multiplot]
 
     class << self
       ##
@@ -72,7 +73,7 @@ module Gnuplot
     # * *options* - hash of options to convert
     def options_hash_to_string(options)
       result = ''
-      options.each do |key, value|
+      options.sort_by { |key, _| OPTION_ORDER.find_index(key) || -1 }.each do |key, value|
         if value
           result += "set #{OptionHandling.option_to_string(key, value)}\n"
         else
@@ -105,7 +106,9 @@ module Gnuplot
     # ====== Arguments
     # * **options* - Array of options need to unset
     def unset(*options)
-      options.flatten.each { |key| self.puts "unset #{key}" }
+      options.flatten
+             .sort_by { |key| OPTION_ORDER.find_index(key) || -1 }
+             .each { |key| self.puts "unset #{key}" }
       self
     end
 
