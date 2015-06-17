@@ -18,9 +18,9 @@ Now you can use gnuplot gem to plot graphs to files and just open them with File
   File.open('plot.svg')
 
 ==== Advanced (not recommended)
-More natural way is to allow iRuby render Plot\Splot objects itself:
-  plot = Plot.new('sin(x)')
-  plot
+More natural way is to allow iRuby render Plottable objects itself:
+  graph = Plot.new('sin(x)')
+  graph
 To do so iRuby {display module}[https://github.com/SciRuby/iruby/blob/master/lib/iruby/display.rb] should be updated a little.
 Since this update brokes old gnuplot gem support, I don't recommend using it now.
 I will implement gnuplot support in iRuby this or better way when the gem is mature.
