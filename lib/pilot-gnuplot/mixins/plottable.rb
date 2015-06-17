@@ -84,11 +84,12 @@ module Gnuplot
     end
 
     ##
-    # Returns true in all cases (to handle options) except
-    # #to_<name> when name isn't a valid terminal type.
+    # Returns true foe existing methods and
+    # #to_<term_name> when name is a valid terminal type.
     def respond_to?(meth_id)
       meth = meth_id.id2name
-      !(meth[0..2] == 'to_') || OptionHandling.valid_terminal?(meth[3..-1])
+      term = meth[0..2] == 'to_' && OptionHandling.valid_terminal?(meth[3..-1])
+      term || super
     end
   end
 end
