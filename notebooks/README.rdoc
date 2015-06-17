@@ -42,8 +42,9 @@ Instead of
     end
   end
 In {display.rb}[https://github.com/SciRuby/iruby/blob/master/lib/iruby/display.rb] should be
-  type { Gnuplot::Plot }
+  type { Gnuplot::Plottable }
   format 'image/svg+xml' do |obj|
-    obj.to_svg
+    options = obj.term ? obj.term[1] : {}
+    obj.to_svg(options)
   end
 
