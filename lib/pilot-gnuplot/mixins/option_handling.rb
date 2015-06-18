@@ -106,20 +106,10 @@ module Gnuplot
     end
 
     ##
-    # ====== Overview
-    # Create new object where current
-    # options are merged with given. If no options
-    # given it will just return existing set of options.
+    # Method for inner use.
     # ====== Arguments
-    # * *options* - options to add. If no options given, current
-    #   options are returned.
-    # ====== Example
-    #   sin_graph = Plot.new(['sin(x)', title: 'Sin'], title: 'Sin on [0:3]', xrange: 0..3)
-    #   sin_graph.plot
-    #   sin_graph_update = sin_graph.options(title: 'Sin on [-10:10]', xrange: -10..10)
-    #   sin_graph_update.plot
-    #   # this may also be considered as
-    #   # sin_graph.title(...).xrange(...)
+    # * *key* - [Symbol] - option key
+    # * *value* - anything treated as options value in gnuplot gem
     def option(key, *value)
       if value.empty?
         value = options[key]
@@ -129,5 +119,7 @@ module Gnuplot
         options(key => value)
       end
     end
+
+    private :option
   end
 end
