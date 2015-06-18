@@ -5,9 +5,6 @@ module Gnuplot
   class Plot
     include Plottable
     ##
-    # Terminal object used by this Plot to pipe data to gnuplot.
-    attr_reader :terminal
-    ##
     # Array of datasets which are plotted by this object.
     attr_reader :datasets
     ##

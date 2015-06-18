@@ -5,10 +5,6 @@ module Gnuplot
   class Multiplot
     include Plottable
     ##
-    # Terminal object used to pipe data to gnuplot.
-    # TODO move this into Plottable
-    attr_reader :terminal
-    ##
     # Array of plots contained by this object.
     attr_reader :plots
 

@@ -7,6 +7,10 @@ module Gnuplot
     include OptionHandling
 
     ##
+    # Terminal object used by this Plottable to pipe data to gnuplot.
+    attr_reader :terminal
+
+    ##
     # You should implement #plot in classes that are Plottable
     def plot(*args)
       fail NotImplementedError, 'You should implement #plot in classes that are Plottable!'
