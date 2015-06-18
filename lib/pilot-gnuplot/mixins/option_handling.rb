@@ -63,7 +63,7 @@ module Gnuplot
           terminal = terminal[0] if terminal.is_a?(Array)
           message = 'Seems like your Gnuplot does not ' \
                     'support that terminal, please see supported ' \
-                    'terminals with Terminal#available_terminals'
+                    'terminals with Settings::available_terminals'
           fail(ArgumentError, message) unless valid_terminal?(terminal)
         end
       end
