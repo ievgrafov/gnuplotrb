@@ -1,13 +1,25 @@
 module Gnuplot
+  ##
+  # === Overview
+  # Multiplot allows to place several plots on one layout.
   class Multiplot
     include Plottable
     ##
-    # Terminal object used by this Plot to pipe data to gnuplot.
+    # Terminal object used to pipe data to gnuplot.
+    # TODO move this into Plottable
     attr_reader :terminal
     ##
-    # Array of datasets which are plotted by this object.
+    # Array of plots contained by this object.
     attr_reader :plots
 
+    ##
+    # ====== Arguments
+    # * *plots* are Plot or Splot objects which should be placed
+    #   on this multiplot
+    # * *options* will be considered as 'settable' options of gnuplot
+    #   ('set xrange [1:10]' for { xrange: 1..10 },
+    #   "set title 'plot'" for { title: 'plot' } etc) just as in Plot.
+    #   Special options of Multiplot are :layout and :title.
     def initialize(*plots, **options)
       @plots = plots[0].is_a?(Hamster::Vector) ? plots[0] : Hamster::Vector.new(plots)
       @options = Hamster.hash(options)
@@ -15,14 +27,31 @@ module Gnuplot
       OptionHandling.validate_terminal_options(@options)
     end
 
+    ##
+    # Create new Multiplot object with the same set of plots and
+    # given options.
     def new_with_options(options)
       self.class.new(@plots, options)
     end
 
+    ##
+    # Check if given options corresponds to multiplot.
+    # Multiplot special options are :title and :layout.
     def mp_option?(key)
       %w(title layout).include?(key.to_s)
     end
 
+    ##
+    # ====== Overview
+    # This outputs all the plots to term (if given) or to this
+    # Multiplot's own terminal.
+    # ====== Arguments
+    # * *term* - Terminal to plot to
+    # * *options* - will be considered as 'settable' options of gnuplot
+    #   ('set xrange [1:10]', 'set title 'plot'' etc)
+    # Options passed here have priority over already existing.
+    # Inner options of Plots have the highest priority (except
+    # :term and :output which are ignored).
     def plot(term = nil, **options)
       all_options = @options.merge(options)
       mp_options, plot_options = all_options.partition { |key, _value| mp_option?(key) }
