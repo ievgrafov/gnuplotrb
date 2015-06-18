@@ -96,6 +96,13 @@ describe Terminal do
   end
 
   context 'gnuplot error handling' do
-
+    it 'should raise exception only in next command after a delay' do
+      @terminal.set(wrong_option: 'wrong_value')
+      # it takes gnuplot some time to find error
+      # and output it to stderr
+      sleep 0.1
+      expect { @terminal.set(polar: true) }.to raise_error
+      expect { @terminal.set(polar: true) }.to_not raise_error
+    end
   end
 end
