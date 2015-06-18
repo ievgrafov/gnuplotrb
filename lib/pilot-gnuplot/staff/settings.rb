@@ -34,6 +34,7 @@ module Gnuplot
     # Get list of terminals (png, html, qt, jpeg etc)
     # available for that gnuplot.
     def self.available_terminals
+      gnuplot_path
       @available_terminals
     end
 
@@ -42,7 +43,7 @@ module Gnuplot
     # Get gnuplot version. Uses gnuplot_path to find
     # gnuplot executable.
     def self.version
-      self.gnuplot_path = 'gnuplot' unless defined?(@gnuplot_path)
+      gnuplot_path
       @version
     end
 
