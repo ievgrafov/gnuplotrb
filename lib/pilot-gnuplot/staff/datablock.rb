@@ -37,7 +37,7 @@ module Gnuplot
         File.open(@file_name, 'a') { |f| f.puts "\n#{data_str}" }
         self
       else
-        Datablock.new(@data + data_str, false)
+        Datablock.new("#{@data}\n#{data_str}", false)
       end
     end
 
