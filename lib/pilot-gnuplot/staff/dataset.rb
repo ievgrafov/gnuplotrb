@@ -91,18 +91,18 @@ module Gnuplot
     # ====== Examples
     # Updating dataset with Math formula or filename given:
     #   dataset = Dataset.new('file.data')
-    #   dataset.update(data: 'asd')
+    #   dataset.update('asd')
     #   #=> nothing updated
-    #   dataset.update(data: 'asd', title: 'File')
+    #   dataset.update('asd', title: 'File')
     #   #=> Dataset.new('file.data', title: 'File')
     # Updating dataset with data stored in Datablock:
     #   in_memory_points = Dataset.new(points, title: 'Old one')
-    #   in_memory_points.update(data: some_update, title: 'Updated')
+    #   in_memory_points.update(some_update, title: 'Updated')
     #   #=> Dataset.new(points + some_update, title: 'Updated')
     #   temp_file_points = Dataset.new(points, title: 'Old one', file: true)
-    #   in_memory_points.update(data: some_update)
+    #   temp_file_points.update(some_update)
     #   #=> data updated but no new dataset created
-    #   in_memory_points.update(data: some_update, title: 'Updated')
+    #   temp_file_points.update(some_update, title: 'Updated')
     #   #=> data updated and new dataset with title 'Updated' returned
     def update(data = nil, **options)
       if data && @type == :datablock
