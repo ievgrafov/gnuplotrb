@@ -13,6 +13,7 @@ module Gnuplot
       ##
       # Close given gnuplot pipe
       def close_arg(stream)
+        stream.puts
         stream.puts 'exit'
         Process.waitpid(stream.pid)
       end
@@ -163,6 +164,7 @@ module Gnuplot
     # Send gnuplot command to turn it off and for its Process to quit.
     # Closes pipe so Terminal object should not be used after #close call.
     def close
+      check_errors
       Terminal::close_arg(@in)
     end
   end
