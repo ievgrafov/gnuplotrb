@@ -15,6 +15,7 @@ describe Gnuplot do
       name = path[10..-1]
       it "should work with #{name} example" do
         Dir.chdir(path) do
+          FileUtils.rm(Dir["#{Dir.pwd}/*.png"])
           require "#{Dir.pwd}/plot.rb"
           system('gnuplot plot.gnuplot')
           expect(same_images?('gnuplot.png', 'gnuplot_gem.png')).to be_truthy

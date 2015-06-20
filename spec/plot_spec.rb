@@ -8,7 +8,7 @@ describe Plot do
   end
 
   after(:all) do
-    FileUtils.rm_rf(@tmp_dir)
+    FileUtils.rm_r(@tmp_dir)
   end
 
   context 'creation' do
