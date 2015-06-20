@@ -63,6 +63,8 @@ module Gnuplot
       self
     end
 
+    alias_method :replot, :plot
+
     ##
     # ====== Overview
     # Create new Plot object where dataset at *position* will
@@ -116,8 +118,8 @@ module Gnuplot
 
     ##
     # ====== Overview
-    # Create new Plot object where given dataset will
-    # be appended to dataset list.
+    # Create new Plot object where dataset at given position
+    # will be removed from dataset list.
     # ====== Arguments
     # * *position* - position of dataset that should be
     #   removed (by default last dataset is removed)
@@ -128,8 +130,6 @@ module Gnuplot
     def remove_dataset(position = -1)
       self.class.new(@datasets.delete_at(position), @options)
     end
-
-    alias_method :replot, :plot
 
     ##
     # ====== Overview
