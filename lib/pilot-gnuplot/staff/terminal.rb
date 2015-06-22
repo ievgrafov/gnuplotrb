@@ -46,8 +46,8 @@ module Gnuplot
     # ====== Arguments
     # * *data* - data stored in datablock
     # ====== Examples
-    #   datablock = Datablock.new([[1, 2, 3], [1, 4, 9]])
-    #   Terminal.new.store_datablock(datablock)
+    #   data = "1 1\n2 4\n3 9"
+    #   Terminal.new.store_datablock(data)
     #   #=> returns '$DATA1'
     #   #=> outputs to gnuplot:
     #   #=>   $DATA1 << EOD
@@ -95,7 +95,7 @@ module Gnuplot
     # *options* - hash of options to set
     # ====== Examples
     #   set({term: ['qt', size: [100, 100]]})
-    #   #=> output: "set term qt size 100,100\n"
+    #   #=> outputs to gnuplot: "set term qt size 100,100\n"
     def set(options)
       OptionHandling.validate_terminal_options(options)
       self.puts(options_hash_to_string(options))
