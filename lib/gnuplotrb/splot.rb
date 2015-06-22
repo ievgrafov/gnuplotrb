@@ -1,4 +1,4 @@
-module Gnuplot
+module GnuplotRB
   ##
   # === Overview
   # Splot class correspond to simple 3D visualisation

@@ -1,4 +1,4 @@
-module Gnuplot
+module GnuplotRB
   ##
   # === Overview
   # Multiplot allows to place several plots on one layout.

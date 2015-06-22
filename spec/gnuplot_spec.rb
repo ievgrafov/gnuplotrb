@@ -1,6 +1,6 @@
 require 'spec_helper.rb'
 
-describe Gnuplot do
+describe GnuplotRB do
   it 'should be awesome' do
     expect(awesome?).to be_truthy
   end
@@ -12,7 +12,7 @@ describe Gnuplot do
   context 'check examples' do
     samples = Dir.glob('./examples/*plot*')
     samples.each do |path|
-      name = path[10..-1]
+      name = path[11..-1]
       it "should work with #{name} example" do
         Dir.chdir(path) do
           FileUtils.rm(Dir["#{Dir.pwd}/*.png"])

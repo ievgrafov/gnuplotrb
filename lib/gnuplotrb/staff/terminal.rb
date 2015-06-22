@@ -1,4 +1,4 @@
-module Gnuplot
+module GnuplotRB
   ##
   # === Overview
   # Terminal keeps open pipe to gnuplot process, cares about naming in-memory

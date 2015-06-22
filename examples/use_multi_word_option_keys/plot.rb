@@ -1,5 +1,5 @@
-require 'pilot-gnuplot'
-include Gnuplot
+require 'gnuplotrb'
+include GnuplotRB
 
 titles = %w{decade Build Test Deploy Overall}
 data = [

@@ -1,4 +1,4 @@
-module Gnuplot
+module GnuplotRB
   ##
   # This module contains methods that should be mixed into
   # plottable classes. It includes OptionHandling and

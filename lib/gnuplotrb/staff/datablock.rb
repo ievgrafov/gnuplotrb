@@ -1,4 +1,4 @@
-module Gnuplot
+module GnuplotRB
   ##
   # === Overview
   # This class corresponds to points we want to plot. It may be

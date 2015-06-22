@@ -55,7 +55,7 @@ describe Dataset do
 
   context 'options handling' do
     before do
-      @options = Hamster.hash(title: 'Gnuplot::Dataset', with: 'lines')
+      @options = Hamster.hash(title: 'GnuplotRB::Dataset', with: 'lines')
       @dataset = Dataset.new('sin(x)', @options)
     end
 
@@ -87,7 +87,7 @@ describe Dataset do
       x = (0..10).to_a
       y = x.map { |xx| Math.exp(-xx) }
       @data = [x, y]
-      @options = Hamster.hash(title: 'Gnuplot::Dataset', with: 'lines')
+      @options = Hamster.hash(title: 'GnuplotRB::Dataset', with: 'lines')
       @sinx = Dataset.new('sin(x)', @options)
       @dataset = Dataset.new([x, y])
       @temp_file_dataset = Dataset.new([x, y], file: true)

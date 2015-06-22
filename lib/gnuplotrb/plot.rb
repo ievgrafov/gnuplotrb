@@ -1,4 +1,4 @@
-module Gnuplot
+module GnuplotRB
   ##
   # === Overview
   # Plot correspond to simple 2D visualisation

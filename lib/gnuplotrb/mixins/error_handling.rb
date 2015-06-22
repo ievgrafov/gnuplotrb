@@ -1,4 +1,4 @@
-module Gnuplot
+module GnuplotRB
   ##
   # Just a new error name
   class GnuplotError < ArgumentError

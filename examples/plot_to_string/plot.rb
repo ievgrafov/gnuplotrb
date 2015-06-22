@@ -1,5 +1,5 @@
-require 'pilot-gnuplot'
-include Gnuplot
+require 'gnuplotrb'
+include GnuplotRB
 
 plot = Plot.new(['points.data', with: 'lines', title: 'Points from file'], title: 'Plotting to png')
 

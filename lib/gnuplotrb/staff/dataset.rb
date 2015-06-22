@@ -1,4 +1,4 @@
-module Gnuplot
+module GnuplotRB
   ##
   # === Overview
   # Dataset keeps control of Datablock or String (some math functions like

@@ -1,5 +1,5 @@
-require 'pilot-gnuplot'
-include Gnuplot
+require 'gnuplotrb'
+include GnuplotRB
 
 double_pi = Math::PI * 2
 

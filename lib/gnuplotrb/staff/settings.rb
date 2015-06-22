@@ -1,4 +1,4 @@
-module Gnuplot
+module GnuplotRB
   ##
   # This module takes care of path to gnuplot executable
   # and checking its version.

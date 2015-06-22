@@ -1,4 +1,4 @@
-= Gnuplot
+= GnuplotRB
 
 This is part of ruby gnuplot gem. It already can plot something (see examples and notebooks) but some features still waiting for implementation.
 

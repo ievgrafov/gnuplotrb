@@ -1,17 +1,17 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'pilot-gnuplot/version'
+require 'gnuplotrb/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = 'pilot-gnuplot'
-  spec.version       = Gnuplot::VERSION
+  spec.name          = 'gnuplotrb'
+  spec.version       = GnuplotRB::VERSION
   spec.authors       = ['Ivan Evgrafov']
   spec.email         = ['dilcom3107@gmail.com']
 
   spec.summary       = 'Pilot ruby bindings for gnuplot'
-  spec.description   = 'Renewed ruby bindings for gnuplot. Started at GSoC 2015. Name pilot-gnuplot is temporary. The new one will be chosen before pushing gem to RubyGems.'
-  spec.homepage      = 'https://github.com/dilcom/pilot-gnuplot'
+  spec.description   = 'Renewed ruby bindings for gnuplot. Started at GSoC 2015.'
+  spec.homepage      = 'https://github.com/dilcom/gnuplotrb'
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(/^(test|spec|unimplemented_features|examples|future_work|notebooks|\..+)/) }

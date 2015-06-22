@@ -1,5 +1,5 @@
-require 'pilot-gnuplot'
-include Gnuplot
+require 'gnuplotrb'
+include GnuplotRB
 
 plot = Plot.new(['abs(sin(3*t))', with: 'filledcurves'], title: 'Plot in polar example', polar: true, samples: 1000, term: ['qt', persist: true])
 

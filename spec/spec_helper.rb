@@ -8,10 +8,10 @@ SimpleCov.add_filter 'examples'
 SimpleCov.formatter = CodeClimate::TestReporter::Formatter
 SimpleCov.start CodeClimate::TestReporter.configuration.profile
 
-require 'pilot-gnuplot'
+require 'gnuplotrb'
 
 include ChunkyPNG::Color
-include Gnuplot
+include GnuplotRB
 $RSPEC_TEST = true
 
 def same_images?(*imgs)

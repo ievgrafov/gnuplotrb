@@ -3,4 +3,4 @@ AllCops:
     - 'lib/**/*'
   Exclude:
     - 'examples/**/*'
-    - 'future_work/**/*'
+    - 'unimplemented_features/**/*'

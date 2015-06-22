@@ -1,5 +1,5 @@
-require 'pilot-gnuplot'
-include Gnuplot
+require 'gnuplotrb'
+include GnuplotRB
 
 
 graph = Plot.new(['tons_of_data', title: 'Tons of data', with: 'lines'], term: ['qt', persist: true])

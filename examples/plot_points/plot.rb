@@ -1,5 +1,5 @@
-require 'pilot-gnuplot'
-include Gnuplot
+require 'gnuplotrb'
+include GnuplotRB
 
 x = (0..5).to_a
 y = x.map {|xx| xx*xx }

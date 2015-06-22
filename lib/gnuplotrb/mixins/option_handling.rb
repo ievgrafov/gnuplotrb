@@ -1,4 +1,4 @@
-module Gnuplot
+module GnuplotRB
   ##
   # ====== Overview
   # This module contains methods which are mixed into several classes

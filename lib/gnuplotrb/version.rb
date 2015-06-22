@@ -1,6 +1,6 @@
 ##
 # === Overview
 # Ruby bindings for gnuplot.
-module Gnuplot
+module GnuplotRB
   VERSION = '0.1.1'
 end
