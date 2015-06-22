@@ -2,9 +2,9 @@
 
 This is part of ruby gnuplot gem. It already can plot something (see examples and notebooks) but some features still waiting for implementation.
 
-{<img src="https://travis-ci.org/dilcom/pilot-gnuplot.svg?branch=master" alt="Build Status" />}[https://travis-ci.org/dilcom/pilot-gnuplot]
-{<img src="https://codeclimate.com/github/dilcom/pilot-gnuplot/badges/gpa.svg" alt="Code quality" />}[https://codeclimate.com/github/dilcom/pilot-gnuplot]
-{<img src="https://codeclimate.com/github/dilcom/pilot-gnuplot/badges/coverage.svg" alt="Test coverage" />}[https://codeclimate.com/github/dilcom/pilot-gnuplot]
+{<img src="https://travis-ci.org/dilcom/gnuplotrb.svg?branch=master" alt="Build Status" />}[https://travis-ci.org/dilcom/gnuplotrb]
+{<img src="https://codeclimate.com/github/dilcom/gnuplotrb/badges/gpa.svg" alt="Code quality" />}[https://codeclimate.com/github/dilcom/gnuplotrb]
+{<img src="https://codeclimate.com/github/dilcom/gnuplotrb/badges/coverage.svg" alt="Test coverage" />}[https://codeclimate.com/github/dilcom/gnuplotrb]
 
 
 == Installation
@@ -14,19 +14,19 @@ While gem isn't on rubygems, it may be installed from source.
 * It is required to install {gnuplot 5.0}[http://www.gnuplot.info/download.html] to use that gem.
 === Gem installation
 ==== Install without bundler
-  git clone https://github.com/dilcom/pilot-gnuplot.git
-  cd pilot-gnuplot
+  git clone https://github.com/dilcom/gnuplotrb.git
+  cd gnuplotrb
   bundle install
   rake install
 ==== Install using bundler
 * add
-    gem 'pilot-gnuplot', :git => 'https://github.com/dilcom/pilot-gnuplot.git'
+    gem 'gnuplotrb', :git => 'https://github.com/dilcom/gnuplotrb.git'
   to your Gemfile
 * run
     bundle install
 
 == Plain examples
-You may find several examples in {samples directory}[https://github.com/dilcom/pilot-gnuplot/tree/master/examples]
+You may find several examples in {samples directory}[https://github.com/dilcom/gnuplotrb/tree/master/examples]
 
 == Notebooks with examples
-You may find several iRuby notebooks and readme for them in {notebooks directory}[https://github.com/dilcom/pilot-gnuplot/tree/master/notebooks]
+You may find several iRuby notebooks and readme for them in {notebooks directory}[https://github.com/dilcom/gnuplotrb/tree/master/notebooks]
