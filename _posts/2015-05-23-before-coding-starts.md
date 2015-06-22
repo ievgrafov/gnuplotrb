@@ -31,13 +31,13 @@ I expect it will both make code safe and allow users to avoid unnecessary copyin
 
 As I already mentioned in my proposal, I was going to setup continuos integration tools for my repository. During my preparations to coding phase I worked on installing gnuplot 5.0 at [Travis CI](https://travis-ci.org/) virtual machine and successed.
 
-I also wrote some tests with RSpec. This tests are based on [examples](https://github.com/dilcom/pilot-gnuplot/tree/master/samples) I already have. All of them use both command line and gem to plot some graphs and them compare them using [ChunkyPNG](http://chunkypng.com/)'s #eql? method. Test considered as passed if images are equal.
+I also wrote some tests with RSpec. This tests are based on [examples](https://github.com/dilcom/gnuplotrb/tree/master/examples) I already have. All of them use both command line and gem to plot some graphs and them compare them using [ChunkyPNG](http://chunkypng.com/)'s #eql? method. Test considered as passed if images are equal.
 
 So anytime the project may be checked for such characteristics as:
 
-+ Current build status [![Build status](https://travis-ci.org/dilcom/pilot-gnuplot.svg?branch=master)](https://travis-ci.org/dilcom/pilot-gnuplot)
-+ Current code quality (via CodeClimate) [![Code quality](https://codeclimate.com/github/dilcom/pilot-gnuplot/badges/gpa.svg)](https://codeclimate.com/github/dilcom/pilot-gnuplot/)
-+ Test coverage (via CodeClimate) [![Test coverage](https://codeclimate.com/github/dilcom/pilot-gnuplot/badges/coverage.svg)](https://codeclimate.com/github/dilcom/pilot-gnuplot/)
++ Current build status [![Build status](https://travis-ci.org/dilcom/gnuplotrb.svg?branch=master)](https://travis-ci.org/dilcom/gnuplotrb)
++ Current code quality (via CodeClimate) [![Code quality](https://codeclimate.com/github/dilcom/gnuplotrb/badges/gpa.svg)](https://codeclimate.com/github/dilcom/gnuplotrb/)
++ Test coverage (via CodeClimate) [![Test coverage](https://codeclimate.com/github/dilcom/gnuplotrb/badges/coverage.svg)](https://codeclimate.com/github/dilcom/gnuplotrb/)
 
 #### Future work
 

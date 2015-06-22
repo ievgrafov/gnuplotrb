@@ -8,10 +8,10 @@ Hi, first week of GSOC 2015 is over and in this post I want to explain what prog
 
 ### Working features
 
-Gnuplot gem already may be used to plot some 2D graphs. It can plot math functions, data given in file or in Ruby Array.
+GnuplotRB gem already may be used to plot some 2D graphs. It can plot math functions, data given in file or in Ruby Array.
 You may plot in cartesian or polar coordinates and set functions with parametric formulas.
 
-I think [examples from repository](https://github.com/dilcom/pilot-gnuplot/tree/master/samples) are more informative.
+I think [examples from repository](https://github.com/dilcom/gnuplotrb/tree/master/samples) are more informative.
 Most of them are used to test gnuplot gem in specs so you may be sure they work since Travis CI builds are successful.
 
 #### Plotting data from existing file
@@ -31,27 +31,27 @@ More information and samples of that case may be found in [mailing list](https:/
 - create Gemfile with following contents
 {% highlight ruby %}
 source 'https://rubygems.org'
-gem 'pilot-gnuplot', :git => 'https://github.com/dilcom/pilot-gnuplot.git'
+gem 'gnuplotrb', :git => 'https://github.com/dilcom/gnuplotrb.git'
 {% endhighlight %}
 - run 'bundle install' in directory with Gemfile
 
 #### How to install without creating Gemfile
 Run following commands:
 {% highlight bash %}
-git clone https://github.com/dilcom/pilot-gnuplot.git
-cd pilot-gnuplot
+git clone https://github.com/dilcom/gnuplotrb.git
+cd gnuplotrb
 bundle install
 rake install
 {% endhighlight %}
 
 #### Usage
 {% highlight bash %}
-require 'pilot-gnuplot'
-include Gnuplot
+require 'gnuplotrb'
+include GnuplotRB
   
 # see examples
 {% endhighlight %}
-Examples: https://github.com/dilcom/pilot-gnuplot/tree/master/samples
+Examples: https://github.com/dilcom/gnuplotrb/tree/master/examples
 
 ### Objectives for this week
 
