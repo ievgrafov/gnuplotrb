@@ -1,6 +1,6 @@
 = Gnuplot
 
-This is part of ruby gnuplot gem. It already can plot something (see samples and notebooks) but many features still waiting for implementation.
+This is part of ruby gnuplot gem. It already can plot something (see examples and notebooks) but some features still waiting for implementation.
 
 {<img src="https://travis-ci.org/dilcom/pilot-gnuplot.svg?branch=master" alt="Build Status" />}[https://travis-ci.org/dilcom/pilot-gnuplot]
 {<img src="https://codeclimate.com/github/dilcom/pilot-gnuplot/badges/gpa.svg" alt="Code quality" />}[https://codeclimate.com/github/dilcom/pilot-gnuplot]
@@ -26,7 +26,7 @@ While gem isn't on rubygems, it may be installed from source.
     bundle install
 
 == Plain examples
-You may find several examples in {samples directory}[https://github.com/dilcom/pilot-gnuplot/tree/master/samples]
+You may find several examples in {samples directory}[https://github.com/dilcom/pilot-gnuplot/tree/master/examples]
 
 == Notebooks with examples
 You may find several iRuby notebooks and readme for them in {notebooks directory}[https://github.com/dilcom/pilot-gnuplot/tree/master/notebooks]
