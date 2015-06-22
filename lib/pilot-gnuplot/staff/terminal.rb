@@ -109,7 +109,7 @@ module Gnuplot
     def unset(*options)
       options.flatten
              .sort_by { |key| OPTION_ORDER.find_index(key) || -1 }
-             .each { |key| self.puts "unset #{key}" }
+             .each { |key| self.puts "unset #{OptionHandling.string_key(key)}" }
       self
     end
 

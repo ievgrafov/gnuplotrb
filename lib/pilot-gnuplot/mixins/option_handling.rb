@@ -11,6 +11,15 @@ module Gnuplot
       QUOTED_OPTIONS = %w(title output xlabel x2label ylabel y2label clabel cblabel zlabel rgb font)
 
       ##
+      # For inner use!
+      # Replacement '_' with ' ' is made to allow passing several options
+      # with the same first word of key.
+      # See issue #7 for more info.
+      def string_key(key)
+        key.to_s.gsub(/_/) { ' ' } + ' '
+      end
+
+      ##
       # ====== Overview
       # Recursive function that converts Ruby option to gnuplot string
       # ====== Arguments
@@ -21,7 +30,7 @@ module Gnuplot
       #   option_to_string(xrange: 0..100) #=> 'xrange [0:100]'
       #   option_to_string(multiplot: true) #=> 'multiplot'
       def option_to_string(key = nil, option)
-        return key.to_s if !!option == option # check for boolean
+        return string_key(key) if !!option == option # check for boolean
         value = case option
                 when Array
                   option.map { |el| option_to_string(el) }
@@ -35,7 +44,8 @@ module Gnuplot
                   option.to_s
                 end
         value = "'#{value}'" if QUOTED_OPTIONS.include?(key.to_s)
-        value = "#{key} " + value if key
+        ## :+ here is necessary, because using #{value} will remove quotes
+        value = string_key(key) + value if key
         value
       end
 
