@@ -24,5 +24,5 @@ plot = Plot.new(
     title: 'Time spent to run deploy pipeline',
     term: ['qt', persist: true]
 )
-plot.to_png('./gnuplot_gem.png', size: [600, 600])
-#$RSPEC_TEST ?  : plot.plot
+
+$RSPEC_TEST ? plot.to_png('./gnuplot_gem.png', size: [600, 600]) : plot.plot
