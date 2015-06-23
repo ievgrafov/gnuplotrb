@@ -14,3 +14,5 @@ require 'gnuplotrb/staff/dataset'
 require 'gnuplotrb/plot'
 require 'gnuplotrb/splot'
 require 'gnuplotrb/multiplot'
+
+require 'gnuplotrb/mixins/iruby'
