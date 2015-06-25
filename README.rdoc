@@ -26,7 +26,7 @@ While gem isn't on rubygems, it may be installed from source.
     bundle install
 
 == Plain examples
-You may find several examples in {samples directory}[https://github.com/dilcom/gnuplotrb/tree/master/examples]
+You may find several examples in {examples directory}[https://github.com/dilcom/gnuplotrb/tree/master/examples]
 
 == Notebooks with examples
 You may find several iRuby notebooks and readme for them in {notebooks directory}[https://github.com/dilcom/gnuplotrb/tree/master/notebooks]
