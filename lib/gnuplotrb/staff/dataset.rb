@@ -12,7 +12,6 @@ module GnuplotRB
     ##
     # Order is significant for some options
     OPTION_ORDER = %w(index using axes title)
-
     ##
     # ====== Overview
     # Creates new dataset out of given string with
@@ -37,18 +36,17 @@ module GnuplotRB
     # The same data but datablock stores it in temp file:
     #   Dataset.new(points, with: 'points', title: 'Points', file: true)
     def initialize(data, file: false, **options)
-      @type, @data = if data.is_a? String
-                       if File.exist?(data)
-                         [:datafile, "'#{data}'"]
-                       else
-                         [:math_function, data.clone]
-                       end
-                     else
-                       if data.is_a? Datablock
+      @type, @data = case data
+                       when String
+                         if File.exist?(data)
+                           [:datafile, "'#{data}'"]
+                         else
+                           [:math_function, data.clone]
+                         end
+                       when Datablock
                          [:datablock, data.clone]
                        else
                          [:datablock, Datablock.new(data, file)]
-                       end
                      end
       @options = Hamster.hash(options)
     end

@@ -14,5 +14,15 @@ require 'gnuplotrb/staff/dataset'
 require 'gnuplotrb/plot'
 require 'gnuplotrb/splot'
 require 'gnuplotrb/multiplot'
-
 require 'gnuplotrb/mixins/iruby'
+
+def require_if_available(name)
+  begin
+    require name
+    true
+  rescue
+    false
+  end
+end
+
+require_if_available('daru')

@@ -18,3 +18,16 @@ class String
     clone
   end
 end
+
+##
+# Very immature way of implementing Daru plots
+# Should be improved!
+module Daru
+  class DataFrame
+    def to_gnuplot_points
+      self.to_matrix
+          .to_a
+          .inject('') { |result, row| result + row.join(' ') + "\n" }
+    end
+  end
+end
