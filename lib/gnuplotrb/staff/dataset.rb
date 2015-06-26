@@ -35,6 +35,7 @@ module GnuplotRB
     #   Dataset.new(points, with: 'points', title: 'Points')
     # The same data but datablock stores it in temp file:
     #   Dataset.new(points, with: 'points', title: 'Points', file: true)
+    # TODO: refactor this!
     def initialize(data, file: false, **options)
       @type, @data = case data
                        when String
@@ -45,6 +46,21 @@ module GnuplotRB
                          end
                        when Datablock
                          [:datablock, data.clone]
+                       when Daru::DataFrame
+                         options[:title] ||= data.name
+                         if options[:using]
+                           data.vectors.to_a.each_with_index do |daru_index, array_index|
+                             options[:using].gsub!(/#{daru_index}/) { array_index + 2 }
+                           end
+                         else
+                           new_opt = (2...(2 + data.vectors.size)).to_a.join(':')
+                           options[:using] = "#{new_opt}:xtic(1)"
+                         end
+                         [:datablock, Datablock.new(data, file)]
+                       when Daru::Vector
+                         options[:using] ||= '2:xtic(1)'
+                         options[:title] ||= data.name
+                         [:datablock, Datablock.new(data, file)]
                        else
                          [:datablock, Datablock.new(data, file)]
                      end
