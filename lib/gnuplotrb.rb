@@ -20,7 +20,7 @@ def require_if_available(name)
   begin
     require name
     true
-  rescue
+  rescue LoadError
     false
   end
 end
