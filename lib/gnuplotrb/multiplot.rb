@@ -65,5 +65,31 @@ module GnuplotRB
       end
       self
     end
+
+    def update_plot(position = 0, **options)
+      return self unless block_given? if options.empty?
+      replacement = @plots[position].options(options)
+      replacement = yield(replacement) if block_given?
+      replace_plot(position, replacement)
+    end
+
+    def replace_plot(position = 0, plot)
+      self.class.new(@plots.set(position, plot), @options)
+    end
+
+    def add_plot(plot)
+      self.class.new(@plots.add(plot), @options)
+    end
+
+    alias_method :<<, :add_plot
+
+    def remove_plot(position = -1)
+      self.class.new(@plots.delete_at(position), @options)
+    end
+
+    def [](*args)
+      @plots[*args]
+    end
+
   end
 end
