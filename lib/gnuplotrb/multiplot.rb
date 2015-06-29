@@ -111,7 +111,7 @@ module GnuplotRB
     # * *plot* - plot you want to add
     # ====== Example
     #   mp = Multiplot.new(Plot.new('sin(x)'), Plot.new('cos(x)'), layout: [2,1])
-    #   enlarged_mp = mp.add_plot('exp(x)').layout([3,1])
+    #   enlarged_mp = mp.add_plot(Plot.new('exp(x)')).layout([3,1])
     def add_plot(plot)
       self.class.new(@plots.add(plot), @options)
     end
