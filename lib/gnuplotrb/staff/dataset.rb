@@ -12,6 +12,12 @@ module GnuplotRB
     ##
     # Order is significant for some options
     OPTION_ORDER = %w(index using axes title)
+    INIT_HANDLERS = Hash.new(:init_default).merge(
+      String =>          :init_string,
+      Datablock =>       :init_dblock,
+      Daru::DataFrame => :init_daru_frame,
+      Daru::Vector =>    :init_daru_vector
+    )
     ##
     # ====== Overview
     # Creates new dataset out of given string with
@@ -35,38 +41,49 @@ module GnuplotRB
     #   Dataset.new(points, with: 'points', title: 'Points')
     # The same data but datablock stores it in temp file:
     #   Dataset.new(points, with: 'points', title: 'Points', file: true)
-    # TODO: refactor this!
-    def initialize(data, file: false, **options)
-      @type, @data = case data
-                       when String
-                         if File.exist?(data)
-                           [:datafile, "'#{data}'"]
-                         else
-                           [:math_function, data.clone]
-                         end
-                       when Datablock
-                         [:datablock, data.clone]
-                       when Daru::DataFrame
-                         options[:title] ||= data.name
-                         if options[:using]
-                           data.vectors.to_a.each_with_index do |daru_index, array_index|
-                             options[:using].gsub!(/#{daru_index}/) { array_index + 2 }
-                           end
-                         else
-                           new_opt = (2...(2 + data.vectors.size)).to_a.join(':')
-                           options[:using] = "#{new_opt}:xtic(1)"
-                         end
-                         [:datablock, Datablock.new(data, file)]
-                       when Daru::Vector
-                         options[:using] ||= '2:xtic(1)'
-                         options[:title] ||= data.name
-                         [:datablock, Datablock.new(data, file)]
-                       else
-                         [:datablock, Datablock.new(data, file)]
-                     end
+    def initialize(data, **options)
+      self.send(INIT_HANDLERS[data.class], data, options)
+    end
+
+    def init_string(data, options)
+      @type, @data= if File.exist?(data)
+        [:datafile, "'#{data}'"]
+      else
+        [:math_function, data.clone]
+      end
       @options = Hamster.hash(options)
     end
 
+    def init_dblock(data, options)
+      @type = :datablock
+      @data = data.clone
+      @options = Hamster.hash(options)
+    end
+
+    def init_daru_frame(data, options)
+      options[:title] ||= data.name
+      if options[:using]
+        data.vectors.to_a.each_with_index do |daru_index, array_index|
+          options[:using].gsub!(/#{daru_index}/) { array_index + 2 }
+        end
+      else
+        new_opt = (2...(2 + data.vectors.size)).to_a.join(':')
+        options[:using] = "#{new_opt}:xtic(1)"
+      end
+      init_default(data, options)
+    end
+
+    def init_daru_vector(data, options)
+      options[:using] ||= '2:xtic(1)'
+      options[:title] ||= data.name
+      init_default(data, options)
+    end
+
+    def init_default(data, file: false, **options)
+      @type = :datablock
+      @data = Datablock.new(data, file)
+      @options = Hamster.hash(options)
+    end
     ##
     # ====== Overview
     # Converts Dataset to string containing gnuplot dataset.
