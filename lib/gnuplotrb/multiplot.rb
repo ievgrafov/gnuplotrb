@@ -66,6 +66,22 @@ module GnuplotRB
       self
     end
 
+    ##
+    # ====== Overview
+    # Create new Multiplot object where plot (Plot or Splot object)
+    # at *position* will
+    # be replaced with the new one created from it by updating.
+    # To update a plot you can pass some options for it or a
+    # block, that should take existing plot (with new options if
+    # you gave them) and return a plot too.
+    # ====== Arguments
+    # * *position* - position of plot which you need to update
+    #   (by default first plot is updated)
+    # * *options* - options to update plot with
+    # * method also may take a block which returns a plot
+    # ====== Example
+    #   mp = Multiplot.new(Plot.new('sin(x)'), Plot.new('cos(x)'), layout: [2,1])
+    #   updated_mp = mp.update_plot(title: 'Sin(x) and Exp(x)') { |sinx| sinx.add_dataset('exp(x)') }
     def update_plot(position = 0, **options)
       return self unless block_given? if options.empty?
       replacement = @plots[position].options(options)
@@ -73,23 +89,53 @@ module GnuplotRB
       replace_plot(position, replacement)
     end
 
+    ##
+    # ====== Overview
+    # Create new Multiplot object where plot (Plot or Splot object)
+    # at *position* will be replaced with the given one.
+    # ====== Arguments
+    # * *position* - position of plot which you need to update
+    #   (by default first plot is updated)
+    # * *plot* - replacement for existing plot
+    # ====== Example
+    #   mp = Multiplot.new(Plot.new('sin(x)'), Plot.new('cos(x)'), layout: [2,1])
+    #   mp_with_replaced_plot = mp.replace_plot(Plot.new('exp(x)', title: 'exp instead of sin'))
     def replace_plot(position = 0, plot)
       self.class.new(@plots.set(position, plot), @options)
     end
 
+    ##
+    # ====== Overview
+    # Create new Multiplot with given plot added (at the front).
+    # ====== Arguments
+    # * *plot* - plot you want to add
+    # ====== Example
+    #   mp = Multiplot.new(Plot.new('sin(x)'), Plot.new('cos(x)'), layout: [2,1])
+    #   enlarged_mp = mp.add_plot('exp(x)').layout([3,1])
     def add_plot(plot)
       self.class.new(@plots.add(plot), @options)
     end
 
     alias_method :<<, :add_plot
 
+    ##
+    # ====== Overview
+    # Create new Multiplot without plot at given position
+    # (by default last plot is removed).
+    # ====== Arguments
+    # * *position* - position of plot you want to remove
+    # ====== Example
+    #   mp = Multiplot.new(Plot.new('sin(x)'), Plot.new('cos(x)'), layout: [2,1])
+    #   mp_with_only_cos = mp.remove_plot(0)
     def remove_plot(position = -1)
       self.class.new(@plots.delete_at(position), @options)
     end
 
+    ##
+    # ====== Overview
+    # Equal to #plots[*args] 
     def [](*args)
       @plots[*args]
     end
-
   end
 end
