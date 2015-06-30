@@ -9,15 +9,21 @@ module GnuplotRB
     ##
     # Data represented by this dataset
     attr_reader :data
+
     ##
     # Order is significant for some options
     OPTION_ORDER = %w(index using axes title)
+
+    ##
+    # Hash of init handlers for data given in 
+    # different containers.
     INIT_HANDLERS = Hash.new(:init_default).merge(
       String =>          :init_string,
       Datablock =>       :init_dblock,
       Daru::DataFrame => :init_daru_frame,
       Daru::Vector =>    :init_daru_vector
     )
+
     ##
     # ====== Overview
     # Creates new dataset out of given string with
@@ -45,6 +51,8 @@ module GnuplotRB
       self.send(INIT_HANDLERS[data.class], data, options)
     end
 
+    ##
+    # Method for inner use.
     def init_string(data, options)
       @type, @data= if File.exist?(data)
         [:datafile, "'#{data}'"]
@@ -54,12 +62,16 @@ module GnuplotRB
       @options = Hamster.hash(options)
     end
 
+    ##
+    # Method for inner use.
     def init_dblock(data, options)
       @type = :datablock
       @data = data.clone
       @options = Hamster.hash(options)
     end
 
+    ##
+    # Method for inner use.
     def init_daru_frame(data, options)
       options[:title] ||= data.name
       if options[:using]
@@ -73,17 +85,22 @@ module GnuplotRB
       init_default(data, options)
     end
 
+    ##
+    # Method for inner use.
     def init_daru_vector(data, options)
       options[:using] ||= '2:xtic(1)'
       options[:title] ||= data.name
       init_default(data, options)
     end
 
+    ##
+    # Method for inner use.
     def init_default(data, file: false, **options)
       @type = :datablock
       @data = Datablock.new(data, file)
       @options = Hamster.hash(options)
     end
+
     ##
     # ====== Overview
     # Converts Dataset to string containing gnuplot dataset.
@@ -179,6 +196,10 @@ module GnuplotRB
       end
     end
 
+    ##
+    # Method for inner use.
+    # Needed by OptionHandling to create new object when
+    # options are changed.
     def new_with_options(options)
       self.class.new(@data, options)
     end
@@ -198,5 +219,9 @@ module GnuplotRB
     def method_missing(meth_id, *args)
       option(meth_id, *args)
     end
+
+    private :init_default,
+            *INIT_HANDLERS.values,
+            :new_with_options
   end
 end
