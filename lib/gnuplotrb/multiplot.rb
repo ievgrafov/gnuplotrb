@@ -89,6 +89,8 @@ module GnuplotRB
       replace_plot(position, replacement)
     end
 
+    alias_method :update, :update_plot
+
     ##
     # ====== Overview
     # Create new Multiplot object where plot (Plot or Splot object)
@@ -104,9 +106,11 @@ module GnuplotRB
       self.class.new(@plots.set(position, plot), @options)
     end
 
+    alias_method :replace, :replace_plot
+
     ##
     # ====== Overview
-    # Create new Multiplot with given plot added (at the front).
+    # Create new Multiplot with given plot added (at the tail).
     # ====== Arguments
     # * *plot* - plot you want to add
     # ====== Example
@@ -117,6 +121,7 @@ module GnuplotRB
     end
 
     alias_method :<<, :add_plot
+    alias_method :add, :add_plot
 
     ##
     # ====== Overview
@@ -130,6 +135,8 @@ module GnuplotRB
     def remove_plot(position = -1)
       self.class.new(@plots.delete_at(position), @options)
     end
+
+    alias_method :remove, :remove_plot
 
     ##
     # ====== Overview
