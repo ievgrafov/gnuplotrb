@@ -8,7 +8,19 @@ module GnuplotRB
       # Some values of options should be quoted to be read by gnuplot
       #
       # TODO: update list with data from gnuplot documentation !!!
-      QUOTED_OPTIONS = %w(title output xlabel x2label ylabel y2label clabel cblabel zlabel rgb font)
+      QUOTED_OPTIONS = %w(
+        title
+        output
+        xlabel
+        x2label
+        ylabel
+        y2label
+        clabel
+        cblabel
+        zlabel
+        rgb
+        font
+      )
 
       ##
       # For inner use!
@@ -31,22 +43,30 @@ module GnuplotRB
       #   option_to_string(multiplot: true) #=> 'multiplot'
       def option_to_string(key = nil, option)
         return string_key(key) if !!option == option # check for boolean
-        value = case option
-                when Array
-                  option.map { |el| option_to_string(el) }
-                        .join(option[0].is_a?(Numeric) ? ',' : ' ')
-                when Hash
-                  option.map { |i_key, i_val| option_to_string(i_key, i_val) }
-                        .join(' ')
-                when Range
-                  "[#{option.begin}:#{option.end}]"
-                else
-                  option.to_s
-                end
+        value = ruby_class_to_gnuplot(option)
         value = "'#{value}'" if QUOTED_OPTIONS.include?(key.to_s)
         ## :+ here is necessary, because using #{value} will remove quotes
         value = string_key(key) + value if key
         value
+      end
+
+      ##
+      # Method for inner use.
+      # Needed to convert several ruby classes into
+      # value that should be piped to gnuplot.
+      def ruby_class_to_gnuplot(option_object)
+        case option_object
+        when Array
+          option_object.map { |el| option_to_string(el) }
+                       .join(option_object[0].is_a?(Numeric) ? ',' : ' ')
+        when Hash
+          option_object.map { |i_key, i_val| option_to_string(i_key, i_val) }
+                       .join(' ')
+        when Range
+          "[#{option_object.begin}:#{option_object.end}]"
+        else
+          option_object.to_s
+        end
       end
 
       ##
@@ -82,13 +102,15 @@ module GnuplotRB
     ##
     # You should implement #initialize in classes that use OptionsHelper
     def initialize(*args)
-      fail NotImplementedError, 'You should implement #initialize in classes that use OptionsHelper!'
+      fail NotImplementedError, 'You should implement #initialize' \
+                                ' in classes that use OptionsHelper!'
     end
 
     ##
     # You should implement #new_with_options in classes that use OptionsHelper
     def new_with_options(*args)
-      fail NotImplementedError, 'You should implement #new_with_options in classes that use OptionsHelper!'
+      fail NotImplementedError, 'You should implement #new_with_options' \
+                                ' in classes that use OptionsHelper!'
     end
 
     ##
