@@ -19,10 +19,12 @@ module GnuplotRB
     # different containers.
     INIT_HANDLERS = Hash.new(:init_default).merge(
       String =>          :init_string,
-      Datablock =>       :init_dblock,
+      Datablock =>       :init_dblock
+    )
+    INIT_HANDLERS.merge!(
       Daru::DataFrame => :init_daru_frame,
       Daru::Vector =>    :init_daru_vector
-    )
+    ) if defined? Daru
 
     ##
     # ====== Overview
