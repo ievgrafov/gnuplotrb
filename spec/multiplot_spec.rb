@@ -115,5 +115,11 @@ describe Multiplot do
       Multiplot.new(udpdated_sinx, @exp).plot(@options1)
       expect(same_images?(*@paths)).to be_truthy
     end
+
+    it 'should allow to get plots using []' do
+      mp = Multiplot.new(@sinx, @exp, @plot3d)
+      (0..2).each { |i| expect(mp[i]).to be_equal(mp.plots[i]) }
+      expect(mp[0..-1]).to be_eql(mp.plots)
+    end
   end
 end
