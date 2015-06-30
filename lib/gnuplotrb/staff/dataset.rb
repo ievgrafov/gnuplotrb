@@ -74,12 +74,16 @@ module GnuplotRB
 
     ##
     # Method for inner use.
+    # TODO: make it better
     def init_daru_frame(data, options)
       options[:title] ||= data.name
       if options[:using]
+        options[:using] = " #{options[:using]} "
         data.vectors.to_a.each_with_index do |daru_index, array_index|
-          options[:using].gsub!(/#{daru_index}/) { array_index + 2 }
+          options[:using].gsub!(/([\:\( ])#{daru_index}([\:\) ])/) { "#{$1}#{array_index + 2}#{$2}"}
         end
+        options[:using].gsub!(/index/) { 1 }
+        options[:using].strip!
       else
         new_opt = (2...(2 + data.vectors.size)).to_a.join(':')
         options[:using] = "#{new_opt}:xtic(1)"
