@@ -54,5 +54,66 @@ describe Multiplot do
       expect(new_plot).to be_an_instance_of(Multiplot)
     end
   end
-  # TODO: specs for modifying array of plots
+
+  context 'handling plots as container' do
+    before :each do
+      @sinx = Plot.new('sin(x)')
+      @plot3d = Splot.new('sin(x)*cos(y)')
+      @exp = Plot.new('exp(x)')
+      @paths = (0..1).map { |i| File.join(@tmp_dir, "#{i}plot.png") }
+      @options0 = { term: ['png', size: [300,300]], output: @paths[0] }
+      @options1 = { term: ['png', size: [300,300]], output: @paths[1] }
+    end
+
+    it 'should allow to remove plot from Mp' do
+      mp = Multiplot.new(@sinx, @plot3d, @exp)
+      updated_mp = mp.remove_plot(1)
+      expect(mp).to_not equal(updated_mp)
+      updated_mp.plot(@options0)
+      Multiplot.new(@sinx, @exp).plot(@options1)
+      expect(same_images?(*@paths)).to be_truthy      
+    end
+
+    it 'should allow to add plot to Mp' do
+      mp = Multiplot.new(@sinx, @exp)
+      updated_mp = mp.add_plot(@plot3d)
+      expect(mp).to_not equal(updated_mp)
+      updated_mp.plot(@options0)
+      Multiplot.new(@plot3d, @sinx, @exp).plot(@options1)
+      expect(same_images?(*@paths)).to be_truthy
+    end
+
+    it 'should allow to replace plot in Mp' do
+      mp = Multiplot.new(@sinx, @exp)
+      updated_mp = mp.replace_plot(@plot3d)
+      expect(mp).to_not equal(updated_mp)
+      updated_mp.plot(@options0)
+      Multiplot.new(@plot3d, @exp).plot(@options1)
+      expect(same_images?(*@paths)).to be_truthy
+    end
+
+    it 'should allow to update options of any plot in mp' do
+      ttl = "Wow, it's sin(x)!"
+      mp = Multiplot.new(@sinx, @exp)
+      updated_mp = mp.update_plot(0, title: ttl)
+      expect(mp).to_not equal(updated_mp)
+      updated_mp.plot(@options0)
+      Multiplot.new(@sinx.title(ttl), @exp).plot(@options1)
+      expect(same_images?(*@paths)).to be_truthy
+    end
+
+    it 'should allow to update datasets of any plot in mp' do
+      ds_ttl = 'Some dataset'
+      ttl = "Wow, it's sin(x)!"
+      mp = Multiplot.new(@sinx, @exp)
+      updated_mp = mp.update_plot(0, title: ttl) do |new_plot|
+        new_plot.update_dataset(title: ds_ttl)
+      end
+      expect(mp).to_not equal(updated_mp)
+      updated_mp.plot(@options0)
+      udpdated_sinx = @sinx.title(ttl).update_dataset(title: ds_ttl)
+      Multiplot.new(udpdated_sinx, @exp).plot(@options1)
+      expect(same_images?(*@paths)).to be_truthy
+    end
+  end
 end
