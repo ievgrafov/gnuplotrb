@@ -53,6 +53,45 @@ describe Dataset do
     end
   end
 
+  context 'creation with Daru' do
+    before do
+      @xtic = [1991, 1993, 1995, 1997]
+      @y = [2453,2343,2454,2254]
+      @yerr = [120, 133, 123, 113]
+      @title = :plot_from_daru
+      @data = (0..3).map { |i| "#{@xtic[i]} #{@y[i]} #{@yerr[i]}\n"}.join
+      @df = Daru::DataFrame.new([@y, @yerr],order: [:y, :yerr], index: @xtic, name: @title)
+      @alt_title = 'Some other given title'
+      @vector = Daru::Vector.new(@y, index: @xtic, name: @title)
+    end
+
+    it 'may be created with Daru::Vector given' do
+      ds = Dataset.new(@vector)
+      expect(ds.title).to eql(@title)
+      expect(ds.using).to eql('2:xtic(1)')
+      data = (0..3).map { |i| "#{@xtic[i]} #{@y[i]}\n"}.join
+      expect(ds.data.instance_variable_get(:@data)).to eql(data)
+    end
+
+    it 'may be created with Daru::DataFrame given' do
+      ds = Dataset.new(@df)
+      expect(ds.title).to eql(@title)
+      expect(ds.using).to eql('2:3:xtic(1)')
+      expect(ds.data.instance_variable_get(:@data)).to eql(@data)
+    end
+
+    it 'may be created with Daru::DataFrame and *using* option given' do
+      ds = Dataset.new(@df, using: 'index:yerr:xtic(y)')
+      expect(ds.using).to eql('1:3:xtic(2)')
+      expect(ds.data.instance_variable_get(:@data)).to eql(@data)
+    end
+
+    it "should use given title instead of Daru's" do
+      expect(Dataset.new(@vector, title: @alt_title).title).to eql(@alt_title)
+      expect(Dataset.new(@df, title: @alt_title).title).to eql(@alt_title)
+    end
+  end
+
   context 'options handling' do
     before do
       @options = Hamster.hash(title: 'GnuplotRB::Dataset', with: 'lines')
