@@ -8,7 +8,7 @@ class Array
     when Numeric
       join("\n")
     else
-      self[0].zip(*self[1..-1]).to_points
+      self[0].zip(*self[1..-1]).to_gnuplot_points
     end
   end
 end
