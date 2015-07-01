@@ -2,9 +2,10 @@ notifications:
   email: false
 language: ruby
 rvm:
-  - 2.0
-  - 2.1
-  - 2.2
+  - ruby-2.0
+  - ruby-2.1.5
+  - ruby-2.2.2
+  - jruby-9.0.0.0.pre2
 addons:
   code_climate:
     repo_token: bbd2a5e077e4b62bd8ba21a74a2ba901defc43506812f6192efc6b2a25c20d49
