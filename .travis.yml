@@ -1,18 +1,14 @@
 notifications:
   email: false
-language: ruby
+language: objective-c 
 rvm:
   - 2.0
   - 2.1
   - 2.2
-addons:
-  code_climate:
-    repo_token: bbd2a5e077e4b62bd8ba21a74a2ba901defc43506812f6192efc6b2a25c20d49
 before_install:
-  - sudo add-apt-repository "deb http://cz.archive.ubuntu.com/ubuntu vivid main universe"
-  - sudo apt-get update -q
-  - sudo rm -rf /etc/dpkg/dpkg.cfg.d/multiarch
-  - sudo apt-get install gnuplot5
+  - brew update
+  - brew install pdflib-lite
+  - brew install gnuplot --with-png
   - bundle install
 install:
   - bundle exec rake install
