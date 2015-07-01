@@ -2,14 +2,17 @@ notifications:
   email: false
 language: objective-c 
 rvm:
-  - 2.0
-  - 2.1
-  - 2.2
+  - ruby-2.0
+  - ruby-2.1.5
+  - ruby-2.2.2
+  - jruby-9.0.0.0.pre2
 before_install:
   - brew update
   - brew install pdflib-lite
-  - brew install gnuplot --with-png
+  - brew install gnuplot --with-png --with-qt
+  - gem install bundler
   - bundle install
+  - ulimit -S -n 4096
 install:
   - bundle exec rake install
 script:

@@ -42,14 +42,14 @@ describe Dataset do
 
     it 'may be created with given gnuplot options' do
       dataset = Dataset.new(@data, title: 'Dataset title', with: 'linespoints')
-      expect(dataset.to_s(Terminal.new)).to eql("$DATA1 title 'Dataset title' with linespoints")
+      expect(dataset.to_s(Terminal.new)).to eql("$DATA1 title \"Dataset title\" with linespoints")
     end
 
     it 'may be created with special :file option' do
       # {:file => true} will force creation of stored in file datablock
       dataset = Dataset.new(@data, title: 'Dataset title', file: true)
       expect(dataset.data.name).to match(/tmp_data/)
-      expect(dataset.to_s).to eql("#{dataset.data.name} title 'Dataset title'")
+      expect(dataset.to_s).to eql("#{dataset.data.name} title \"Dataset title\"")
     end
   end
 
