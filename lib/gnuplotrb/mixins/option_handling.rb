@@ -44,7 +44,7 @@ module GnuplotRB
       def option_to_string(key = nil, option)
         return string_key(key) if !!option == option # check for boolean
         value = ruby_class_to_gnuplot(option)
-        value = "'#{value}'" if QUOTED_OPTIONS.include?(key.to_s)
+        value = "\"#{value}\"" if QUOTED_OPTIONS.include?(key.to_s)
         ## :+ here is necessary, because using #{value} will remove quotes
         value = string_key(key) + value if key
         value
