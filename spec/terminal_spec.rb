@@ -101,7 +101,7 @@ describe Terminal do
       # it takes gnuplot some time to find error
       # and output it to stderr
       sleep 0.1
-      expect { @terminal.set(polar: true) }.to raise_error
+      expect { @terminal.set(polar: true) }.to raise_error(GnuplotError)
       expect { @terminal.set(polar: true) }.to_not raise_error
     end
   end
