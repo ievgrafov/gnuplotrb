@@ -6,7 +6,7 @@ if defined?(IRuby)
           'png'      => 'image/png',
           'pngcairo' => 'image/png',
           'jpeg'     => 'image/jpeg',
-          'svg'      => 'image/svg',
+          'svg'      => 'image/svg+xml',
           'dumb'     => 'text/plain'
         }
         terminal, options = term.is_a?(Array) ? [term[0], term[1]] : [term, {}]
