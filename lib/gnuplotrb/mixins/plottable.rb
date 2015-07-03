@@ -91,6 +91,9 @@ module GnuplotRB
     # Returns true foe existing methods and
     # #to_<term_name> when name is a valid terminal type.
     def respond_to?(meth_id)
+      # Next line is here to force iRuby use #to_iruby
+      # instead of #to_svg.
+      return super if defined? IRuby
       meth = meth_id.id2name
       term = meth[0..2] == 'to_' && OptionHandling.valid_terminal?(meth[3..-1])
       term || super
