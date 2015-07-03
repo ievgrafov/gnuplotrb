@@ -12,14 +12,4 @@ To use gnuplot gem with iRuby you need to install them both.
 
 === Usage
 
-Now you can use gnuplot gem to plot graphs to files and just open them with File::open to make iRuby render them. Example:
-  plot = Plot.new('sin(x)')
-  plot.to_pngcairo('plot.png')
-  File.open('plot.png')
-
-More natural way is to allow iRuby render Plottable objects itself:
-  graph = Plot.new('sin(x)')
-  graph
-
-or just
-  Plot.new('sin(x)')
+Using GnuplotRB inside iRuby notebooks is covered in {basic usage notebook}[https://github.com/dilcom/gnuplotrb/blob/master/notebooks/basic_usage.ipynb].
