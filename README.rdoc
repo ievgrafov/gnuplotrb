@@ -5,7 +5,7 @@ This is part of ruby gnuplot gem. It already can plot something (see examples an
 {<img src="https://travis-ci.org/dilcom/gnuplotrb.svg?branch=master" alt="Build Status" />}[https://travis-ci.org/dilcom/gnuplotrb]
 {<img src="https://codeclimate.com/github/dilcom/gnuplotrb/badges/gpa.svg" alt="Code quality" />}[https://codeclimate.com/github/dilcom/gnuplotrb]
 {<img src="https://codeclimate.com/github/dilcom/gnuplotrb/badges/coverage.svg" alt="Test coverage" />}[https://codeclimate.com/github/dilcom/gnuplotrb]
-
+{<img src="https://badge.fury.io/rb/gnuplotrb.svg" alt="Gem Version" />}[https://rubygems.org/gems/gnuplotrb]
 
 == Installation
 While gem isn't on rubygems, it may be installed from source.
@@ -13,14 +13,16 @@ While gem isn't on rubygems, it may be installed from source.
 * Ruby 2.0+
 * It is required to install {gnuplot 5.0}[http://www.gnuplot.info/download.html] to use that gem.
 === Gem installation
-==== Install without bundler
+==== Install latest version from repository (may be unstable)
   git clone https://github.com/dilcom/gnuplotrb.git
   cd gnuplotrb
   bundle install
   rake install
-==== Install using bundler
+==== Install latest stable vrsion
+  gem install gnuplotrb
+==== Install latest stable vrsion using bundler
 * add
-    gem 'gnuplotrb', :git => 'https://github.com/dilcom/gnuplotrb.git'
+    gem 'gnuplotrb'
   to your Gemfile
 * run
     bundle install
