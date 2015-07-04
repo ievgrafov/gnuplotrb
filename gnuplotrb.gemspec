@@ -9,10 +9,11 @@ Gem::Specification.new do |spec|
   spec.authors       = ['Ivan Evgrafov']
   spec.email         = ['dilcom3107@gmail.com']
 
-  spec.summary       = 'Pilot ruby bindings for gnuplot'
+  spec.summary       = 'Ruby bindings for gnuplot'
   spec.description   = 'Renewed ruby bindings for gnuplot. Started at GSoC 2015.'
   spec.homepage      = 'https://github.com/dilcom/gnuplotrb'
   spec.license       = 'MIT'
+  spec.required_ruby_version = '>= 2.0'
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(/^(test|spec|unimplemented_features|examples|future_work|notebooks|\..+)/) }
   spec.require_paths = ['lib']
