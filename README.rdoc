@@ -18,9 +18,9 @@ While gem isn't on rubygems, it may be installed from source.
   cd gnuplotrb
   bundle install
   rake install
-==== Install latest stable vrsion
+==== Install latest stable version
   gem install gnuplotrb
-==== Install latest stable vrsion using bundler
+==== Install latest stable version using bundler
 * add
     gem 'gnuplotrb'
   to your Gemfile

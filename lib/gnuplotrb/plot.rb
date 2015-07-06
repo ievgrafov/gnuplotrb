@@ -14,13 +14,26 @@ module GnuplotRB
     # * *options* will be considered as 'settable' options of gnuplot
     #   ('set xrange [1:10]' for { xrange: 1..10 },
     #   "set title 'plot'" for { title: 'plot' } etc)
-    def initialize(*datasets, **options)
-      @datasets = if datasets[0].is_a? Hamster::Vector
+    def initialize(*datasets)
+      # had to relace **options arg with this because in some cases
+      # Daru::DataFrame was mentioned as hash:
+      #   Plot.new(some_dataframe)
+      #   # => Plot<datasets: [], options: <dataframe as hash here> >
+      if datasets[-1].is_a?(Hamster::Hash) || datasets[-1].is_a?(Hash)
+        @options = Hamster.hash(datasets[-1])
+        datasets = datasets[0..-2]
+      else
+        @options = Hamster.hash({})
+      end
+      @datasets = case datasets[0]
+                  when Hamster::Vector
                     datasets[0]
+                  when (defined?(Daru) ? Daru::DataFrame : nil)
+                    Hamster::Vector.new(datasets[0].map { |ds| dataset_from_any(ds) })
                   else
-                    Hamster::Vector.new(datasets).map { |ds| dataset_from_any(ds) }
+                    Hamster::Vector.new(datasets.map { |ds| dataset_from_any(ds) })
                   end
-      @options = Hamster.hash(options)
+      #@options = Hamster::Hash.new(options)
       @already_plotted = false
       @cmd = 'plot '
       @terminal = Terminal.new
@@ -45,6 +58,7 @@ module GnuplotRB
     #   ('set xrange [1:10]', 'set title 'plot'' etc)
     # Options passed here have priority over already existing.
     def plot(term = nil, multiplot_part: false, **options)
+      fail ArgumentError, 'Empty plots are not supported!' if @datasets.empty?
       opts = @options.merge(options)
       opts = opts.reject { |key, _value| [:term, :output].include?(key) } if multiplot_part
       terminal = term || (opts[:output] ? Terminal.new : @terminal)
@@ -143,7 +157,14 @@ module GnuplotRB
     # Check if given args is a dataset and returns it. Creates
     # new dataset from given args otherwise.
     def dataset_from_any(source)
-      source.is_a?(Dataset) ? source.clone : Dataset.new(*source)
+      case source
+      when (defined?(Daru) ? Daru::Vector : nil)
+        Dataset.new(source)
+      when Dataset
+        source.clone
+      else
+        Dataset.new(*source)
+      end
     end
 
     private :dataset_from_any,

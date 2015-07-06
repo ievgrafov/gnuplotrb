@@ -16,6 +16,11 @@ describe Plot do
       @title = 'Awesome spec'
       @formula =  %w(sin(x) cos(x) exp(-x))
       @options = {title: @title, term: 'dumb'}
+      @df = Daru::DataFrame.new({
+              Build: [312, 630, 315, 312],
+              Test: [525, 1050, 701, 514],
+              Deploy: [215, 441, 370, 220]
+      })
     end
 
     it 'should be created out of sequence of datasets' do
@@ -31,6 +36,13 @@ describe Plot do
       plot = Plot.new(*@formula, **@options)
       expect(plot).to be_an_instance_of(Plot)
       expect(plot.title).to eql(@title)
+    end
+
+    it 'should be created out of Daru::DataFrame' do
+      p = Plot.new(@df)
+      expect(p).to be_an_instance_of(Plot)
+      puts p.datasets.inspect
+      expect(p.datasets.size).to be_eql(3)
     end
   end
 
