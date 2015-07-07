@@ -41,7 +41,6 @@ describe Plot do
     it 'should be created out of Daru::DataFrame' do
       p = Plot.new(@df)
       expect(p).to be_an_instance_of(Plot)
-      puts p.datasets.inspect
       expect(p.datasets.size).to be_eql(3)
     end
   end

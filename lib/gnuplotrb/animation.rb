@@ -3,7 +3,37 @@ module GnuplotRB
   # === Overview
   # Multiplot allows to place several plots on one layout.
   class Animation < Multiplot
-    ANIMATION_DELAY = 10
+    def default_options
+      {
+        animate: {
+          delay: 10,
+          loop: 0,
+          optimize: true
+        }
+      }
+    end
+
+    def specific_keys
+      %w(
+        animate
+        size
+        background
+        transparent
+        enhanced
+        rounded
+        butt
+        linewidth
+        dashlength
+        tiny
+        small
+        medium
+        large
+        giant
+        font
+        fontscale
+        crop
+      )
+    end
 
     alias_method :frames, :plots
     alias_method :update_frame, :update_plot
@@ -11,21 +41,13 @@ module GnuplotRB
     alias_method :add_frame, :add_plot
     alias_method :remove_frame, :remove_plot
 
-    def initialize(*plots, **options)
-      super
-    end
-
-    def invalid_gif_term?(gif_term)
-      term_name = gif_term.is_a?(Array) ? gif_term[0] : gif_term
-      term_name != 'gif'
-    end
-
     def plot(path = nil, **options)
-      plot_options = @options.merge(options).to_h
-      plot_options[:output] ||= path
+      options[:output] ||= path
+      plot_options = mix_options(options) do |plot_opts, anim_opts|
+        plot_opts.merge(term: ['gif', anim_opts])
+      end
+      puts plot_options
       need_output = plot_options[:output].nil?
-      need_term = plot_options[:term].nil? || invalid_gif_term(plot_options[:term])
-      plot_options[:term] = ['gif', delay: ANIMATION_DELAY, animate: true, optimize: true] if need_term
       plot_options[:output] = Dir::Tmpname.make_tmpname('anim', 0) if need_output
       terminal = Terminal.new
       terminal.set(plot_options)
@@ -40,13 +62,13 @@ module GnuplotRB
         result = File.binread(plot_options[:output])
         File.delete(plot_options[:output])
       else
-        result = self
+        result = nil
       end
       result
     end
 
     def to_specific_term(*args)
-      fail RuntimeError, 'Specific terminals are supported by Animation'
+      fail RuntimeError, 'Specific terminals are not supported by Animation'
     end
   end
 end
