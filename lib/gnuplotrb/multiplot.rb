@@ -70,7 +70,7 @@ module GnuplotRB
     def plot(term = nil, **options)
       plot_options = mix_options(options) { |plot_opts, mp_opts| plot_opts.merge(multiplot: mp_opts.to_h) }
       terminal = term || (plot_options[:output] ? Terminal.new : @terminal)
-      mutiplot(terminal, plot_options)
+      multiplot(terminal, plot_options)
       if plot_options[:output]
         # guaranteed wait for plotting to finish
         terminal.close unless term
@@ -131,20 +131,22 @@ module GnuplotRB
 
     ##
     # ====== Overview
-    # Create new Multiplot with given *plot* added before plot at given *position*.
+    # Create new Multiplot with given *plots* added before plot at given *position*.
     # (by default it adds plot at the front).
     # ====== Arguments
     # * *position* - position before which you want to add a plot
-    # * *plot* - plot you want to add
+    # * *plots* - sequence of plots you want to add
     # ====== Example
     #   mp = Multiplot.new(Plot.new('sin(x)'), Plot.new('cos(x)'), layout: [2,1])
-    #   enlarged_mp = mp.add_plot(Plot.new('exp(x)')).layout([3,1])
-    def add_plot(position = 0, plot)
-      self.class.new(@plots.insert(position, plot), @options)
+    #   enlarged_mp = mp.add_plots(Plot.new('exp(x)')).layout([3,1])
+    def add_plots(*plots)
+      plots.unshift(0) unless plots[0].is_a?(Numeric)
+      self.class.new(@plots.insert(*plots), @options)
     end
 
-    alias_method :<<, :add_plot
-    alias_method :add, :add_plot
+    alias_method :add_plot, :add_plots
+    alias_method :<<, :add_plots
+    alias_method :add, :add_plots
 
     ##
     # ====== Overview

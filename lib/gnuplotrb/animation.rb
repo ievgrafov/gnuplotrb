@@ -39,6 +39,7 @@ module GnuplotRB
     alias_method :update_frame, :update_plot
     alias_method :replace_frame, :replace_plot
     alias_method :add_frame, :add_plot
+    alias_method :add_frames, :add_plots
     alias_method :remove_frame, :remove_plot
 
     def plot(path = nil, **options)
