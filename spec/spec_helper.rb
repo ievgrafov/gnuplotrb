@@ -22,4 +22,3 @@ def awesome?
   # sure!
   true
 end
-

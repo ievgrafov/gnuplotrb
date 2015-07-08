@@ -50,17 +50,18 @@ module GnuplotRB
     # The same data but datablock stores it in temp file:
     #   Dataset.new(points, with: 'points', title: 'Points', file: true)
     def initialize(data, **options)
-      self.send(INIT_HANDLERS[data.class], data, options)
+      # run method by name
+      send(INIT_HANDLERS[data.class], data, options)
     end
 
     ##
     # Method for inner use.
     def init_string(data, options)
-      @type, @data= if File.exist?(data)
-        [:datafile, "'#{data}'"]
-      else
-        [:math_function, data.clone]
-      end
+      @type, @data = if File.exist?(data)
+                       [:datafile, "'#{data}'"]
+                     else
+                       [:math_function, data.clone]
+                     end
       @options = Hamster.hash(options)
     end
 
@@ -112,7 +113,7 @@ module GnuplotRB
     #   Dataset.new(points, with: 'points', title: 'Points').to_s
     #   #=> "$DATA1 with points title 'Points'"
     def to_s(terminal = nil)
-      "#{@type == :datablock ? @data.name(terminal) : @data } #{options_to_string}"
+      "#{@type == :datablock ? @data.name(terminal) : @data} #{options_to_string}"
     end
 
     ##

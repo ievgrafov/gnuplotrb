@@ -15,7 +15,7 @@ describe Splot do
     before do
       @title = 'Awesome spec'
       @formula =  %w(sin(x) cos(x) exp(-x))
-      @options = {title: @title, term: 'dumb'}
+      @options = { title: @title, term: 'dumb' }
     end
 
     it 'should use *splot* command instead of *plot*' do
@@ -32,7 +32,7 @@ describe Splot do
     end
 
     it 'should return Splot object' do
-      new_options = {title: 'Another title', xrange: 1..5}
+      new_options = { title: 'Another title', xrange: 1..5 }
       new_plot = @plot.options(new_options)
       expect(new_plot).to_not equal(@plot)
       expect(new_plot).to be_an_instance_of(Splot)

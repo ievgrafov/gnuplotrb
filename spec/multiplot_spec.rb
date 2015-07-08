@@ -17,7 +17,7 @@ describe Multiplot do
       @formula =  %w(sin(x) cos(x) exp(-x))
       @plots = @formula.map { |f| Plot.new(f) }
       @plots << Splot.new('sin(x) * cos(y)')
-      @options = {title: @title, layout: [2,2]}
+      @options = { title: @title, layout: [2, 2] }
     end
 
     it 'should be created out of sequence of plots' do
@@ -48,7 +48,7 @@ describe Multiplot do
     end
 
     it 'should return Multiplot object' do
-      new_options = {title: 'Another title', xrange: 1..5}
+      new_options = { title: 'Another title', xrange: 1..5 }
       new_plot = @mp.options(new_options)
       expect(new_plot).to_not equal(@mp)
       expect(new_plot).to be_an_instance_of(Multiplot)
@@ -61,8 +61,8 @@ describe Multiplot do
       @plot3d = Splot.new('sin(x)*cos(y)')
       @exp = Plot.new('exp(x)')
       @paths = (0..1).map { |i| File.join(@tmp_dir, "#{i}plot.png") }
-      @options0 = { term: ['png', size: [300,300]], output: @paths[0] }
-      @options1 = { term: ['png', size: [300,300]], output: @paths[1] }
+      @options0 = { term: ['png', size: [300, 300]], output: @paths[0] }
+      @options1 = { term: ['png', size: [300, 300]], output: @paths[1] }
     end
 
     it 'should allow to remove plot from Mp' do
@@ -71,7 +71,7 @@ describe Multiplot do
       expect(mp).to_not equal(updated_mp)
       updated_mp.plot(@options0)
       Multiplot.new(@sinx, @exp).plot(@options1)
-      expect(same_images?(*@paths)).to be_truthy      
+      expect(same_images?(*@paths)).to be_truthy
     end
 
     it 'should allow to add plot to Mp' do

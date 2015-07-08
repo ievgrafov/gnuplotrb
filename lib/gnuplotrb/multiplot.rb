@@ -28,7 +28,7 @@ module GnuplotRB
     # Dafault options to be used for that plot
     def default_options
       {
-        layout: [2,2],
+        layout: [2, 2],
         title: 'Multiplot'
       }
     end
@@ -81,7 +81,9 @@ module GnuplotRB
     # Inner options of Plots have the highest priority (except
     # :term and :output which are ignored).
     def plot(term = nil, **options)
-      plot_options = mix_options(options) { |plot_opts, mp_opts| plot_opts.merge(multiplot: mp_opts.to_h) }
+      plot_options = mix_options(options) do |plot_opts, mp_opts|
+        plot_opts.merge(multiplot: mp_opts.to_h)
+      end
       terminal = term || (plot_options[:output] ? Terminal.new : @terminal)
       multiplot(terminal, plot_options)
       if plot_options[:output]
@@ -118,7 +120,7 @@ module GnuplotRB
     # * method also may take a block which returns a plot
     # ====== Example
     #   mp = Multiplot.new(Plot.new('sin(x)'), Plot.new('cos(x)'), layout: [2,1])
-    #   updated_mp = mp.update_plot(title: 'Sin(x) and Exp(x)') { |sinx| sinx.add_dataset('exp(x)') }
+    #   updated_mp = mp.update_plot(title: 'Sin(x) and Exp(x)') { |sinx| sinx.add('exp(x)') }
     def update_plot(position = 0, **options)
       return self unless block_given? if options.empty?
       replacement = @plots[position].options(options)
@@ -181,7 +183,7 @@ module GnuplotRB
 
     ##
     # ====== Overview
-    # Equal to #plots[*args] 
+    # Equal to #plots[*args]
     def [](*args)
       @plots[*args]
     end

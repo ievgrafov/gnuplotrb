@@ -89,26 +89,25 @@ module GnuplotRB
       # Now checks only terminal name.
       def validate_terminal_options(options)
         terminal = options[:term]
-        if terminal
-          terminal = terminal[0] if terminal.is_a?(Array)
-          message = 'Seems like your Gnuplot does not ' \
-                    'support that terminal, please see supported ' \
-                    'terminals with Settings::available_terminals'
-          fail(ArgumentError, message) unless valid_terminal?(terminal)
-        end
+        return unless terminal
+        terminal = terminal[0] if terminal.is_a?(Array)
+        message = 'Seems like your Gnuplot does not ' \
+                  'support that terminal, please see supported ' \
+                  'terminals with Settings::available_terminals'
+        fail(ArgumentError, message) unless valid_terminal?(terminal)
       end
     end
 
     ##
     # You should implement #initialize in classes that use OptionsHelper
-    def initialize(*args)
+    def initialize(*_)
       fail NotImplementedError, 'You should implement #initialize' \
                                 ' in classes that use OptionsHelper!'
     end
 
     ##
     # You should implement #new_with_options in classes that use OptionsHelper
-    def new_with_options(*args)
+    def new_with_options(*_)
       fail NotImplementedError, 'You should implement #new_with_options' \
                                 ' in classes that use OptionsHelper!'
     end

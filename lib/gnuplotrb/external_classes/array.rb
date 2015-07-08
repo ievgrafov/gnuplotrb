@@ -1,3 +1,5 @@
+##
+# Methods to take data for GnuplotRB plots.
 class Array
   # taken for example from current gnuplot bindings
   def to_gnuplot_points

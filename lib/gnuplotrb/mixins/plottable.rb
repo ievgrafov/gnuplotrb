@@ -12,7 +12,7 @@ module GnuplotRB
 
     ##
     # You should implement #plot in classes that are Plottable
-    def plot(*args)
+    def plot(*_)
       fail NotImplementedError, 'You should implement #plot in classes that are Plottable!'
     end
 
@@ -101,7 +101,7 @@ module GnuplotRB
 
     ##
     # This method is used to embed plottable objects
-    # into iRuby notebooks. There is 
+    # into iRuby notebooks. There is
     # [a notebook](https://github.com/dilcom/gnuplotrb/blob/master/notebooks/basic_usage.ipynb)
     # with examples of its usage.
     def to_iruby
@@ -114,7 +114,7 @@ module GnuplotRB
       }
       terminal, options = term.is_a?(Array) ? [term[0], term[1]] : [term, {}]
       terminal = 'svg' unless available_terminals.keys.include?(terminal)
-      [available_terminals[terminal], self.send("to_#{terminal}".to_sym, **options)]
+      [available_terminals[terminal], send("to_#{terminal}".to_sym, **options)]
     end
   end
 end

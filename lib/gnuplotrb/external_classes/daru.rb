@@ -1,10 +1,14 @@
 if defined? Daru
+  ##
+  # See [daru](https://github.com/v0dro/daru)
   module Daru
+    ##
+    # Methods to take data for GnuplotRB plots.
     class DataFrame
       def to_gnuplot_points
         result = ''
-        self.each_row_with_index do |row, index|
-          result += "#{index.to_s} "
+        each_row_with_index do |row, index|
+          result += "#{index} "
           result += row.to_a.join(' ')
           result += "\n"
         end
@@ -12,10 +16,12 @@ if defined? Daru
       end
     end
 
+    ##
+    # Methods to take data for GnuplotRB plots.
     class Vector
       def to_gnuplot_points
         result = ''
-        self.each_with_index do |value, index|
+        each_with_index do |value, index|
           result += "#{index} #{value}\n"
         end
         result
