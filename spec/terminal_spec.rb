@@ -69,10 +69,10 @@ describe Terminal do
     end
   end
 
-  context '#puts' do
+  context '#stream_puts' do
     it 'should output whatever you want just as string' do
       @plot.plot
-      @terminal.puts(@terminal.options_hash_to_string(@options1))
+      @terminal.stream_puts(@terminal.options_hash_to_string(@options1))
       @terminal << @dataset
       expect(same_images?(*@paths)).to be_truthy
     end
