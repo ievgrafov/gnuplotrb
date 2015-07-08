@@ -98,5 +98,23 @@ module GnuplotRB
       term = meth[0..2] == 'to_' && OptionHandling.valid_terminal?(meth[3..-1])
       term || super
     end
+
+    ##
+    # This method is used to embed plottable objects
+    # into iRuby notebooks. There is 
+    # [a notebook](https://github.com/dilcom/gnuplotrb/blob/master/notebooks/basic_usage.ipynb)
+    # with examples of its usage.
+    def to_iruby
+      available_terminals = {
+        'png'      => 'image/png',
+        'pngcairo' => 'image/png',
+        'jpeg'     => 'image/jpeg',
+        'svg'      => 'image/svg+xml',
+        'dumb'     => 'text/plain'
+      }
+      terminal, options = term.is_a?(Array) ? [term[0], term[1]] : [term, {}]
+      terminal = 'svg' unless available_terminals.keys.include?(terminal)
+      [available_terminals[terminal], self.send("to_#{terminal}".to_sym, **options)]
+    end
   end
 end

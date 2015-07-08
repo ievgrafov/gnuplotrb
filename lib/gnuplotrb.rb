@@ -1,6 +1,7 @@
 require 'tempfile'
 require 'hamster'
 require 'open3'
+require 'base64'
 
 def require_if_available(name)
   begin
@@ -15,7 +16,6 @@ require_if_available('daru')
 require 'gnuplotrb/external_classes/string'
 require 'gnuplotrb/external_classes/array'
 require 'gnuplotrb/external_classes/daru'
-require 'gnuplotrb/external_classes/iruby'
 
 require 'gnuplotrb/version'
 require 'gnuplotrb/staff/settings'

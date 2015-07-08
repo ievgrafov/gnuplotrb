@@ -122,20 +122,24 @@ module GnuplotRB
 
     ##
     # ====== Overview
-    # Create new Plot object where given dataset will
-    # be appended to dataset list.
+    # Create new Plot object where given datasets will
+    # be inserted into dataset list before given position
+    # (position = 0 by default).
     # ====== Arguments
-    # * *dataset* - dataset to add
+    # * *position* - position where to insert given datasets
+    # * *datasets* - sequence of datasets to add
     # ====== Example
     #   sinx = Plot.new('sin(x)')
-    #   sinx_and_cosx = sinx.add(['cos(x)'])
+    #   sinx_and_cosx_with_expx = sinx.add(['cos(x)'], ['exp(x)'])
     #
     #   cosx_and_sinx = sinx << ['cos(x)']
-    def add_dataset(dataset)
-      self.class.new(@datasets.add(dataset_from_any(dataset)), @options)
+    def add_datasets(*datasets)
+      datasets.unshift(0) unless datasets[0].is_a?(Numeric)
+      self.class.new(@datasets.insert(*datasets), @options)
     end
 
-    alias_method :<<, :add_dataset
+    alias_method :add_dataset, :add_datasets
+    alias_method :<<, :add_datasets
 
     ##
     # ====== Overview

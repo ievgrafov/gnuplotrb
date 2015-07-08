@@ -80,12 +80,6 @@ describe Dataset do
       expect(ds.data.instance_variable_get(:@data)).to eql(@data)
     end
 
-    it 'may be created with Daru::DataFrame and *using* option given' do
-      ds = Dataset.new(@df, using: 'index:yerr:xtic(y)')
-      expect(ds.using).to eql('1:3:xtic(2)')
-      expect(ds.data.instance_variable_get(:@data)).to eql(@data)
-    end
-
     it "should use given title instead of Daru's" do
       expect(Dataset.new(@vector, title: @alt_title).title).to eql(@alt_title)
       expect(Dataset.new(@df, title: @alt_title).title).to eql(@alt_title)
