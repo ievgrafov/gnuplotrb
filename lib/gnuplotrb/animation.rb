@@ -50,7 +50,7 @@ module GnuplotRB
       need_output = plot_options[:output].nil?
       plot_options[:output] = Dir::Tmpname.make_tmpname('anim', 0) if need_output
       terminal = Terminal.new
-      mutiplot(terminal, plot_options)
+      multiplot(terminal, plot_options)
       # guaranteed wait for plotting to finish
       terminal.close
       # not guaranteed wait for plotting to finish
