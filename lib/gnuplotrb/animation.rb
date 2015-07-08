@@ -89,16 +89,16 @@ module GnuplotRB
 
     ##
     # #to_<term_name> methods are not supported by animation
-    def to_specific_term(*args)
-      fail RuntimeError, 'Specific terminals are not supported by Animation'
+    def to_specific_term(*_)
+      fail 'Specific terminals are not supported by Animation'
     end
 
     ##
     # This method is used to embed gif animations
-    # into iRuby notebooks. 
+    # into iRuby notebooks.
     def to_iruby
-      gif_base64 = Base64.encode64(self.plot)
-      ["text/html", "<img src=\"data:image/gif;base64, #{gif_base64}\">"]
+      gif_base64 = Base64.encode64(plot)
+      ['text/html', "<img src=\"data:image/gif;base64, #{gif_base64}\">"]
     end
 
     private :default_options,

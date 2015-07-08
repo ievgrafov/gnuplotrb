@@ -35,7 +35,7 @@ module GnuplotRB
       @cmd += ' 2>&1'
       stream = IO.popen(@cmd, 'w+')
       handle_stderr(stream)
-      ObjectSpace.define_finalizer(self, proc { Terminal::close_arg(stream) } )
+      ObjectSpace.define_finalizer(self, proc { Terminal.close_arg(stream) })
       @in = stream
       yield(self) if block_given?
     end
@@ -57,9 +57,9 @@ module GnuplotRB
     #   #=>   EOD
     def store_datablock(data)
       name = "$DATA#{@current_datablock += 1}"
-      self.puts "#{name} << EOD"
-      self.puts data
-      self.puts 'EOD'
+      stream_puts "#{name} << EOD"
+      stream_puts data
+      stream_puts 'EOD'
       name
     end
 
@@ -98,7 +98,7 @@ module GnuplotRB
     #   #=> outputs to gnuplot: "set term qt size 100,100\n"
     def set(options)
       OptionHandling.validate_terminal_options(options)
-      self.puts(options_hash_to_string(options))
+      stream_puts(options_hash_to_string(options))
     end
 
     ##
@@ -109,7 +109,7 @@ module GnuplotRB
     def unset(*options)
       options.flatten
              .sort_by { |key| OPTION_ORDER.find_index(key) || -1 }
-             .each { |key| self.puts "unset #{OptionHandling.string_key(key)}" }
+             .each { |key| stream_puts "unset #{OptionHandling.string_key(key)}" }
       self
     end
 
@@ -124,7 +124,7 @@ module GnuplotRB
       when Plottable
         item.plot(self)
       else
-        self.print(item.to_s)
+        stream_print(item.to_s)
       end
       self
     end
@@ -133,15 +133,15 @@ module GnuplotRB
     # ====== Overview
     # Just puts *command* to gnuplot pipe and returns self
     # to allow chaining.
-    def puts(command)
-      self.print("#{command}\n")
+    def stream_puts(command)
+      stream_print("#{command}\n")
     end
 
     ##
     # ====== Overview
     # Just prints *command* to gnuplot pipe and returns self
     # to allow chaining.
-    def print(command)
+    def stream_print(command)
       check_errors
       @in.print(command)
       self
@@ -153,7 +153,7 @@ module GnuplotRB
     # with rereading data.
     def replot(**options)
       set(options)
-      self.puts('replot')
+      stream_puts('replot')
       unset(options.keys)
       sleep 0.01 until File.size?(options[:output]) if options[:output]
       self
@@ -165,7 +165,7 @@ module GnuplotRB
     # Closes pipe so Terminal object should not be used after #close call.
     def close
       check_errors
-      Terminal::close_arg(@in)
+      Terminal.close_arg(@in)
     end
   end
 end

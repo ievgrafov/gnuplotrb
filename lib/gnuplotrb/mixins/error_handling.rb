@@ -13,13 +13,12 @@ module GnuplotRB
     # Check if there were errors in previous commands.
     # Throws GnuplotError in case of any errors.
     def check_errors
-      unless @err_array.empty?
-        command = @err_array.first
-        rest = @err_array[1..-1].join('; ')
-        message = "Error in previous command (\"#{command}\"): \"#{rest}\""
-        @err_array.clear
-        fail GnuplotError, message
-      end
+      return if @err_array.empty?
+      command = @err_array.first
+      rest = @err_array[1..-1].join('; ')
+      message = "Error in previous command (\"#{command}\"): \"#{rest}\""
+      @err_array.clear
+      fail GnuplotError, message
     end
 
     ##
@@ -29,7 +28,7 @@ module GnuplotRB
     def handle_stderr(stream)
       @err_array = []
       Thread.new do
-        until (line = stream.gets).nil? do
+        until (line = stream.gets).nil?
           line.strip!
           @err_array << line if line.size > 3
         end

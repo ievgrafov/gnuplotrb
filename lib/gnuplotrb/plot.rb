@@ -16,18 +16,14 @@ module GnuplotRB
     #   "set title 'plot'" for { title: 'plot' } etc)
     def initialize(*datasets)
       # had to relace **options arg with this because in some cases
-      # Daru::DataFrame was mentioned as hash:
-      #   Plot.new(some_dataframe)
-      #   # => Plot<datasets: [], options: <dataframe as hash here> >
+      # Daru::DataFrame was mentioned as hash and added to options
+      # instead of plots
+      @options = Hamster.hash
       if datasets[-1].is_a?(Hamster::Hash) || datasets[-1].is_a?(Hash)
         @options = Hamster.hash(datasets[-1])
         datasets = datasets[0..-2]
-      else
-        @options = Hamster.hash({})
       end
       @datasets = parse_datasets_array(datasets)
-      #@options = Hamster::Hash.new(options)
-      @already_plotted = false
       @cmd = 'plot '
       @terminal = Terminal.new
       OptionHandling.validate_terminal_options(@options)
@@ -71,7 +67,7 @@ module GnuplotRB
       terminal = term || (opts[:output] ? Terminal.new : @terminal)
       full_command = @cmd + @datasets.map { |dataset| dataset.to_s(terminal) }.join(' , ')
       terminal.set(opts)
-              .puts(full_command)
+              .stream_puts(full_command)
               .unset(opts.keys)
       if opts[:output]
         # guaranteed wait for plotting to finish
@@ -80,7 +76,6 @@ module GnuplotRB
         # work bad with terminals like svg and html
         sleep 0.01 until File.size?(opts[:output])
       end
-      @already_plotted = true
       self
     end
 
