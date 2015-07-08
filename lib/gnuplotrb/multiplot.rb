@@ -23,6 +23,9 @@ module GnuplotRB
       OptionHandling.validate_terminal_options(@options)
     end
 
+    ##
+    # For inner use!
+    # Dafault options to be used for that plot
     def default_options
       {
         layout: [2,2],
@@ -30,6 +33,11 @@ module GnuplotRB
       }
     end
 
+    ##
+    # For inner use!
+    # This plot have some specific options which
+    # should be handled different way than others.
+    # Here are keys of this options.
     def specific_keys
       %w(
         title
@@ -45,11 +53,16 @@ module GnuplotRB
 
     ##
     # Check if given options corresponds to multiplot.
-    # Multiplot special options are :title and :layout.
+    # Uses #specific_keys to check.
     def specific_option?(key)
       specific_keys.include?(key.to_s)
     end
 
+    ##
+    # For inner use!
+    # Takes all options and splits them into specific and
+    # others. Requires a block where this two classes should
+    # be mixed.
     def mix_options(options)
       all_options = @options.merge(options)
       specific_options, plot_options = all_options.partition { |key, _value| specific_option?(key) }
@@ -81,6 +94,9 @@ module GnuplotRB
       self
     end
 
+    ##
+    # For inner use!
+    # Just a part of #plot.
     def multiplot(terminal, options)
       terminal.set(options)
       @plots.each { |graph| graph.plot(terminal, multiplot_part: true) }
@@ -169,5 +185,11 @@ module GnuplotRB
     def [](*args)
       @plots[*args]
     end
+
+    private :mix_options,
+            :multiplot,
+            :default_options,
+            :specific_keys,
+            :new_with_options
   end
 end
