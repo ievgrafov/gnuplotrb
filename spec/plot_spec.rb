@@ -15,12 +15,12 @@ describe Plot do
     before do
       @title = 'Awesome spec'
       @formula =  %w(sin(x) cos(x) exp(-x))
-      @options = {title: @title, term: 'dumb'}
-      @df = Daru::DataFrame.new({
-              Build: [312, 630, 315, 312],
-              Test: [525, 1050, 701, 514],
-              Deploy: [215, 441, 370, 220]
-      })
+      @options = { title: @title, term: 'dumb' }
+      @df = Daru::DataFrame.new(
+        Build: [312, 630, 315, 312],
+        Test: [525, 1050, 701, 514],
+        Deploy: [215, 441, 370, 220]
+      )
     end
 
     it 'should be created out of sequence of datasets' do
@@ -72,7 +72,7 @@ describe Plot do
     end
 
     it 'should allow to safely set several options at once' do
-      new_options = {title: 'Another title', xrange: 1..5}
+      new_options = { title: 'Another title', xrange: 1..5 }
       new_plot = @plot.options(new_options)
       expect(new_plot).to_not equal(@plot)
       expect(new_plot).to be_an_instance_of(Plot)
@@ -85,7 +85,7 @@ describe Plot do
       @plot_math = Plot.new(['sin(x)', title: 'Just a sin'])
       @dataset = Dataset.new('exp(-x)')
       @plot_two_ds = Plot.new(['cos(x)'], ['x*x'])
-      @options = {title: 'Example dataset'}
+      @options = { title: 'Example dataset' }
       @plot_datafile = Plot.new([@datafile_path])
       @data = [1, 2, 3, 4]
       @plot_data_inmemory = Plot.new([@data])
@@ -149,8 +149,8 @@ describe Plot do
       updated = File.join(@tmp_dir, 'updated_plot.png')
       new_plot = @plot_data_inmemory.update_dataset(data: @data)
       expect(new_plot).to_not be_equal(@plot_data_inmemory)
-      @plot_data_inmemory.to_png(current, size: [200,200])
-      new_plot.to_png(updated, size: [200,200])
+      @plot_data_inmemory.to_png(current, size: [200, 200])
+      new_plot.to_png(updated, size: [200, 200])
       expect(same_images?(current, updated)).to be_falsy
     end
 
@@ -158,11 +158,11 @@ describe Plot do
       old = File.join(@tmp_dir, 'old_plot.png')
       current = File.join(@tmp_dir, 'plot.png')
       updated = File.join(@tmp_dir, 'updated_plot.png')
-      @plot_data_tempfile.to_png(old, size: [200,200])
+      @plot_data_tempfile.to_png(old, size: [200, 200])
       new_plot = @plot_data_tempfile.update_dataset(data: @data)
       expect(new_plot).to be_equal(@plot_data_tempfile)
-      @plot_data_tempfile.to_png(current, size: [200,200])
-      new_plot.to_png(updated, size: [200,200])
+      @plot_data_tempfile.to_png(current, size: [200, 200])
+      new_plot.to_png(updated, size: [200, 200])
       expect(same_images?(current, updated)).to be_truthy
       expect(same_images?(current, old)).to be_falsy
     end

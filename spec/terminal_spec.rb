@@ -14,34 +14,35 @@ describe Terminal do
   before(:each) do
     @terminal = Terminal.new
     @paths = (0..1).map { |i| File.join(@tmp_dir, "#{i}plot.png") }
-    @options0 = { term: ['png', size: [300,300]], output: @paths[0] }
-    @options1 = { term: ['png', size: [300,300]], output: @paths[1] }
+    @options0 = { term: ['png', size: [300, 300]], output: @paths[0] }
+    @options1 = { term: ['png', size: [300, 300]], output: @paths[1] }
     @dataset = Dataset.new('sin(x)')
     @plot = Plot.new(@dataset, @options0)
   end
 
   context 'options handling' do
-
     it 'should work with String as option value' do
-      options = {term: 'qt'}
+      options = { term: 'qt' }
       string = @terminal.options_hash_to_string(options)
-      expect(string.strip).to be_eql("set term qt")
+      expect(string.strip).to be_eql('set term qt')
     end
 
     it 'should work with Boolean and nil as option value' do
-      [[{multiplot: true}, "set multiplot"],
-       [{multiplot: false}, "unset multiplot"],
-       [{multiplot: nil}, "unset multiplot"]].each do |variant|
-         string = @terminal.options_hash_to_string(variant[0])
-         expect(string.strip).to be_eql(variant[1])
+      [
+        [{ multiplot: true }, 'set multiplot'],
+        [{ multiplot: false }, 'unset multiplot'],
+        [{ multiplot: nil }, 'unset multiplot']
+      ].each do |variant|
+        string = @terminal.options_hash_to_string(variant[0])
+        expect(string.strip).to be_eql(variant[1])
       end
     end
 
     it 'should work with Array and Hash as option value' do
       # it works with arrays of numbers different way
-      options = {term: ['qt', size: [100, 100]]}
+      options = { term: ['qt', size: [100, 100]] }
       string = @terminal.options_hash_to_string(options)
-      expect(string.strip).to be_eql("set term qt size 100,100")
+      expect(string.strip).to be_eql('set term qt size 100,100')
     end
   end
 
@@ -88,7 +89,7 @@ describe Terminal do
   context 'check correctness of a terminal' do
     it 'should raise an error when trying to use incorrect terminal' do
       expect { Plot.new(term: 'incorrect_term') }.to raise_error(ArgumentError)
-      expect { Plot.new(term: ['incorrect_term', size: [300,300]]) }.to raise_error(ArgumentError)
+      expect { Plot.new(term: ['incorrect_term', size: [300, 300]]) }.to raise_error(ArgumentError)
       expect { Plot.new.to_incorrect_term }.to raise_error(NoMethodError)
       expect { Plot.new.plot(term: 'incorrect_term') }.to raise_error(ArgumentError)
       expect { Plot.new.plot(term: ['incorrect_term']) }.to raise_error(ArgumentError)
@@ -100,7 +101,7 @@ describe Terminal do
       @terminal.set(wrong_option: 'wrong_value')
       # it takes gnuplot some time to find error
       # and output it to stderr
-      sleep 0.1
+      sleep 0.3
       expect { @terminal.set(polar: true) }.to raise_error(GnuplotError)
       expect { @terminal.set(polar: true) }.to_not raise_error
     end
