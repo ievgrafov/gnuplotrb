@@ -7,8 +7,6 @@ This is part of ruby gnuplot gem. It already can plot something (see examples an
 {<img src="https://codeclimate.com/github/dilcom/gnuplotrb/badges/coverage.svg" alt="Test coverage" />}[https://codeclimate.com/github/dilcom/gnuplotrb]
 {<img src="https://badge.fury.io/rb/gnuplotrb.svg" alt="Gem Version" />}[https://rubygems.org/gems/gnuplotrb]
 
-== Installation
-While gem isn't on rubygems, it may be installed from source.
 === Dependencies
 * Ruby 2.0+
 * It is required to install {gnuplot 5.0}[http://www.gnuplot.info/download.html] to use that gem.
@@ -27,8 +25,8 @@ While gem isn't on rubygems, it may be installed from source.
 * run
     bundle install
 
-== Plain examples
+=== Plain examples
 You may find several examples in {examples directory}[https://github.com/dilcom/gnuplotrb/tree/master/examples]
 
-== Notebooks with examples
+=== Notebooks with examples
 You may find several iRuby notebooks and readme for them in {notebooks directory}[https://github.com/dilcom/gnuplotrb/tree/master/notebooks]

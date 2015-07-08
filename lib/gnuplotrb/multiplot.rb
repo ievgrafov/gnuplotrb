@@ -23,6 +23,19 @@ module GnuplotRB
       OptionHandling.validate_terminal_options(@options)
     end
 
+    def default_options
+      {
+        layout: [2,2],
+        title: 'Multiplot'
+      }
+    end
+
+    def specific_keys
+      %w(
+        title
+        layout
+      )
+    end
     ##
     # Create new Multiplot object with the same set of plots and
     # given options.
@@ -33,8 +46,14 @@ module GnuplotRB
     ##
     # Check if given options corresponds to multiplot.
     # Multiplot special options are :title and :layout.
-    def mp_option?(key)
-      %w(title layout).include?(key.to_s)
+    def specific_option?(key)
+      specific_keys.include?(key.to_s)
+    end
+
+    def mix_options(options)
+      all_options = @options.merge(options)
+      specific_options, plot_options = all_options.partition { |key, _value| specific_option?(key) }
+      yield(plot_options, default_options.merge(specific_options))
     end
 
     ##
@@ -49,13 +68,9 @@ module GnuplotRB
     # Inner options of Plots have the highest priority (except
     # :term and :output which are ignored).
     def plot(term = nil, **options)
-      all_options = @options.merge(options)
-      mp_options, plot_options = all_options.partition { |key, _value| mp_option?(key) }
-      plot_options = plot_options.merge(multiplot: mp_options.to_h)
+      plot_options = mix_options(options) { |plot_opts, mp_opts| plot_opts.merge(multiplot: mp_opts.to_h) }
       terminal = term || (plot_options[:output] ? Terminal.new : @terminal)
-      terminal.set(plot_options)
-      @plots.each { |graph| graph.plot(terminal, multiplot_part: true) }
-      terminal.unset(plot_options.keys)
+      mutiplot(terminal, plot_options)
       if plot_options[:output]
         # guaranteed wait for plotting to finish
         terminal.close unless term
@@ -64,6 +79,12 @@ module GnuplotRB
         sleep 0.01 until File.size?(plot_options[:output])
       end
       self
+    end
+
+    def multiplot(terminal, options)
+      terminal.set(options)
+      @plots.each { |graph| graph.plot(terminal, multiplot_part: true) }
+      terminal.unset(options.keys)
     end
 
     ##

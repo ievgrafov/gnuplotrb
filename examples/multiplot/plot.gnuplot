@@ -12,7 +12,7 @@ $DATA << EOD
 "1951-1960" 67106  36637  18575
 "1961-1970" 20621  5401   9192
 EOD
-set multiplot layout 3,1
+set multiplot layout 3,1 title 'Histograms'
 plot $DATA using 2:xtic(1) title 'Austria'
 plot $DATA using 3:xtic(1) title 'Hungary'
 plot $DATA using 4:xtic(1) title 'Belgium'

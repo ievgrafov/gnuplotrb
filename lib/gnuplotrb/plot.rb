@@ -25,20 +25,27 @@ module GnuplotRB
       else
         @options = Hamster.hash({})
       end
-      @datasets = case datasets[0]
-                  when Hamster::Vector
-                    datasets[0]
-                  when (defined?(Daru) ? Daru::DataFrame : nil)
-                    Hamster::Vector.new(datasets[0].map { |ds| dataset_from_any(ds) })
-                  else
-                    Hamster::Vector.new(datasets.map { |ds| dataset_from_any(ds) })
-                  end
+      @datasets = parse_datasets_array(datasets)
       #@options = Hamster::Hash.new(options)
       @already_plotted = false
       @cmd = 'plot '
       @terminal = Terminal.new
       OptionHandling.validate_terminal_options(@options)
       yield(self) if block_given?
+    end
+
+    ##
+    # For inner use!
+    # Parses given array and returns Hamster::Vector of Datasets
+    def parse_datasets_array(datasets)
+      case datasets[0]
+      when Hamster::Vector
+        datasets[0]
+      when (defined?(Daru) ? Daru::DataFrame : nil)
+        Hamster::Vector.new(datasets[0].map { |ds| dataset_from_any(ds) })
+      else
+        Hamster::Vector.new(datasets.map { |ds| dataset_from_any(ds) })
+      end
     end
 
     ##
@@ -168,6 +175,7 @@ module GnuplotRB
     end
 
     private :dataset_from_any,
-            :new_with_options
+            :new_with_options,
+            :parse_datasets_array
   end
 end
