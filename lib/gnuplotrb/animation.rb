@@ -46,13 +46,10 @@ module GnuplotRB
       plot_options = mix_options(options) do |plot_opts, anim_opts|
         plot_opts.merge(term: ['gif', anim_opts])
       end
-      puts plot_options
       need_output = plot_options[:output].nil?
       plot_options[:output] = Dir::Tmpname.make_tmpname('anim', 0) if need_output
       terminal = Terminal.new
-      terminal.set(plot_options)
-      @plots.each { |graph| graph.plot(terminal, multiplot_part: true) }
-      terminal.unset(plot_options.keys)
+      mutiplot(terminal, plot_options)
       # guaranteed wait for plotting to finish
       terminal.close
       # not guaranteed wait for plotting to finish

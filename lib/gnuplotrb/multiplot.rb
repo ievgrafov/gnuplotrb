@@ -70,9 +70,7 @@ module GnuplotRB
     def plot(term = nil, **options)
       plot_options = mix_options(options) { |plot_opts, mp_opts| plot_opts.merge(multiplot: mp_opts.to_h) }
       terminal = term || (plot_options[:output] ? Terminal.new : @terminal)
-      terminal.set(plot_options)
-      @plots.each { |graph| graph.plot(terminal, multiplot_part: true) }
-      terminal.unset(plot_options.keys)
+      mutiplot(terminal, plot_options)
       if plot_options[:output]
         # guaranteed wait for plotting to finish
         terminal.close unless term
@@ -81,6 +79,12 @@ module GnuplotRB
         sleep 0.01 until File.size?(plot_options[:output])
       end
       self
+    end
+
+    def multiplot(terminal, options)
+      terminal.set(options)
+      @plots.each { |graph| graph.plot(terminal, multiplot_part: true) }
+      terminal.unset(options.keys)
     end
 
     ##
