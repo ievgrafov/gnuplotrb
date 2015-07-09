@@ -25,7 +25,6 @@ module GnuplotRB
       end
       @datasets = parse_datasets_array(datasets)
       @cmd = 'plot '
-      @terminal = Terminal.new
       OptionHandling.validate_terminal_options(@options)
       yield(self) if block_given?
     end
@@ -64,7 +63,7 @@ module GnuplotRB
       fail ArgumentError, 'Empty plots are not supported!' if @datasets.empty?
       opts = @options.merge(options)
       opts = opts.reject { |key, _value| [:term, :output].include?(key) } if multiplot_part
-      terminal = term || (opts[:output] ? Terminal.new : @terminal)
+      terminal = term || (opts[:output] ? Terminal.new : own_terminal)
       full_command = @cmd + @datasets.map { |dataset| dataset.to_s(terminal) }.join(' , ')
       terminal.set(opts)
               .stream_puts(full_command)
