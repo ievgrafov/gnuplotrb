@@ -3,49 +3,11 @@ module GnuplotRB
   # === Overview
   # Animation allows to create gif animation with given plots
   # as frames. Possible frames: Plot, Splot, Multiplot.
+  # More about its usage in {animation notebook}
+  # [https://github.com/dilcom/gnuplotrb/blob/master/notebooks/animated_plots.ipynb].
   class Animation < Multiplot
     ##
-    # For inner use!
-    # Dafault options to be used for that plot
-    def default_options
-      {
-        animate: {
-          delay: 10,
-          loop: 0,
-          optimize: true
-        }
-      }
-    end
-
-    ##
-    # For inner use!
-    # This plot have some specific options which
-    # should be handled different way than others.
-    # Here are keys of this options.
-    def specific_keys
-      %w(
-        animate
-        size
-        background
-        transparent
-        enhanced
-        rounded
-        butt
-        linewidth
-        dashlength
-        tiny
-        small
-        medium
-        large
-        giant
-        font
-        fontscale
-        crop
-      )
-    end
-
-    ##
-    # Plot here named frame
+    # *Plot* here is also named as *frame*
     alias_method :frames, :plots
     alias_method :update_frame, :update_plot
     alias_method :replace_frame, :replace_plot
@@ -101,7 +63,43 @@ module GnuplotRB
       ['text/html', "<img src=\"data:image/gif;base64, #{gif_base64}\">"]
     end
 
-    private :default_options,
-            :specific_keys
+    private
+    ##
+    # Dafault options to be used for that plot
+    def default_options
+      {
+        animate: {
+          delay: 10,
+          loop: 0,
+          optimize: true
+        }
+      }
+    end
+
+    ##
+    # This plot have some specific options which
+    # should be handled different way than others.
+    # Here are keys of this options.
+    def specific_keys
+      %w(
+        animate
+        size
+        background
+        transparent
+        enhanced
+        rounded
+        butt
+        linewidth
+        dashlength
+        tiny
+        small
+        medium
+        large
+        giant
+        font
+        fontscale
+        crop
+      )
+    end
   end
 end

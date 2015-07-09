@@ -96,7 +96,6 @@ module GnuplotRB
     end
 
     ##
-    # For inner use!
     # Returns terminal object linked with this Plottable object.
     def own_terminal
       @terminal ||= Terminal.new 
@@ -107,6 +106,7 @@ module GnuplotRB
     # into iRuby notebooks. There is
     # [a notebook](https://github.com/dilcom/gnuplotrb/blob/master/notebooks/basic_usage.ipynb)
     # with examples of its usage.
+    # TODO: default iRuby terminal should be moved to settings
     def to_iruby
       available_terminals = {
         'png'      => 'image/png',

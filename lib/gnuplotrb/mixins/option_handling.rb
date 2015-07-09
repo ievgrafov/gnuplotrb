@@ -33,7 +33,6 @@ module GnuplotRB
       )
 
       ##
-      # For inner use!
       # Replacement '_' with ' ' is made to allow passing several options
       # with the same first word of key.
       # See issue #7 for more info.
@@ -146,8 +145,8 @@ module GnuplotRB
       end
     end
 
+    private
     ##
-    # Method for inner use.
     # ====== Arguments
     # * *key* - [Symbol] - option key
     # * *value* - anything treated as options value in gnuplot gem
@@ -160,7 +159,5 @@ module GnuplotRB
         options(key => value)
       end
     end
-
-    private :option
   end
 end

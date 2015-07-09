@@ -118,10 +118,7 @@ module GnuplotRB
     # Short way to plot Datablock, Plot or Splot object.
     # Other items will be just piped out to gnuplot.
     def <<(item)
-      case item
-      when Dataset
-        Plot.new(item).plot(self)
-      when Plottable
+      if item.is_a? Plottable
         item.plot(self)
       else
         stream_print(item.to_s)
