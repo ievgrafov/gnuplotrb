@@ -7,10 +7,6 @@ module GnuplotRB
     include OptionHandling
 
     ##
-    # Terminal object used by this Plottable to pipe data to gnuplot.
-    attr_reader :terminal
-
-    ##
     # You should implement #plot in classes that are Plottable
     def plot(*_)
       fail NotImplementedError, 'You should implement #plot in classes that are Plottable!'
@@ -97,6 +93,13 @@ module GnuplotRB
       meth = meth_id.id2name
       term = meth[0..2] == 'to_' && OptionHandling.valid_terminal?(meth[3..-1])
       term || super
+    end
+
+    ##
+    # For inner use!
+    # Returns terminal object linked with this Plottable object.
+    def own_terminal
+      @terminal ||= Terminal.new 
     end
 
     ##

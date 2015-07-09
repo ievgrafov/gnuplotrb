@@ -64,7 +64,7 @@ describe Plot do
     end
 
     it 'should allow to get terminal' do
-      expect(@plot.terminal).to be_an_instance_of(Terminal)
+      expect(@plot.own_terminal).to be_an_instance_of(Terminal)
     end
 
     it 'should allow to get all the options' do

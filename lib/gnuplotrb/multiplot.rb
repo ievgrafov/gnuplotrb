@@ -19,7 +19,6 @@ module GnuplotRB
     def initialize(*plots, **options)
       @plots = plots[0].is_a?(Hamster::Vector) ? plots[0] : Hamster::Vector.new(plots)
       @options = Hamster.hash(options)
-      @terminal = Terminal.new
       OptionHandling.validate_terminal_options(@options)
     end
 
@@ -84,7 +83,7 @@ module GnuplotRB
       plot_options = mix_options(options) do |plot_opts, mp_opts|
         plot_opts.merge(multiplot: mp_opts.to_h)
       end
-      terminal = term || (plot_options[:output] ? Terminal.new : @terminal)
+      terminal = term || (plot_options[:output] ? Terminal.new : own_terminal)
       multiplot(terminal, plot_options)
       if plot_options[:output]
         # guaranteed wait for plotting to finish
