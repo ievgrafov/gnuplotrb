@@ -2,10 +2,11 @@
 
 This is part of ruby gnuplot gem. It already can plot something (see examples and notebooks) but some features still waiting for implementation.
 
+{<img src="https://badge.fury.io/rb/gnuplotrb.svg" alt="Gem Version" />}[https://rubygems.org/gems/gnuplotrb]
+
 {<img src="https://travis-ci.org/dilcom/gnuplotrb.svg?branch=master" alt="Build Status" />}[https://travis-ci.org/dilcom/gnuplotrb]
 {<img src="https://codeclimate.com/github/dilcom/gnuplotrb/badges/gpa.svg" alt="Code quality" />}[https://codeclimate.com/github/dilcom/gnuplotrb]
 {<img src="https://codeclimate.com/github/dilcom/gnuplotrb/badges/coverage.svg" alt="Test coverage" />}[https://codeclimate.com/github/dilcom/gnuplotrb]
-{<img src="https://badge.fury.io/rb/gnuplotrb.svg" alt="Gem Version" />}[https://rubygems.org/gems/gnuplotrb]
 
 === Dependencies
 * Ruby 2.0+
@@ -16,7 +17,7 @@ This is part of ruby gnuplot gem. It already can plot something (see examples an
   cd gnuplotrb
   bundle install
   rake install
-==== Install latest stable version
+==== Install latest stable version from Rubygems
   gem install gnuplotrb
 ==== Install latest stable version using bundler
 * add
@@ -30,3 +31,11 @@ You may find several examples in {examples directory}[https://github.com/dilcom/
 
 === Notebooks with examples
 You may find several iRuby notebooks and readme for them in {notebooks directory}[https://github.com/dilcom/gnuplotrb/tree/master/notebooks]
+
+=== Contributing
+
+1. {Fork it}[https://github.com/dilcom/gnuplotrb/fork]
+2. Create your feature branch (`git checkout -b my-new-feature`)
+3. Commit your changes (`git commit -am 'Add some feature'`)
+4. Push to the branch (`git push origin my-new-feature`)
+5. Create a new Pull Request
