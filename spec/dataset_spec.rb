@@ -59,7 +59,7 @@ describe Dataset do
       @y =    [2453, 2343, 2454, 2254]
       @yerr = [120,  133,  123,  113]
       @title = :plot_from_daru
-      @data = (0..3).map { |i| "#{@xtic[i]} #{@y[i]} #{@yerr[i]}\n" }.join
+      @data = (0..3).map { |i| "\"#{@xtic[i]}\" #{@y[i]} #{@yerr[i]}\n" }.join
       @df = Daru::DataFrame.new([@y, @yerr], order: [:y, :yerr], index: @xtic, name: @title)
       @alt_title = 'Some other given title'
       @vector = Daru::Vector.new(@y, index: @xtic, name: @title)
@@ -69,7 +69,7 @@ describe Dataset do
       ds = Dataset.new(@vector)
       expect(ds.title).to eql(@title)
       expect(ds.using).to eql('2:xtic(1)')
-      data = (0..3).map { |i| "#{@xtic[i]} #{@y[i]}\n" }.join
+      data = (0..3).map { |i| "\"#{@xtic[i]}\" #{@y[i]}\n" }.join
       expect(ds.data.instance_variable_get(:@data)).to eql(data)
     end
 
