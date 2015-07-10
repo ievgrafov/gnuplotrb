@@ -20,6 +20,7 @@ module GnuplotRB
         zlabel
         rgb
         font
+        background
       )
 
       ##
