@@ -79,7 +79,7 @@ module GnuplotRB
     # Options passed here have priority over already existing.
     # Inner options of Plots have the highest priority (except
     # :term and :output which are ignored).
-    def plot(term = nil, multiplot_part:, **options)
+    def plot(term = nil, multiplot_part: false, **options)
       plot_options = mix_options(options) do |plot_opts, mp_opts|
         plot_opts.merge(multiplot: mp_opts.to_h)
       end
