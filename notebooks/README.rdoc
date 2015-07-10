@@ -34,6 +34,7 @@ Examples of using different datasources:
 
 * {data given in file or Ruby Array}[https://github.com/dilcom/gnuplotrb/blob/master/notebooks/points_from_different_sources.ipynb]
 * {data given in Daru containers}[https://github.com/dilcom/gnuplotrb/blob/master/notebooks/plotting_from_daru.ipynb]
+* {updating plots with new data}[https://github.com/dilcom/gnuplotrb/blob/master/notebooks/updating_data.ipynb]
 
 ==== Multiplot
 You can not only plot several datasets in single coordinate system but place several coordinate systems on a canvas.
