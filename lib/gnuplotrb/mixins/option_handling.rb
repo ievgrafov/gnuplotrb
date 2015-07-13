@@ -21,6 +21,15 @@ module GnuplotRB
         rgb
         font
         background
+        format
+        format_x
+        format_y
+        format_xy
+        format_x2
+        format_y2
+        format_z
+        format_cb
+        timefmt
       )
 
       ##

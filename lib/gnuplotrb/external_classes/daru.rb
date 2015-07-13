@@ -8,7 +8,7 @@ if defined? Daru
       def to_gnuplot_points
         result = ''
         each_row_with_index do |row, index|
-          result += "\"#{index}\" "
+          result += index.is_a?(DateTime) ? "#{index} " :"\"#{index}\" "
           result += row.to_a.join(' ')
           result += "\n"
         end
@@ -22,7 +22,8 @@ if defined? Daru
       def to_gnuplot_points
         result = ''
         each_with_index do |value, index|
-          result += "\"#{index}\" #{value}\n"
+          result += index.is_a?(DateTime) ? "#{index} " :"\"#{index}\" "
+          result += "#{value}\n"
         end
         result
       end
