@@ -5,7 +5,7 @@ plot = Plot.new(['points.data', with: 'lines', title: 'Points from file'], title
 
 plot.to_png('./gnuplot_gem.png', size: [600, 600])
 
-unless $RSPEC_TEST
+unless defined?(RSpec)
   plot.to_svg('./real_result.svg', size: [600, 600])
   plot.to_canvas('./real_result.html', size: [600, 600])
 
