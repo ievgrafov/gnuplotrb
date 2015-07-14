@@ -7,7 +7,7 @@ module GnuplotRB
   # to gnuplot as 'set key value'.
   class Terminal
     include ErrorHandling
-    OPTION_ORDER = [:term, :output, :multiplot]
+    OPTION_ORDER = [:term, :output, :multiplot, :timefmt, :xrange]
 
     class << self
       ##
