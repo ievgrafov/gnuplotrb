@@ -128,6 +128,7 @@ module GnuplotRB
     #
     #   cosx_and_sinx = sinx << ['cos(x)']
     def add_datasets(*datasets)
+      datasets.map! { |ds| ds.is_a?(Numeric) ? ds : dataset_from_any(ds) }
       datasets.unshift(0) unless datasets[0].is_a?(Numeric)
       self.class.new(@datasets.insert(*datasets), @options)
     end
