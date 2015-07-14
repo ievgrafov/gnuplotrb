@@ -158,28 +158,44 @@ module GnuplotRB
     end
 
     ##
+    # For inner use!
+    # Checks several conditions and set options needed
+    # to handle DateTime indexes properly.
+    def provide_with_datetime_format(data, using)
+      if defined?(Daru) &&
+         (data.is_a?(Daru::DataFrame) || data.is_a?(Daru::Vector)) &&
+         data.index.first.is_a?(DateTime) &&
+         using[0..1] == '1:'
+        @options = @options.merge(
+            xdata: 'time',
+            timefmt: '%Y-%m-%dT%H:%M:%S',
+            format_x: '%d\n%b\n%Y'
+        )
+      end
+    end
+
+    ##
     # Method for inner use.
     # Check if given args is a dataset and returns it. Creates
     # new dataset from given args otherwise.
     def dataset_from_any(source)
-      case source
-      when (defined?(Daru) ? Daru::Vector : nil), (defined?(Daru) ? Daru::DataFrame : nil)
-        ds = Dataset.new(source)
-        if source.index.first.is_a?(DateTime) && ds.using[0..1] == '1:'
-          @options[:xdata] ||= 'time'
-          @options[:timefmt] ||= '%Y-%m-%dT%H:%M:%S'
-          @options[:format_x] ||= '%d\n%b\n%Y'
-        end
-        ds
-      when Dataset
-        source.clone
-      else
-        Dataset.new(*source)
-      end
+      ds = case source
+           # when initialized with dataframe (it passes here several vectors)
+           when (defined?(Daru) ? Daru::Vector : nil)
+             Dataset.new(source)
+           when Dataset
+             source.clone
+           else
+             Dataset.new(*source)
+           end
+      data = source.is_a?(Array) ? source[0] : source
+      provide_with_datetime_format(data, ds.using)
+      ds
     end
 
     private :dataset_from_any,
             :new_with_options,
-            :parse_datasets_array
+            :parse_datasets_array,
+            :provide_with_datetime_format
   end
 end
