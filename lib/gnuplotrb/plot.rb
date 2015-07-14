@@ -163,8 +163,14 @@ module GnuplotRB
     # new dataset from given args otherwise.
     def dataset_from_any(source)
       case source
-      when (defined?(Daru) ? Daru::Vector : nil)
-        Dataset.new(source)
+      when (defined?(Daru) ? Daru::Vector : nil), (defined?(Daru) ? Daru::DataFrame : nil)
+        ds = Dataset.new(source)
+        if source.index.first.is_a?(DateTime) && ds.using[0..1] == '1:'
+          @options[:xdata] ||= 'time'
+          @options[:timefmt] ||= '%Y-%m-%dT%H:%M:%S'
+          @options[:format_x] ||= '%d\n%b\n%Y'
+        end
+        ds
       when Dataset
         source.clone
       else
