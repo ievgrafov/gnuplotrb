@@ -10,18 +10,18 @@ data = [
 ]
 x = data.map(&:first)
 datasets = (1..4).map do |col|
-    y = data.map { |row| row[col] }
-    Dataset.new([x, y], using: '2:xtic(1)', title: titles[col], file: true)
+  y = data.map { |row| row[col] }
+  Dataset.new([x, y], using: '2:xtic(1)', title: titles[col], file: true)
 end
 
 plot = Plot.new(
-    *datasets,
-    style_data: 'histograms',
-    style_fill: 'pattern border',
-    yrange: 0..2200,
-    xlabel: 'Number of test',
-    ylabel: 'Time, s',
-    title: 'Time spent to run deploy pipeline'
+  *datasets,
+  style_data: 'histograms',
+  style_fill: 'pattern border',
+  yrange: 0..2200,
+  xlabel: 'Number of test',
+  ylabel: 'Time, s',
+  title: 'Time spent to run deploy pipeline'
 )
 
 plot.to_png('./gnuplot_gem.png', size: [600, 600])
