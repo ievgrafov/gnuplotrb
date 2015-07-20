@@ -35,7 +35,6 @@ module GnuplotRB
       end
     end
 
-    private :check_errors,
-            :handle_stderr
+    private :handle_stderr
   end
 end
