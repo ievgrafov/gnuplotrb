@@ -164,7 +164,7 @@ module GnuplotRB
         if new_datablock == @data
           update_options(options)
         else
-          self.class.new(@data.update(data), @options.merge(options))
+          new_with_update(data: data, **@options.merge(options))
         end
       else
         update_options(options)
@@ -177,7 +177,7 @@ module GnuplotRB
     # data stored in datablock and calls super otherwise.
     def clone
       if @type == :datablock
-        self.class.new(@data, **@options)
+        new_with_options(@options)
       else
         super
       end
@@ -196,9 +196,9 @@ module GnuplotRB
     #   #=> Dataset.new('file.data', title: 'File')
     def update_options(**options)
       if options.empty?
-        return self
+        self
       else
-        self.class.new(@data, @options.merge(options))
+        new_with_options(@options.merge(options))
       end
     end
 
@@ -207,7 +207,15 @@ module GnuplotRB
     # Needed by OptionHandling to create new object when
     # options are changed.
     def new_with_options(options)
-      self.class.new(@data, options)
+      new_with_update(options)
+    end
+
+    def new_with_update(data: nil, **options)
+      if data
+        self.class.new(@data.update(data), options)
+      else
+        self.class.new(@data, options)
+      end
     end
 
     ##
