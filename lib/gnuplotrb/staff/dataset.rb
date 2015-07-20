@@ -80,7 +80,7 @@ module GnuplotRB
       if options[:using]
         options[:using] = " #{options[:using]} "
         data.vectors.to_a.each_with_index do |daru_index, array_index|
-          options[:using].gsub!(/([\:\( ])#{daru_index}([\:\) ])/) { "#{$1}#{array_index + 2}#{$2}" }
+          options[:using].gsub!(/([\:\(\$ ])#{daru_index}([\:\) ])/) { "#{$1}#{array_index + 2}#{$2}" }
         end
         options[:using].gsub!(/index/) { 1 }
         options[:using].strip!
@@ -164,7 +164,7 @@ module GnuplotRB
         if new_datablock == @data
           update_options(options)
         else
-          Dataset.new(@data.update(data), @options.merge(options))
+          self.class.new(@data.update(data), @options.merge(options))
         end
       else
         update_options(options)
@@ -177,7 +177,7 @@ module GnuplotRB
     # data stored in datablock and calls super otherwise.
     def clone
       if @type == :datablock
-        Dataset.new(@data, **@options)
+        self.class.new(@data, **@options)
       else
         super
       end
@@ -198,7 +198,7 @@ module GnuplotRB
       if options.empty?
         return self
       else
-        Dataset.new(@data, @options.merge(options))
+        self.class.new(@data, @options.merge(options))
       end
     end
 
