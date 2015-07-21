@@ -4,6 +4,8 @@ module GnuplotRB
     attr_reader :deltas
     attr_reader :plottable_function
 
+    WAIT_DELAY = 5 # in seconds
+
 
     def initialize(data, coefficients: {}, deltas: {}, plottable_function: nil, **options)
       send(INIT_HANDLERS[data.class], data, options)
@@ -55,6 +57,8 @@ module GnuplotRB
 
     def wait_for_output(term)
       # now we should catch 'error' from terminal: it will contain approximation data
+      # but we can get a real error instead of output, so lets wait for limited time
+      start = Time.now
       output = ''
       until output.include?('correlation matrix')
         begin
@@ -62,17 +66,20 @@ module GnuplotRB
         rescue GnuplotRB::GnuplotError => e
           output += e.message
         end
+        if Time.now - start > WAIT_DELAY
+          fail GnuplotError, "Seems like there is an error in gnuplotrb: #{output}"
+        end
       end
       output
     end
 
     def parse_output(variables, function, output)
-      @plottable_function = function.clone
+      @plottable_function = " #{function.clone} "
       @coefficients = {}
       @deltas = {}
       variables.each do |var|
         value, error = output.scan(/#{var} *= ([^ ]+) *\+\/\- ([^ ]+)/)[0]
-        @plottable_function.gsub!(/#{var}/) { value }
+        @plottable_function.gsub!(/#{var}([^0-9a-zA-Z])/) { value + $1 }
         @coefficients[var] = value.to_f
         @deltas[var] = error.to_f
       end
@@ -82,17 +89,27 @@ module GnuplotRB
     def [](*args)
       @coefficients[*args]
     end
+
+    def method_missing(meth_id, *args)
+      meth = meth_id.id2name
+      if meth[0..2] == 'fit'
+        options = args[0] || {}
+        options[:initials] ||= {}
+        case meth[4..-1]
+        when /poly.*_([0-9]+)/
+          power = $1.to_i + 1
+          opts = power.times.map { |i| ["a#{i}".to_sym, 1] }.to_h
+          fun = power.times.map { |i| "a#{i}*x**#{i}" }.join(' + ')
+        when /(exp|sin|log)/
+          opts = { yoffset: 0.1, xoffset: 0.1, yscale: 1, xscale: 1}
+          fun = "yscale * (yoffset + #{$1} ((x - xoffset) / xscale))"
+        end
+        options[:initials] = opts.merge(options[:initials])
+        options[:function] ||= fun
+        fit(options)
+      else
+        super
+      end
+    end
   end
 end
-
-=begin
-require 'gnuplotrb'
-include GnuplotRB
-
-x = (0..5).step(0.2).to_a
-y = x.map { |xx| 3*xx**2 + rand(5*xx)}
-data = [x,y]
-a = Approximation.new(data)
-a.fit
-
-=end
