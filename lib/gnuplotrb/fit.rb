@@ -61,7 +61,7 @@ module GnuplotRB
   def method_missing(meth_id, *args)
     meth = meth_id.id2name
     super unless meth[0..2] == 'fit'
-    options = args[0] || {}
+    options = args[1] || {}
     options[:initials] ||= {}
     case meth[4..-1]
     when /poly.*_([0-9]+)/
@@ -74,7 +74,7 @@ module GnuplotRB
     end
     options[:initials] = opts.merge(options[:initials])
     options[:function] ||= fun
-    fit(options)
+    fit(args[0], options)
   end
 
   private :wait_for_output, :parse_output
