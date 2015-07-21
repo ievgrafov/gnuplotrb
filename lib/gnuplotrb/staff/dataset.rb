@@ -76,7 +76,7 @@ module GnuplotRB
     ##
     # Method for inner use.
     def get_daru_columns(data, columns)
-      if [:numeric, :date].include?(data.type)
+      if data.index[0].is_a?(DateTime) || data.index[0].is_a?(Numeric)
         "1:#{columns}"
       else
         "#{columns}:xtic(1)"
