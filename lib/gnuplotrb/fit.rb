@@ -1,5 +1,5 @@
 module GnuplotRB
-  def fit(data, function: 'a*x*x+b*x+c', initials: {a: 1, b: 1, c: 1}, via: nil, **options)
+  def fit(data, function: 'a2*x*x+a1*x+a0', initials: {a2: 1, a1: 1, a0: 1}, via: nil, **options)
   	datablock = case data
                 when Dataset
       	          data.data
@@ -58,23 +58,19 @@ module GnuplotRB
     [coefficients, deltas, plottable_function]
   end
 
-  def method_missing(meth_id, *args)
-    meth = meth_id.id2name
-    super unless meth[0..2] == 'fit'
-    options = args[1] || {}
-    options[:initials] ||= {}
-    case meth[4..-1]
-    when /(poly)/
-      power = (meth.scan(/[0-9]+/)[0] || 1).to_i + 1
-      opts = power.times.map { |i| ["a#{i}".to_sym, 1] }.to_h
-      fun = power.times.map { |i| "a#{i}*x**#{i}" }.join(' + ')
-    when /(exp|sin|log)/
-      opts = { yoffset: 0.1, xoffset: 0.1, yscale: 1, xscale: 1}
-      fun = "yscale * (yoffset + #{$1} ((x - xoffset) / xscale))"
+  def fit_poly(degree = 2, data, **options)
+    sum_count = degree + 1
+    initials = sum_count.times.map { |i| ["a#{i}".to_sym, 1] }.to_h
+    function = sum_count.times.map { |i| "a#{i}*x**#{i}" }.join(' + ')
+    fit(data, **options, function: function, initials: initials)
+  end
+
+  %w(exp log sin).map do |fname|
+    define_method("fit_#{fname}".to_sym) do |data, **options|
+      initials = { yoffset: 0.1, xoffset: 0.1, yscale: 1, xscale: 1}
+      function = "yscale * (yoffset + #{fname} ((x - xoffset) / xscale))"
+      fit(data, **options, function: function, initials: initials)
     end
-    options[:initials] = opts.merge(options[:initials])
-    options[:function] ||= fun
-    fit(args[0], options)
   end
 
   private :wait_for_output, :parse_output
