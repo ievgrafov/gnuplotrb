@@ -75,6 +75,16 @@ module GnuplotRB
 
     ##
     # Method for inner use.
+    def get_daru_columns(data, columns)
+      if data.index[0].is_a?(DateTime) || data.index[0].is_a?(Numeric)
+        "1:#{columns}"
+      else
+        "#{columns}:xtic(1)"
+      end
+    end
+
+    ##
+    # Method for inner use.
     def init_daru_frame(data, options)
       options[:title] ||= data.name
       if options[:using]
@@ -86,7 +96,7 @@ module GnuplotRB
         options[:using].strip!
       else
         new_opt = (2...(2 + data.vectors.size)).to_a.join(':')
-        options[:using] = data.index.first.is_a?(DateTime) ? "1:#{new_opt}" : "#{new_opt}:xtic(1)"
+        options[:using] = get_daru_columns(data, new_opt)
       end
       init_default(data, options)
     end
@@ -94,7 +104,7 @@ module GnuplotRB
     ##
     # Method for inner use.
     def init_daru_vector(data, options)
-      options[:using] ||= data.index.first.is_a?(DateTime) ? '1:2' : '2:xtic(1)'
+      options[:using] ||= get_daru_columns(data, 2)
       options[:title] ||= data.name
       init_default(data, options)
     end
