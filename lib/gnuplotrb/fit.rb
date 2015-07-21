@@ -64,8 +64,8 @@ module GnuplotRB
     options = args[1] || {}
     options[:initials] ||= {}
     case meth[4..-1]
-    when /poly.*_([0-9]+)/
-      power = $1.to_i + 1
+    when /(poly)/
+      power = (meth.scan(/[0-9]+/)[0] || 1).to_i + 1
       opts = power.times.map { |i| ["a#{i}".to_sym, 1] }.to_h
       fun = power.times.map { |i| "a#{i}*x**#{i}" }.join(' + ')
     when /(exp|sin|log)/
