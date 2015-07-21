@@ -55,7 +55,7 @@ describe Dataset do
 
   context 'creation with Daru' do
     before do
-      @xtic = [1991, 1993, 1995, 1997]
+      @xtic = ['1991', '1993', '1995', '1997']
       @y =    [2453, 2343, 2454, 2254]
       @yerr = [120,  133,  123,  113]
       @title = :plot_from_daru
