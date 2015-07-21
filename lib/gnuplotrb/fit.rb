@@ -58,7 +58,7 @@ module GnuplotRB
     [coefficients, deltas, plottable_function]
   end
 
-  def fit_poly(degree = 2, data, **options)
+  def fit_poly(data, degree: 2, **options)
     sum_count = degree + 1
     initials = sum_count.times.map { |i| ["a#{i}".to_sym, 1] }.to_h
     function = sum_count.times.map { |i| "a#{i}*x**#{i}" }.join(' + ')
