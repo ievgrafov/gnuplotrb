@@ -86,7 +86,7 @@ module GnuplotRB
         options[:using].strip!
       else
         new_opt = (2...(2 + data.vectors.size)).to_a.join(':')
-        options[:using] = data.index.first.is_a?(DateTime) ? "1:#{new_opt}" : "#{new_opt}:xtic(1)"
+        options[:using] = [:numeric, :date].include?(data.type) ? "1:#{new_opt}" : "#{new_opt}:xtic(1)"
       end
       init_default(data, options)
     end
@@ -94,7 +94,7 @@ module GnuplotRB
     ##
     # Method for inner use.
     def init_daru_vector(data, options)
-      options[:using] ||= data.index.first.is_a?(DateTime) ? '1:2' : '2:xtic(1)'
+      options[:using] ||= data.type == :numeric ? '1:2' : '2:xtic(1)'
       options[:title] ||= data.name
       init_default(data, options)
     end
