@@ -5,7 +5,7 @@ module GnuplotRB
   # this 'x*sin(x)' or filename) and options related to original dataset
   # in gnuplot (with, title, using etc).
   class Dataset
-    include OptionHandling
+    include Plottable
     ##
     # Data represented by this dataset
     attr_reader :data
@@ -230,8 +230,12 @@ module GnuplotRB
     #   new_dataset = dataset.title('Awesome plot')
     #   dataset.title #=> nil
     #   new_dataset.title #=> 'Awesome plot'
-    def method_missing(meth_id, *args)
-      option(meth_id, *args)
+    #def method_missing(meth_id, *args)
+    #  option(meth_id, *args)
+    #end
+
+    def plot(*args)
+      Plot.new(self).plot(*args)
     end
 
     private :init_default,
