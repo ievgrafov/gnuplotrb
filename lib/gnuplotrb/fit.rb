@@ -1,6 +1,4 @@
 module GnuplotRB
-  WAIT_DELAY = 5
-
   def fit(data, function: 'a*x*x+b*x+c', initials: {a: 1, b: 1, c: 1}, via: nil, **options)
   	datablock = case data
                 when Dataset
@@ -40,7 +38,7 @@ module GnuplotRB
       rescue GnuplotRB::GnuplotError => e
         output += e.message
       end
-      if Time.now - start > WAIT_DELAY
+      if Time.now - start > Settings.max_fit_delay
         fail GnuplotError, "Seems like there is an error in gnuplotrb: #{output}"
       end
     end
