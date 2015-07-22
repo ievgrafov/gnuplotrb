@@ -1,6 +1,8 @@
 if defined? Daru
   ##
-  # See [daru](https://github.com/v0dro/daru)
+  # See [daru](https://github.com/v0dro/daru) and
+  # {plotting from daru}
+  # [https://github.com/dilcom/gnuplotrb/blob/master/notebooks/plotting_from_daru.ipynb]
   module Daru
     ##
     # Methods to take data for GnuplotRB plots.

@@ -42,9 +42,9 @@ describe Multiplot do
     end
 
     it 'should know which options are Multiplot special' do
-      expect(@mp.specific_option?(:layout)).to be_truthy
-      expect(@mp.specific_option?(:title)).to be_truthy
-      expect(@mp.specific_option?(:xrange)).to be_falsey
+      expect(@mp.send(:specific_option?, :layout)).to be_truthy
+      expect(@mp.send(:specific_option?, :title)).to be_truthy
+      expect(@mp.send(:specific_option?, :xrange)).to be_falsey
     end
 
     it 'should return Multiplot object' do

@@ -21,6 +21,7 @@ module GnuplotRB
       fail GnuplotError, message
     end
 
+    private
     ##
     # ====== Overview
     # Start new thread that will read stderr given as stream
@@ -34,7 +35,5 @@ module GnuplotRB
         end
       end
     end
-
-    private :handle_stderr
   end
 end

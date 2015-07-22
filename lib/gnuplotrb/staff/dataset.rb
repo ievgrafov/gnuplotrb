@@ -55,69 +55,6 @@ module GnuplotRB
     end
 
     ##
-    # Method for inner use.
-    def init_string(data, options)
-      @type, @data = if File.exist?(data)
-                       [:datafile, "'#{data}'"]
-                     else
-                       [:math_function, data.clone]
-                     end
-      @options = Hamster.hash(options)
-    end
-
-    ##
-    # Method for inner use.
-    def init_dblock(data, options)
-      @type = :datablock
-      @data = data.clone
-      @options = Hamster.hash(options)
-    end
-
-    ##
-    # Method for inner use.
-    def get_daru_columns(data, columns)
-      if data.index[0].is_a?(DateTime) || data.index[0].is_a?(Numeric)
-        "1:#{columns}"
-      else
-        "#{columns}:xtic(1)"
-      end
-    end
-
-    ##
-    # Method for inner use.
-    def init_daru_frame(data, options)
-      options[:title] ||= data.name
-      if options[:using]
-        options[:using] = " #{options[:using]} "
-        data.vectors.to_a.each_with_index do |daru_index, array_index|
-          options[:using].gsub!(/([\:\(\$ ])#{daru_index}([\:\) ])/) { "#{$1}#{array_index + 2}#{$2}" }
-        end
-        options[:using].gsub!(/index/) { 1 }
-        options[:using].strip!
-      else
-        new_opt = (2...(2 + data.vectors.size)).to_a.join(':')
-        options[:using] = get_daru_columns(data, new_opt)
-      end
-      init_default(data, options)
-    end
-
-    ##
-    # Method for inner use.
-    def init_daru_vector(data, options)
-      options[:using] ||= get_daru_columns(data, 2)
-      options[:title] ||= data.name
-      init_default(data, options)
-    end
-
-    ##
-    # Method for inner use.
-    def init_default(data, file: false, **options)
-      @type = :datablock
-      @data = Datablock.new(data, file)
-      @options = Hamster.hash(options)
-    end
-
-    ##
     # ====== Overview
     # Converts Dataset to string containing gnuplot dataset.
     # ====== Parameters
@@ -135,15 +72,6 @@ module GnuplotRB
 
     ##
     # ====== Overview
-    # Create string from own options
-    def options_to_string
-      options.sort_by { |key, _| OPTION_ORDER.find_index(key.to_s) || 999 }
-             .map { |key, value| OptionHandling.option_to_string(key, value) }
-             .join(' ')
-    end
-
-    ##
-    # ====== Overview
     # Creates new dataset with updated data (given
     # data is appended to existing) and merged options.
     # Data is updated only if Dataset stores it in Datablock.
@@ -155,18 +83,18 @@ module GnuplotRB
     # ====== Examples
     # Updating dataset with Math formula or filename given:
     #   dataset = Dataset.new('file.data')
-    #   dataset.update('asd')
+    #   dataset.update(data: 'asd')
     #   #=> nothing updated
-    #   dataset.update('asd', title: 'File')
+    #   dataset.update(data: 'asd', title: 'File')
     #   #=> Dataset.new('file.data', title: 'File')
     # Updating dataset with data stored in Datablock:
     #   in_memory_points = Dataset.new(points, title: 'Old one')
-    #   in_memory_points.update(some_update, title: 'Updated')
+    #   in_memory_points.update(data: some_update, title: 'Updated')
     #   #=> Dataset.new(points + some_update, title: 'Updated')
     #   temp_file_points = Dataset.new(points, title: 'Old one', file: true)
-    #   temp_file_points.update(some_update)
+    #   temp_file_points.update(data: some_update)
     #   #=> data updated but no new dataset created
-    #   temp_file_points.update(some_update, title: 'Updated')
+    #   temp_file_points.update(data: some_update, title: 'Updated')
     #   #=> data updated and new dataset with title 'Updated' returned
     def update(data = nil, **options)
       if data && @type == :datablock
@@ -174,7 +102,7 @@ module GnuplotRB
         if new_datablock == @data
           update_options(options)
         else
-          new_with_update(data: data, **@options.merge(options))
+          self.class.new(new_datablock, options)
         end
       else
         update_options(options)
@@ -192,6 +120,23 @@ module GnuplotRB
         super
       end
     end
+
+    ##
+    # ====== Overview
+    # Creates new Plot object with only one Dataset given - self.
+    # Calls #plot on created Plot. All arguments given to this #plot
+    # will be sent to Plot#plot instead.
+    # ====== Example
+    # sin = Dataset.new('sin(x)')
+    # sin.plot(term: [qt, size: [300, 300]])
+    # #=> shows qt window 300x300 with sin(x)
+    # sin.to_png('./plot.png')
+    # #=> creates png file with sin(x) plotted
+    def plot(*args)
+      Plot.new(self).plot(*args)
+    end
+
+    private
 
     ##
     # ====== Overview
@@ -213,30 +158,71 @@ module GnuplotRB
     end
 
     ##
-    # Method for inner use.
+    # ====== Overview
+    # Create string from own options
+    def options_to_string
+      options.sort_by { |key, _| OPTION_ORDER.find_index(key.to_s) || 999 }
+             .map { |key, value| OptionHandling.option_to_string(key, value) }
+             .join(' ')
+    end
+
+    ##
     # Needed by OptionHandling to create new object when
     # options are changed.
     def new_with_options(options)
-      new_with_update(options)
+      self.class.new(@data, options)
     end
 
-    def new_with_update(data: nil, **options)
-      if data
-        self.class.new(@data.update(data), options)
+    def init_string(data, options)
+      @type, @data = if File.exist?(data)
+                       [:datafile, "'#{data}'"]
+                     else
+                       [:math_function, data.clone]
+                     end
+      @options = Hamster.hash(options)
+    end
+
+    def init_dblock(data, options)
+      @type = :datablock
+      @data = data.clone
+      @options = Hamster.hash(options)
+    end
+
+    def get_daru_columns(data, columns)
+      if data.index[0].is_a?(DateTime) || data.index[0].is_a?(Numeric)
+        "1:#{columns}"
       else
-        self.class.new(@data, options)
+        "#{columns}:xtic(1)"
       end
     end
 
-    def plot(*args)
-      Plot.new(self).plot(*args)
+    def init_daru_frame(data, options)
+      options[:title] ||= data.name
+      if options[:using]
+        options[:using] = " #{options[:using]} "
+        data.vectors.to_a.each_with_index do |daru_index, array_index|
+          regexp = /([\:\(\$ ])#{daru_index}([\:\) ])/
+          options[:using].gsub!(regexp) { "#{$1}#{array_index + 2}#{$2}" }
+        end
+        options[:using].gsub!(/index/) { 1 }
+        options[:using].strip!
+      else
+        new_opt = (2...(2 + data.vectors.size)).to_a.join(':')
+        options[:using] = get_daru_columns(data, new_opt)
+      end
+      init_default(data, options)
     end
 
-    private :init_default,
-            :init_string,
-            :init_dblock,
-            :init_daru_frame,
-            :init_daru_vector,
-            :new_with_options
+    def init_daru_vector(data, options)
+      options[:using] ||= get_daru_columns(data, 2)
+      options[:title] ||= data.name
+      init_default(data, options)
+    end
+
+    def init_default(data, file: false, **options)
+      @type = :datablock
+      @data = Datablock.new(data, file)
+      @options = Hamster.hash(options)
+    end
   end
 end

@@ -30,27 +30,6 @@ module GnuplotRB
     end
 
     ##
-    # For inner use!
-    # Parses given array and returns Hamster::Vector of Datasets
-    def parse_datasets_array(datasets)
-      case datasets[0]
-      when Hamster::Vector
-        datasets[0]
-      when (defined?(Daru) ? Daru::DataFrame : nil)
-        Hamster::Vector.new(datasets[0].map { |ds| dataset_from_any(ds) })
-      else
-        Hamster::Vector.new(datasets.map { |ds| dataset_from_any(ds) })
-      end
-    end
-
-    ##
-    # For inner use!
-    # Creates new Plot with existing data and given options.
-    def new_with_options(options)
-      self.class.new(@datasets, options)
-    end
-
-    ##
     # ====== Overview
     # This outputs plot to term (if given) or to this plot's own terminal.
     # ====== Arguments
@@ -158,8 +137,8 @@ module GnuplotRB
       @datasets[*args]
     end
 
+    private
     ##
-    # For inner use!
     # Checks several conditions and set options needed
     # to handle DateTime indexes properly.
     def provide_with_datetime_format(data, using)
@@ -176,7 +155,6 @@ module GnuplotRB
     end
 
     ##
-    # Method for inner use.
     # Check if given args is a dataset and returns it. Creates
     # new dataset from given args otherwise.
     def dataset_from_any(source)
@@ -194,9 +172,23 @@ module GnuplotRB
       ds
     end
 
-    private :dataset_from_any,
-            :new_with_options,
-            :parse_datasets_array,
-            :provide_with_datetime_format
+    ##
+    # Parses given array and returns Hamster::Vector of Datasets
+    def parse_datasets_array(datasets)
+      case datasets[0]
+      when Hamster::Vector
+        datasets[0]
+      when (defined?(Daru) ? Daru::DataFrame : nil)
+        Hamster::Vector.new(datasets[0].map { |ds| dataset_from_any(ds) })
+      else
+        Hamster::Vector.new(datasets.map { |ds| dataset_from_any(ds) })
+      end
+    end
+
+    ##
+    # Creates new Plot with existing data and given options.
+    def new_with_options(options)
+      self.class.new(@datasets, options)
+    end
   end
 end

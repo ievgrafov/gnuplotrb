@@ -2,6 +2,8 @@ module GnuplotRB
   ##
   # === Overview
   # Multiplot allows to place several plots on one layout.
+  # It's usage is covered in {multiplot notebook}
+  # [https://github.com/dilcom/gnuplotrb/blob/master/notebooks/multiplot_layout.ipynb].
   class Multiplot
     include Plottable
     ##
@@ -11,61 +13,14 @@ module GnuplotRB
     ##
     # ====== Arguments
     # * *plots* are Plot or Splot objects which should be placed
-    #   on this multiplot
+    #   on this multiplot layout
     # * *options* will be considered as 'settable' options of gnuplot
-    #   ('set xrange [1:10]' for { xrange: 1..10 },
-    #   "set title 'plot'" for { title: 'plot' } etc) just as in Plot.
+    #   ('set xrange [1:10]' for { xrange: 1..10 } etc) just as in Plot.
     #   Special options of Multiplot are :layout and :title.
     def initialize(*plots, **options)
       @plots = plots[0].is_a?(Hamster::Vector) ? plots[0] : Hamster::Vector.new(plots)
       @options = Hamster.hash(options)
       OptionHandling.validate_terminal_options(@options)
-    end
-
-    ##
-    # For inner use!
-    # Dafault options to be used for that plot
-    def default_options
-      {
-        layout: [2, 2],
-        title: 'Multiplot'
-      }
-    end
-
-    ##
-    # For inner use!
-    # This plot have some specific options which
-    # should be handled different way than others.
-    # Here are keys of this options.
-    def specific_keys
-      %w(
-        title
-        layout
-      )
-    end
-    ##
-    # Create new Multiplot object with the same set of plots and
-    # given options.
-    def new_with_options(options)
-      self.class.new(@plots, options)
-    end
-
-    ##
-    # Check if given options corresponds to multiplot.
-    # Uses #specific_keys to check.
-    def specific_option?(key)
-      specific_keys.include?(key.to_s)
-    end
-
-    ##
-    # For inner use!
-    # Takes all options and splits them into specific and
-    # others. Requires a block where this two classes should
-    # be mixed.
-    def mix_options(options)
-      all_options = @options.merge(options)
-      specific_options, plot_options = all_options.partition { |key, _value| specific_option?(key) }
-      yield(plot_options, default_options.merge(specific_options))
     end
 
     ##
@@ -78,7 +33,7 @@ module GnuplotRB
     #   ('set xrange [1:10]', 'set title 'plot'' etc)
     # Options passed here have priority over already existing.
     # Inner options of Plots have the highest priority (except
-    # :term and :output which are ignored).
+    # :term and :output which are ignored in this case).
     def plot(term = nil, multiplot_part: false, **options)
       plot_options = mix_options(options) do |plot_opts, mp_opts|
         plot_opts.merge(multiplot: mp_opts.to_h)
@@ -96,15 +51,6 @@ module GnuplotRB
     end
 
     ##
-    # For inner use!
-    # Just a part of #plot.
-    def multiplot(terminal, options)
-      terminal.set(options)
-      @plots.each { |graph| graph.plot(terminal, multiplot_part: true) }
-      terminal.unset(options.keys)
-    end
-
-    ##
     # ====== Overview
     # Create new Multiplot object where plot (Plot or Splot object)
     # at *position* will
@@ -116,7 +62,7 @@ module GnuplotRB
     # * *position* - position of plot which you need to update
     #   (by default first plot is updated)
     # * *options* - options to update plot with
-    # * method also may take a block which returns a plot
+    # * *&block* - method also may take a block which returns a plot
     # ====== Example
     #   mp = Multiplot.new(Plot.new('sin(x)'), Plot.new('cos(x)'), layout: [2,1])
     #   updated_mp = mp.update_plot(title: 'Sin(x) and Exp(x)') { |sinx| sinx.add('exp(x)') }
@@ -187,10 +133,58 @@ module GnuplotRB
       @plots[*args]
     end
 
-    private :mix_options,
-            :multiplot,
-            :default_options,
-            :specific_keys,
-            :new_with_options
+    private
+    ##
+    # Default options to be used for that plot
+    def default_options
+      {
+        layout: [2, 2],
+        title: 'Multiplot'
+      }
+    end
+
+    ##
+    # This plot have some specific options which
+    # should be handled different way than others.
+    # Here are keys of this options.
+    def specific_keys
+      %w(
+        title
+        layout
+      )
+    end
+
+    ##
+    # Create new Multiplot object with the same set of plots and
+    # given options.
+    # Used in OptionHandling module.
+    def new_with_options(options)
+      self.class.new(@plots, options)
+    end
+
+    ##
+    # Check if given options corresponds to multiplot.
+    # Uses #specific_keys to check.
+    def specific_option?(key)
+      specific_keys.include?(key.to_s)
+    end
+
+    ##
+    # Takes all options and splits them into specific and
+    # others. Requires a block where this two classes should
+    # be mixed.
+    def mix_options(options)
+      all_options = @options.merge(options)
+      specific_options, plot_options = all_options.partition { |key, _value| specific_option?(key) }
+      yield(plot_options, default_options.merge(specific_options))
+    end
+
+    ##
+    # Just a part of #plot.
+    def multiplot(terminal, options)
+      terminal.set(options)
+      @plots.each { |graph| graph.plot(terminal, multiplot_part: true) }
+      terminal.unset(options.keys)
+    end
   end
 end
