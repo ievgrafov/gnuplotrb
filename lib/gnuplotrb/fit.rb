@@ -26,22 +26,24 @@ module GnuplotRB
   #   fit(some_data, function: 'exp(a/x)', initials: {a: 10}, term_option: { xrange: 1..100 })
   #   fit(some_dataset, using: '1:2:3')
   def fit(data, function: 'a2*x*x+a1*x+a0', initials: {a2: 1, a1: 1, a0: 1}, via: nil, term_options: {}, **options)
-  	datablock = case data
-                when Dataset
-      	          data.data
-       	        when Datablock
-                  data
-                else
-                  Datablock.new(data)
-                end
+  	dataset = case data
+              when Dataset
+      	        data.data
+       	      when Datablock
+                data
+              else
+                Dataset.new(data)
+              end
+    custom_error_set = options[:error] || options[:xyerror] || options[:zerror]
+    options[:zerror] = true unless custom_error_set
     variables = via || initials.keys
     term = Terminal.new
     term.set(term_options)
     initials.each { |var_name, value| term.stream_puts "#{var_name} = #{value}" }
     term.stream_puts("fit #{function}" \
-                     " #{datablock.to_s(term)}" \
-                     " via #{variables.join(',')}" \
-                     " #{OptionHandling.ruby_class_to_gnuplot(options)}"
+                     " #{dataset.to_s(term)}" \
+                     " #{OptionHandling.ruby_class_to_gnuplot(options)}" \
+                     " via #{variables.join(',')}"
                     )
     output = wait_for_output(term)
     term.close
@@ -50,7 +52,7 @@ module GnuplotRB
       formula_ds: Dataset.new(res[2], title: 'Fit formula'),
       coefficients: res[0],
       deltas: res[1],
-      data: datablock
+      data: dataset
     }
   end
 
