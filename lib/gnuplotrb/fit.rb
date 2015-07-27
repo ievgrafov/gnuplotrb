@@ -26,10 +26,10 @@ module GnuplotRB
   #   fit(some_data, function: 'exp(a/x)', initials: {a: 10}, term_option: { xrange: 1..100 })
   #   fit(some_dataset, using: '1:2:3')
   def fit(data, function: 'a2*x*x+a1*x+a0', initials: {a2: 1, a1: 1, a0: 1}, via: nil, term_options: {}, **options)
-  	dataset = case data
+    dataset = case data
               when Dataset
-      	        data.data
-       	      when Datablock
+                data.data
+              when Datablock
                 data
               else
                 Dataset.new(data)
