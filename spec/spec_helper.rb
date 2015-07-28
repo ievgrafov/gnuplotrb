@@ -15,7 +15,14 @@ include GnuplotRB
 $RSPEC_TEST = true
 
 def same_images?(*imgs)
-  imgs.map { |img| ChunkyPNG::Image.from_file(img).pixels }.inject(&:==)
+  images = imgs.map { |img| Digest::MD5.digest(ChunkyPNG::Image.from_file(img).pixels.to_s) }
+  images.all? { |img| img == images[0] }
+end
+
+# may be errorneuos in comparing images
+def same_files?(*files)
+  images = files.map { |fname| Digest::MD5.digest(File.binread(fname)) }
+  images.all? { |img| img == images[0] }
 end
 
 def awesome?
