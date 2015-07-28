@@ -78,7 +78,8 @@ module GnuplotRB
   #   #=> )
   def fit_poly(data, degree: 2, **options)
     sum_count = degree + 1
-    initials = sum_count.times.map { |i| ["a#{i}".to_sym, 1] }.to_h
+    initials = {}
+    sum_count.times { |i| initials["a#{i}".to_sym] = 1 }
     options[:initials] = initials.merge(options[:initials] || {})
     function = sum_count.times.map { |i| "a#{i}*x**#{i}" }.join(' + ')
     fit(data, **options, function: function)
