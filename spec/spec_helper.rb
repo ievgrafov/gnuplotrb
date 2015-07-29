@@ -29,3 +29,13 @@ def awesome?
   # sure!
   true
 end
+
+def run_example_at(path)
+  Dir.chdir(path) do
+    FileUtils.rm(Dir["#{Dir.pwd}/*.png"])
+    require "#{Dir.pwd}/plot.rb"
+    # run gnuplot without output to current console
+    `gnuplot plot.gnuplot 2>&1`
+    same_images?('gnuplot.png', 'gnuplot_gem.png')
+  end
+end

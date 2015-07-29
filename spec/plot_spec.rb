@@ -172,4 +172,23 @@ describe Plot do
       expect(@plot_two_ds[0..-1]).to be_eql(@plot_two_ds.datasets)
     end
   end
+
+  context '#to_iruby' do
+    it 'should handle output to iRuby' do
+      available_terminals = {
+        'png'      => 'image/png',
+        'pngcairo' => 'image/png',
+        'jpeg'     => 'image/jpeg',
+        'svg'      => 'image/svg+xml',
+        'dumb'     => 'text/plain'
+      }
+      available_terminals.each do |term, type|
+        expect(Plot.new(['sin(x)'], term: term).to_iruby[0]).to eql(type)
+      end
+    end
+
+    it 'should use svg as default iruby terminal' do
+      expect(Plot.new('sin(x)').to_iruby[0]).to eql('image/svg+xml')
+    end
+  end
 end

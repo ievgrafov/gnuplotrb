@@ -34,8 +34,6 @@ module GnuplotRB
               else
                 Dataset.new(data)
               end
-    custom_error_set = options[:error] || options[:xyerror] || options[:zerror]
-    options[:zerror] = true unless custom_error_set
     variables = via || initials.keys
     term = Terminal.new
     term.set(term_options)
@@ -45,8 +43,15 @@ module GnuplotRB
                      " #{OptionHandling.ruby_class_to_gnuplot(options)}" \
                      " via #{variables.join(',')}"
                     )
-    output = wait_for_output(term)
-    term.close
+    output = wait_for_output(term, variables)
+    begin
+      term.close
+    rescue
+      # nothing interesting here
+      # if we had an error, we never reach this line
+      # error here may be only additional information
+      # such as correlation matrix
+    end
     res = parse_output(variables, function, output)
     {
       formula_ds: Dataset.new(res[2], title: 'Fit formula'),
@@ -124,12 +129,12 @@ module GnuplotRB
   ##
   # It takes some time to produce output so here we need
   # to wait for it.
-  def wait_for_output(term)
+  def wait_for_output(term, variables)
     # now we should catch 'error' from terminal: it will contain approximation data
     # but we can get a real error instead of output, so lets wait for limited time
     start = Time.now
     output = ''
-    until output.include?('Final set of parameters')
+    until output_ready?(output, variables)
       begin
         term.check_errors
       rescue GnuplotRB::GnuplotError => e
@@ -140,6 +145,13 @@ module GnuplotRB
       end
     end
     output
+  end
+
+  ##
+  # Check if current output contains all the
+  # variables given to fit.
+  def output_ready?(output, variables)
+    output =~ /Final set .*#{variables.join('.*')}/
   end
 
   ##
