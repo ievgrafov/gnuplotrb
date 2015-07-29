@@ -34,8 +34,6 @@ module GnuplotRB
               else
                 Dataset.new(data)
               end
-    custom_error_set = options[:error] || options[:xyerror] || options[:zerror]
-    options[:zerror] = true unless custom_error_set
     variables = via || initials.keys
     term = Terminal.new
     term.set(term_options)
