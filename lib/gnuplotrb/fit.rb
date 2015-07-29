@@ -46,7 +46,14 @@ module GnuplotRB
                      " via #{variables.join(',')}"
                     )
     output = wait_for_output(term, variables)
-    term.close
+    begin
+      term.close
+    rescue
+      # nothing interesting here
+      # if we had an error, we never reach this line
+      # error here may be only additional information
+      # such as correlation matrix
+    end
     res = parse_output(variables, function, output)
     {
       formula_ds: Dataset.new(res[2], title: 'Fit formula'),
