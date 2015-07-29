@@ -8,7 +8,7 @@ rvm:
 before_install:
   - brew update
   - brew install pdflib-lite
-  - brew install gnuplot --with-png
+  - brew install gnuplot --with-png --with-jpeg --with-cairo --with-svg
   - bundle install
   - ulimit -S -n 4096
 install:
