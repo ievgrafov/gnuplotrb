@@ -45,7 +45,7 @@ module GnuplotRB
                      " #{OptionHandling.ruby_class_to_gnuplot(options)}" \
                      " via #{variables.join(',')}"
                     )
-    output = wait_for_output(term)
+    output = wait_for_output(term, variables)
     term.close
     res = parse_output(variables, function, output)
     {
@@ -124,12 +124,12 @@ module GnuplotRB
   ##
   # It takes some time to produce output so here we need
   # to wait for it.
-  def wait_for_output(term)
+  def wait_for_output(term, variables)
     # now we should catch 'error' from terminal: it will contain approximation data
     # but we can get a real error instead of output, so lets wait for limited time
     start = Time.now
     output = ''
-    until output.include?('Final set of parameters')
+    until output_ready?(output, variables)
       begin
         term.check_errors
       rescue GnuplotRB::GnuplotError => e
@@ -140,6 +140,13 @@ module GnuplotRB
       end
     end
     output
+  end
+
+  ##
+  # Check if current output contains all the
+  # variables given to fit.
+  def output_ready?(output, variables)
+    output =~ /Final set .*#{variables.join('.*')}/
   end
 
   ##
