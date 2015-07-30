@@ -127,11 +127,11 @@ module GnuplotRB
     # Calls #plot on created Plot. All arguments given to this #plot
     # will be sent to Plot#plot instead.
     # ====== Example
-    # sin = Dataset.new('sin(x)')
-    # sin.plot(term: [qt, size: [300, 300]])
-    # #=> shows qt window 300x300 with sin(x)
-    # sin.to_png('./plot.png')
-    # #=> creates png file with sin(x) plotted
+    #   sin = Dataset.new('sin(x)')
+    #   sin.plot(term: [qt, size: [300, 300]])
+    #   #=> shows qt window 300x300 with sin(x)
+    #   sin.to_png('./plot.png')
+    #   #=> creates png file with sin(x) plotted
     def plot(*args)
       Plot.new(self).plot(*args)
     end

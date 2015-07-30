@@ -3,8 +3,7 @@ module GnuplotRB
   # === Overview
   # Animation allows to create gif animation with given plots
   # as frames. Possible frames: Plot, Splot, Multiplot.
-  # More about its usage in {animation notebook}
-  # [https://github.com/dilcom/gnuplotrb/blob/master/notebooks/animated_plots.ipynb].
+  # More about its usage in {animation notebook}[http://nbviewer.ipython.org/github/dilcom/gnuplotrb/blob/master/notebooks/animated_plots.ipynb].
   class Animation < Multiplot
     ##
     # *Plot* here is also named as *frame*

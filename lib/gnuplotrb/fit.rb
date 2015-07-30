@@ -1,8 +1,7 @@
 module GnuplotRB
   ##
   # ====== Overview
-  # Fit given data with function. Covered in {fit notebook}
-  # [https://github.com/dilcom/gnuplotrb/blob/master/notebooks/fitting_data.ipynb].
+  # Fit given data with function. Covered in {fit notebook}[http://nbviewer.ipython.org/github/dilcom/gnuplotrb/blob/master/notebooks/fitting_data.ipynb].
   # ====== Arguments
   # * *data* - method accepts the same sources as Dataset.new
   #   and Dataset object
@@ -68,6 +67,12 @@ module GnuplotRB
   end
 
   ##
+  # :method: fit_<function>
+  # :call-seq:
+  # fit_exp(data, **options) -> Hash
+  # fit_log(data, **options) -> Hash
+  # fit_sin(data, **options) -> Hash
+  #
   # ====== Overview
   # Shortcuts for fitting with several math functions (exp, log, sin).
   # ====== Arguments
@@ -86,7 +91,7 @@ module GnuplotRB
   #   #=>   initals: { yoffset: -11, xoffset: 0.1, yscale: 1, xscale: 1 },
   #   #=>   term_option: { xrange: 1..100 }
   #   #=> )
-  #   fit_exp(...)
+  #   fit_log(...)
   #   fit_sin(...)
   %w(exp log sin).map do |fname|
     define_method("fit_#{fname}".to_sym) do |data, **options|
