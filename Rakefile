@@ -9,9 +9,9 @@ RSpec::Core::RakeTask.new(:spec) do |spec|
   spec.rspec_opts = '--format documentation'
 end
 
-RDoc::Task.new do |rdoc|
+RDoc::Task.new(:doc) do |rdoc|
   rdoc.main = 'README.rdoc'
   rdoc.rdoc_files.include %w(README.rdoc lib)
 end
 
-RuboCop::RakeTask.new
+RuboCop::RakeTask.new(:cop)
