@@ -98,7 +98,7 @@ module GnuplotRB
     ##
     # Returns terminal object linked with this Plottable object.
     def own_terminal
-      @terminal ||= Terminal.new 
+      @terminal ||= Terminal.new
     end
 
     ##

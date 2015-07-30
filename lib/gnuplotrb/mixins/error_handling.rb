@@ -26,6 +26,7 @@ module GnuplotRB
     end
 
     private
+
     ##
     # ====== Overview
     # Start new thread that will read stderr given as stream

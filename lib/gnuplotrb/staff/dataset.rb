@@ -15,7 +15,7 @@ module GnuplotRB
     OPTION_ORDER = %w(index using axes title)
 
     ##
-    # Hash of init handlers for data given in 
+    # Hash of init handlers for data given in
     # different containers.
     INIT_HANDLERS = Hash.new(:init_default).merge(
       String =>          :init_string,
@@ -174,11 +174,7 @@ module GnuplotRB
     end
 
     def init_string(data, options)
-      @type, @data = if File.exist?(data)
-                       [:datafile, "'#{data}'"]
-                     else
-                       [:math_function, data.clone]
-                     end
+      @type, @data = File.exist?(data) ? [:datafile, "'#{data}'"] : [:math_function, data.clone]
       @options = Hamster.hash(options)
     end
 
@@ -188,11 +184,12 @@ module GnuplotRB
       @options = Hamster.hash(options)
     end
 
-    def get_daru_columns(data, columns)
+    def get_daru_columns(data, cnt)
+      new_opt = (2..cnt).to_a.join(':')
       if data.index[0].is_a?(DateTime) || data.index[0].is_a?(Numeric)
-        "1:#{columns}"
+        "1:#{new_opt}"
       else
-        "#{columns}:xtic(1)"
+        "#{new_opt}:xtic(1)"
       end
     end
 
@@ -201,14 +198,13 @@ module GnuplotRB
       if options[:using]
         options[:using] = " #{options[:using]} "
         data.vectors.to_a.each_with_index do |daru_index, array_index|
-          regexp = /([\:\(\$ ])#{daru_index}([\:\) ])/
-          options[:using].gsub!(regexp) { "#{$1}#{array_index + 2}#{$2}" }
+          options[:using].gsub!(/([\:\(\$ ])#{daru_index}([\:\) ])/) do
+            "#{Regexp.last_match(1)}#{array_index + 2}#{Regexp.last_match(2)}"
+          end
         end
-        options[:using].gsub!(/index/) { 1 }
-        options[:using].strip!
+        options[:using].gsub!('index', '1').strip!
       else
-        new_opt = (2...(2 + data.vectors.size)).to_a.join(':')
-        options[:using] = get_daru_columns(data, new_opt)
+        options[:using] = get_daru_columns(data, data.vectors.size + 1)
       end
       init_default(data, options)
     end

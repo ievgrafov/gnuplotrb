@@ -40,19 +40,21 @@ module GnuplotRB
     # Options passed here have priority over already existing.
     def plot(term = nil, multiplot_part: false, **options)
       fail ArgumentError, 'Empty plots are not supported!' if @datasets.empty?
-      opts = @options.merge(options)
-      opts = opts.reject { |key, _value| [:term, :output].include?(key) } if multiplot_part
-      terminal = term || (opts[:output] ? Terminal.new : own_terminal)
-      full_command = @cmd + @datasets.map { |dataset| dataset.to_s(terminal) }.join(' , ')
-      terminal.set(opts)
-              .stream_puts(full_command)
-              .unset(opts.keys)
-      if opts[:output]
+      inner_opts = if multiplot_part
+                     @options.merge(options).reject { |key, _| [:term, :output].include?(key) }
+                   else
+                     @options.merge(options)
+                   end
+      terminal = term || (inner_opts[:output] ? Terminal.new : own_terminal)
+      ds_string = @datasets.map { |dataset| dataset.to_s(terminal) }.join(' , ')
+      full_command = @cmd + ds_string
+      terminal.set(inner_opts).stream_puts(full_command).unset(inner_opts.keys)
+      if inner_opts[:output]
         # guaranteed wait for plotting to finish
         terminal.close unless term
         # not guaranteed wait for plotting to finish
         # work bad with terminals like svg and html
-        sleep 0.01 until File.size?(opts[:output])
+        sleep 0.01 until File.size?(inner_opts[:output])
       end
       self
     end
@@ -138,20 +140,20 @@ module GnuplotRB
     end
 
     private
+
     ##
     # Checks several conditions and set options needed
     # to handle DateTime indexes properly.
     def provide_with_datetime_format(data, using)
-      if defined?(Daru) &&
-         (data.is_a?(Daru::DataFrame) || data.is_a?(Daru::Vector)) &&
-         data.index.first.is_a?(DateTime) &&
-         using[0..1] == '1:'
-        @options = @options.merge(
-            xdata: 'time',
-            timefmt: '%Y-%m-%dT%H:%M:%S',
-            format_x: '%d\n%b\n%Y'
-        )
-      end
+      return unless defined?(Daru)
+      return unless data.is_a?(Daru::DataFrame) || data.is_a?(Daru::Vector)
+      return unless data.index.first.is_a?(DateTime)
+      return if using[0..1] != '1:'
+      @options = @options.merge(
+        xdata: 'time',
+        timefmt: '%Y-%m-%dT%H:%M:%S',
+        format_x: '%d\n%b\n%Y'
+      )
     end
 
     ##

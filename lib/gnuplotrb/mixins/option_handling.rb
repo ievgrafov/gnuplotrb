@@ -146,6 +146,7 @@ module GnuplotRB
     end
 
     private
+
     ##
     # ====== Arguments
     # * *key* - [Symbol] - option key

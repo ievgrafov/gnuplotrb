@@ -37,9 +37,6 @@ module GnuplotRB
       multiplot(terminal, plot_options)
       # guaranteed wait for plotting to finish
       terminal.close
-      # not guaranteed wait for plotting to finish
-      # work bad with terminals like svg and html
-      sleep 0.01 until File.size?(plot_options[:output])
       if need_output
         result = File.binread(plot_options[:output])
         File.delete(plot_options[:output])
@@ -64,6 +61,7 @@ module GnuplotRB
     end
 
     private
+
     ##
     # Dafault options to be used for that plot
     def default_options

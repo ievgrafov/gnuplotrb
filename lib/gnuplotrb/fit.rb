@@ -25,34 +25,11 @@ module GnuplotRB
   # ====== Examples
   #   fit(some_data, function: 'exp(a/x)', initials: {a: 10}, term_option: { xrange: 1..100 })
   #   fit(some_dataset, using: '1:2:3')
-  def fit(data, function: 'a2*x*x+a1*x+a0', initials: {a2: 1, a1: 1, a0: 1}, via: nil, term_options: {}, **options)
-    dataset = case data
-              when Dataset
-                data.data
-              when Datablock
-                data
-              else
-                Dataset.new(data)
-              end
-    variables = via || initials.keys
-    term = Terminal.new
-    term.set(term_options)
-    initials.each { |var_name, value| term.stream_puts "#{var_name} = #{value}" }
-    term.stream_puts("fit #{function}" \
-                     " #{dataset.to_s(term)}" \
-                     " #{OptionHandling.ruby_class_to_gnuplot(options)}" \
-                     " via #{variables.join(',')}"
-                    )
-    output = wait_for_output(term, variables)
-    begin
-      term.close
-    rescue
-      # nothing interesting here
-      # if we had an error, we never reach this line
-      # error here may be only additional information
-      # such as correlation matrix
-    end
-    res = parse_output(variables, function, output)
+  def fit(data, function: 'a2*x*x+a1*x+a0', initials: { a2: 1, a1: 1, a0: 1 }, term_options: {}, **options)
+    dataset = data.is_a?(Dataset) ? Dataset.new(data.data) : Dataset.new(data)
+    opts_str = OptionHandling.ruby_class_to_gnuplot(options)
+    output = gnuplot_fit(function, dataset, opts_str, initials, term_options)
+    res = parse_output(initials.keys, function, output)
     {
       formula_ds: Dataset.new(res[2], title: 'Fit formula'),
       coefficients: res[0],
@@ -163,11 +140,32 @@ module GnuplotRB
     coefficients = {}
     deltas = {}
     variables.each do |var|
-      value, error = output.scan(/#{var} *= ([^ ]+) *\+\/\- ([^ ]+)/)[0]
-      plottable_function.gsub!(/#{var}([^0-9a-zA-Z])/) { value + $1 }
+      value, error = output.scan(%r{#{var} *= ([^ ]+) *\+/\- ([^ ]+)})[0]
+      plottable_function.gsub!(/#{var}([^0-9a-zA-Z])/) { value + Regexp.last_match(1) }
       coefficients[var] = value.to_f
       deltas[var] = error.to_f
     end
     [coefficients, deltas, plottable_function]
+  end
+
+  ##
+  # Make fit command and send it to gnuplot
+  def gnuplot_fit(function, data, options, initials, term_options)
+    variables = initials.keys
+    term = Terminal.new
+    term.set(term_options)
+    initials.each { |var_name, value| term.stream_puts "#{var_name} = #{value}" }
+    command = "fit #{function} #{data.to_s(term)} #{options} via #{variables.join(',')}"
+    term.stream_puts(command)
+    output = wait_for_output(term, variables)
+    begin
+      term.close
+    rescue GnuplotError
+      # Nothing interesting here.
+      # If we had an error, we never reach this line.
+      # Error here may be only additional information
+      # such as correlation matrix.
+    end
+    output
   end
 end

@@ -134,6 +134,7 @@ module GnuplotRB
     end
 
     private
+
     ##
     # Default options to be used for that plot
     def default_options
