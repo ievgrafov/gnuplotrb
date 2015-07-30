@@ -11,11 +11,11 @@ This software has been developed as a product in Google Summer of Code 2015 (GSo
 {<img src="https://codeclimate.com/github/dilcom/gnuplotrb/badges/coverage.svg" alt="Test coverage" />}[https://codeclimate.com/github/dilcom/gnuplotrb]
 
 == Table of contents
-* {Installation}[#installation]
-* {Examples}[#examples]
-  * {Notebooks}[#notebooks]
-  * {Plain examples}[#plain-examples]
-* {Contributing}[#contributing]
+* {Installation}[https://github.com/dilcom/gnuplotrb#installation]
+* {Examples}[https://github.com/dilcom/gnuplotrb#examples]
+  * {Notebooks}[https://github.com/dilcom/gnuplotrb#notebooks]
+  * {Plain examples}[https://github.com/dilcom/gnuplotrb#plain-examples]
+* {Contributing}[https://github.com/dilcom/gnuplotrb#contributing]
 
 == Installation
 === Dependencies
