@@ -4,3 +4,9 @@ AllCops:
   Exclude:
     - 'examples/**/*'
     - 'unimplemented_features/**/*'
+  DisplayCopNames: true
+  DisplayStyleGuide: true
+Metrics/LineLength:
+  Max: 100
+Style/GlobalVars:
+  AllowedVariables: [$RSPEC_TEST]
