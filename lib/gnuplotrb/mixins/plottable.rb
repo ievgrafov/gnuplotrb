@@ -72,7 +72,6 @@ module GnuplotRB
     # into iRuby notebooks. There is
     # {a notebook}[http://nbviewer.ipython.org/github/dilcom/gnuplotrb/blob/master/notebooks/basic_usage.ipynb]
     # with examples of its usage.
-    # TODO: default iRuby terminal should be moved to settings
     def to_iruby
       available_terminals = {
         'png'      => 'image/png',
