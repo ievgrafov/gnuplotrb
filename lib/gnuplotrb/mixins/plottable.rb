@@ -13,34 +13,6 @@ module GnuplotRB
     end
 
     ##
-    # Method for inner use.
-    # ====== Overview
-    # Method which outputs plot to specific terminal (possibly some file).
-    # Explicit use should be avoided. This method is called from #method_missing
-    # when it handles method names like #to_png(options).
-    # ====== Arguments
-    # * *terminal* - string corresponding to terminal type (png, html, jpeg etc)
-    # * *path* - path to output file, if none given it will output to temp file
-    #   and then read it and return binary contents of file
-    # * *options* - used in 'set term <term type> <options here>'
-    # ====== Examples
-    #   ## plot here may be Plot, Splot, Multiplot or any other plottable class
-    #   plot.to_png('./result.png', size: [300, 500])
-    #   contents = plot.to_svg(size: [100, 100])
-    #   plot.to_dumb('./result.txt', size: [30, 15])
-    def to_specific_term(terminal, path = nil, **options)
-      if path
-        result = plot(term: [terminal, options], output: path)
-      else
-        path = Dir::Tmpname.make_tmpname(terminal, 0)
-        plot(term: [terminal, options], output: path)
-        result = File.binread(path)
-        File.delete(path)
-      end
-      result
-    end
-
-    ##
     # ====== Overview
     # In this gem #method_missing is used both to handle
     # options and to handle plotting to specific terminal.
@@ -96,17 +68,10 @@ module GnuplotRB
     end
 
     ##
-    # Returns terminal object linked with this Plottable object.
-    def own_terminal
-      @terminal ||= Terminal.new 
-    end
-
-    ##
     # This method is used to embed plottable objects
     # into iRuby notebooks. There is
-    # [a notebook](https://github.com/dilcom/gnuplotrb/blob/master/notebooks/basic_usage.ipynb)
+    # {a notebook}[http://nbviewer.ipython.org/github/dilcom/gnuplotrb/blob/master/notebooks/basic_usage.ipynb]
     # with examples of its usage.
-    # TODO: default iRuby terminal should be moved to settings
     def to_iruby
       available_terminals = {
         'png'      => 'image/png',
@@ -118,6 +83,43 @@ module GnuplotRB
       terminal, options = term.is_a?(Array) ? [term[0], term[1]] : [term, {}]
       terminal = 'svg' unless available_terminals.keys.include?(terminal)
       [available_terminals[terminal], send("to_#{terminal}".to_sym, **options)]
+    end
+
+    ##
+    # :call-seq:
+    # to_png('file.png') -> creates file with plot
+    # to_svg -> svg file contents
+    # to_canvas('plot.html', size: [300,300]) -> creates file with plot
+    #
+    # ====== Overview
+    # Method which outputs plot to specific terminal (possibly some file).
+    # Explicit use should be avoided. This method is called from #method_missing
+    # when it handles method names like #to_png(options).
+    # ====== Arguments
+    # * *path* - path to output file, if none given it will output to temp file
+    #   and then read it and return binary contents of file
+    # * *options* - used in #plot
+    # ====== Examples
+    #   ## plot here may be Plot, Splot, Multiplot or any other plottable class
+    #   plot.to_png('./result.png', size: [300, 500])
+    #   contents = plot.to_svg(size: [100, 100])
+    #   plot.to_dumb('./result.txt', size: [30, 15])
+    def to_specific_term(terminal, path = nil, **options)
+      if path
+        result = plot(term: [terminal, options], output: path)
+      else
+        path = Dir::Tmpname.make_tmpname(terminal, 0)
+        plot(term: [terminal, options], output: path)
+        result = File.binread(path)
+        File.delete(path)
+      end
+      result
+    end
+
+    ##
+    # Returns terminal object linked with this Plottable object.
+    def own_terminal
+      @terminal ||= Terminal.new
     end
   end
 end

@@ -1,6 +1,8 @@
 = GnuplotRB
 
-This is part of ruby gnuplot gem. It already can plot something (see examples and notebooks) but some features still waiting for implementation.
+GnuplotRB is a plot generator for Ruby based on {Gnuplot}[http://www.gnuplot.info].
+
+This software has been developed as a product in Google Summer of Code 2015 (GSoC2015). Its progress may be saw in {SciRuby mailing list}[https://groups.google.com/forum/?fromgroups#!topic/sciruby-dev/lhWvb5hWc3k] or in {project's blog}[http://dilcom.github.io/gnuplotrb/]. 
 
 {<img src="https://badge.fury.io/rb/gnuplotrb.svg" alt="Gem Version" />}[https://rubygems.org/gems/gnuplotrb]
 
@@ -8,15 +10,18 @@ This is part of ruby gnuplot gem. It already can plot something (see examples an
 {<img src="https://codeclimate.com/github/dilcom/gnuplotrb/badges/gpa.svg" alt="Code quality" />}[https://codeclimate.com/github/dilcom/gnuplotrb]
 {<img src="https://codeclimate.com/github/dilcom/gnuplotrb/badges/coverage.svg" alt="Test coverage" />}[https://codeclimate.com/github/dilcom/gnuplotrb]
 
+== Table of contents
+* {Installation}[https://github.com/dilcom/gnuplotrb#installation]
+* {Examples}[https://github.com/dilcom/gnuplotrb#examples]
+  * {Notebooks}[https://github.com/dilcom/gnuplotrb#notebooks]
+  * {Plain examples}[https://github.com/dilcom/gnuplotrb#plain-examples]
+* {Contributing}[https://github.com/dilcom/gnuplotrb#contributing]
+
+== Installation
 === Dependencies
 * Ruby 2.0+
 * It is required to install {gnuplot 5.0}[http://www.gnuplot.info/download.html] to use that gem.
 === Gem installation
-==== Install latest version from repository (may be unstable)
-  git clone https://github.com/dilcom/gnuplotrb.git
-  cd gnuplotrb
-  bundle install
-  rake install
 ==== Install latest stable version from Rubygems
   gem install gnuplotrb
 ==== Install latest stable version using bundler
@@ -25,16 +30,70 @@ This is part of ruby gnuplot gem. It already can plot something (see examples an
   to your Gemfile
 * run
     bundle install
+==== Install latest version from source (may be unstable)
+  git clone https://github.com/dilcom/gnuplotrb.git
+  cd gnuplotrb
+  bundle install
+  rake install
+
+== Examples
+=== Notebooks
+
+This notebooks are powered by {Ruby kernel}[https://github.com/SciRuby/iruby/] for {IPython/Jupyter}[https://jupyter.org/].
+I placed them here to show some GnuplotRB's capabilities and ways of using it together with iRuby.
+
+To use GnuplotRB gem with iRuby you need to install them both.
+
+* iRuby installation is covered in its {README}[https://github.com/SciRuby/iruby/blob/master/README.md].
+  It also covers installation of iPython and other dependecies.
+* GnuplotRB gem installation covered in {README}[https://github.com/dilcom/gnuplotrb#installation] too.
+
+==== Embedding plots into iRuby
+Using GnuplotRB inside iRuby notebooks is covered in:
+
+* {Basic usage notebook}[http://nbviewer.ipython.org/github/dilcom/gnuplotrb/blob/master/notebooks/basic_usage.ipynb].
+
+==== 2D and 3D plots
+GnuplotRB is capable to plot vast range of plots from histograms to 3D heatmaps. Gem's repository contains examples of several plot types:
+
+* {Heatmaps}[http://nbviewer.ipython.org/github/dilcom/gnuplotrb/blob/master/notebooks/heatmaps.ipynb]
+* {Vector field}[http://nbviewer.ipython.org/github/dilcom/gnuplotrb/blob/master/notebooks/vector_field.ipynb] (Thanks, {Alexej}[https://github.com/agisga])
+* {Math equations}[http://nbviewer.ipython.org/github/dilcom/gnuplotrb/blob/master/notebooks/math_plots.ipynb]
+* {3D visualizations}[http://nbviewer.ipython.org/github/dilcom/gnuplotrb/blob/master/notebooks/3d_plot.ipynb]
+* {Histogram}[http://nbviewer.ipython.org/github/dilcom/gnuplotrb/blob/master/notebooks/histogram.ipynb]
+
+==== Possible datasources
+GnuplotRB may take data in Ruby container or in a file. Supported containers for now are Arrays, Daru::Vector and Daru::DataFrame.
+When data given in file, GnuplotRB pass filename to Gnuplot *without* reading the file into memory.
+
+Examples of using different datasources:
+
+* {Data given in file or Ruby Array}[http://nbviewer.ipython.org/github/dilcom/gnuplotrb/blob/master/notebooks/points_from_different_sources.ipynb]
+* {Data given in Daru containers}[http://nbviewer.ipython.org/github/dilcom/gnuplotrb/blob/master/notebooks/plotting_from_daru.ipynb]
+* {Data given in Daru containers (with timeseries)}[http://nbviewer.ipython.org/github/dilcom/gnuplotrb/blob/master/notebooks/time_series_from_daru.ipynb]
+* {Updating plots with new data}[http://nbviewer.ipython.org/github/dilcom/gnuplotrb/blob/master/notebooks/updating_data.ipynb]
+
+==== Multiplot
+You can not only plot several datasets in single coordinate system but place several coordinate systems on a canvas.
+
+* {Multiplot example notebook}[http://nbviewer.ipython.org/github/dilcom/gnuplotrb/blob/master/notebooks/multiplot_layout.ipynb].
+
+==== Animation
+It's possible to use several plots (Plot, Splot or Multiplot objects) to create gif animation.
+
+* {Animation example notebook}[http://nbviewer.ipython.org/github/dilcom/gnuplotrb/blob/master/notebooks/animated_plots.ipynb].
+
+==== Fitting data with formula
+GnuplotRB also may be used to fit some data with given math formula.
+
+* {Fitting data}[http://nbviewer.ipython.org/github/dilcom/gnuplotrb/blob/master/notebooks/fitting_data.ipynb]
 
 === Plain examples
-You may find several examples in {examples directory}[https://github.com/dilcom/gnuplotrb/tree/master/examples]
+You may find several examples in {examples directory}[https://github.com/dilcom/gnuplotrb/tree/master/examples].
 
-=== Notebooks with examples
-You may find several iRuby notebooks and readme for them in {notebooks directory}[https://github.com/dilcom/gnuplotrb/tree/master/notebooks]
+== Contributing
 
-=== Contributing
-
-1. {Fork it}[https://github.com/dilcom/gnuplotrb/fork]
+1. {Fork repository}[https://github.com/dilcom/gnuplotrb/fork]
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)

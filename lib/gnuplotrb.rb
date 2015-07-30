@@ -4,11 +4,9 @@ require 'open3'
 require 'base64'
 
 def require_if_available(name)
-  begin
-    require name
-  rescue LoadError
-    false
-  end
+  require name
+rescue LoadError
+  false
 end
 
 require_if_available('daru')

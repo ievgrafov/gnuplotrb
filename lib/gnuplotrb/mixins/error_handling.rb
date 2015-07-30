@@ -14,24 +14,31 @@ module GnuplotRB
     # Throws GnuplotError in case of any errors.
     def check_errors
       return if @err_array.empty?
-      command = @err_array.first
-      rest = @err_array[1..-1].join('; ')
+      command = ''
+      rest = ''
+      @semaphore.synchronize do
+        command = @err_array.first
+        rest = @err_array[1..-1].join('; ')
+        @err_array.clear
+      end
       message = "Error in previous command (\"#{command}\"): \"#{rest}\""
-      @err_array.clear
       fail GnuplotError, message
     end
 
     private
+
     ##
     # ====== Overview
     # Start new thread that will read stderr given as stream
     # and add errors into @err_array.
     def handle_stderr(stream)
       @err_array = []
+      # synchronize access to @err_array
+      @semaphore = Mutex.new
       Thread.new do
         until (line = stream.gets).nil?
           line.strip!
-          @err_array << line if line.size > 3
+          @semaphore.synchronize { @err_array << line if line.size > 3 }
         end
       end
     end

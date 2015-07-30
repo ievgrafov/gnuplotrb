@@ -15,16 +15,16 @@ To use GnuplotRB gem with iRuby you need to install them both.
 ==== Embedding plots into iRuby
 Using GnuplotRB inside iRuby notebooks is covered in:
 
-* {basic usage notebook}[https://github.com/dilcom/gnuplotrb/blob/master/notebooks/basic_usage.ipynb].
+* {basic usage notebook}[http://nbviewer.ipython.org/github/dilcom/gnuplotrb/blob/master/notebooks/basic_usage.ipynb].
 
 ==== 2D and 3D plots
 GnuplotRB is capable to plot vast range of plots from histograms to 3D heatmaps. Gem's repository contains examples of several plot types:
 
-* {heatmaps}[https://github.com/dilcom/gnuplotrb/blob/master/notebooks/heatmaps.ipynb]
-* {vector field}[https://github.com/dilcom/gnuplotrb/blob/master/notebooks/vector_field.ipynb] (Thanks, {Alexej}[https://github.com/agisga])
-* {math equations}[https://github.com/dilcom/gnuplotrb/blob/master/notebooks/math_plots.ipynb]
-* {3D visualizations}[https://github.com/dilcom/gnuplotrb/blob/master/notebooks/3d_plot.ipynb]
-* {histogram}[https://github.com/dilcom/gnuplotrb/blob/master/notebooks/histogram.ipynb]
+* {heatmaps}[http://nbviewer.ipython.org/github/dilcom/gnuplotrb/blob/master/notebooks/heatmaps.ipynb]
+* {vector field}[http://nbviewer.ipython.org/github/dilcom/gnuplotrb/blob/master/notebooks/vector_field.ipynb] (Thanks, {Alexej}[https://github.com/agisga])
+* {math equations}[http://nbviewer.ipython.org/github/dilcom/gnuplotrb/blob/master/notebooks/math_plots.ipynb]
+* {3D visualizations}[http://nbviewer.ipython.org/github/dilcom/gnuplotrb/blob/master/notebooks/3d_plot.ipynb]
+* {histogram}[http://nbviewer.ipython.org/github/dilcom/gnuplotrb/blob/master/notebooks/histogram.ipynb]
 
 ==== Possible datasources
 GnuplotRB may take data in Ruby container or in a file. Supported containers for now are Arrays, Daru::Vector and Daru::DataFrame.
@@ -32,16 +32,22 @@ When data given in file, GnuplotRB pass filename to Gnuplot *without* reading th
 
 Examples of using different datasources:
 
-* {data given in file or Ruby Array}[https://github.com/dilcom/gnuplotrb/blob/master/notebooks/points_from_different_sources.ipynb]
-* {data given in Daru containers}[https://github.com/dilcom/gnuplotrb/blob/master/notebooks/plotting_from_daru.ipynb]
-* {updating plots with new data}[https://github.com/dilcom/gnuplotrb/blob/master/notebooks/updating_data.ipynb]
+* {data given in file or Ruby Array}[http://nbviewer.ipython.org/github/dilcom/gnuplotrb/blob/master/notebooks/points_from_different_sources.ipynb]
+* {data given in Daru containers}[http://nbviewer.ipython.org/github/dilcom/gnuplotrb/blob/master/notebooks/plotting_from_daru.ipynb]
+* {data given in Daru containers (with timeseries)}[http://nbviewer.ipython.org/github/dilcom/gnuplotrb/blob/master/notebooks/time_series_from_daru.ipynb]
+* {updating plots with new data}[http://nbviewer.ipython.org/github/dilcom/gnuplotrb/blob/master/notebooks/updating_data.ipynb]
 
 ==== Multiplot
 You can not only plot several datasets in single coordinate system but place several coordinate systems on a canvas.
 
-* {Multiplot example notebook}[https://github.com/dilcom/gnuplotrb/blob/master/notebooks/multiplot_layout.ipynb].
+* {Multiplot example notebook}[http://nbviewer.ipython.org/github/dilcom/gnuplotrb/blob/master/notebooks/multiplot_layout.ipynb].
 
 ==== Animation
 It's possible to use several plots (Plot, Splot or Multiplot objects) to create gif animation.
 
-* {Animation example notebook}[https://github.com/dilcom/gnuplotrb/blob/master/notebooks/animated_plots.ipynb].
+* {Animation example notebook}[http://nbviewer.ipython.org/github/dilcom/gnuplotrb/blob/master/notebooks/animated_plots.ipynb].
+
+==== Fitting data with formula
+GnuplotRB also may be used to fit some data with given math formula.
+
+* {Fitting data}[http://nbviewer.ipython.org/github/dilcom/gnuplotrb/blob/master/notebooks/fitting_data.ipynb]

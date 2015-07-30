@@ -3,8 +3,7 @@ module GnuplotRB
   # === Overview
   # Animation allows to create gif animation with given plots
   # as frames. Possible frames: Plot, Splot, Multiplot.
-  # More about its usage in {animation notebook}
-  # [https://github.com/dilcom/gnuplotrb/blob/master/notebooks/animated_plots.ipynb].
+  # More about its usage in {animation notebook}[http://nbviewer.ipython.org/github/dilcom/gnuplotrb/blob/master/notebooks/animated_plots.ipynb].
   class Animation < Multiplot
     ##
     # *Plot* here is also named as *frame*
@@ -37,9 +36,6 @@ module GnuplotRB
       multiplot(terminal, plot_options)
       # guaranteed wait for plotting to finish
       terminal.close
-      # not guaranteed wait for plotting to finish
-      # work bad with terminals like svg and html
-      sleep 0.01 until File.size?(plot_options[:output])
       if need_output
         result = File.binread(plot_options[:output])
         File.delete(plot_options[:output])
@@ -64,6 +60,7 @@ module GnuplotRB
     end
 
     private
+
     ##
     # Dafault options to be used for that plot
     def default_options

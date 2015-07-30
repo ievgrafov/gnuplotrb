@@ -5,7 +5,7 @@ describe 'GnuplotRB::fit' do
     @tmp_dir = File.join('spec', 'tmp')
     Dir.mkdir(@tmp_dir)
     @datafile_path = File.join('spec', 'points.data')
-    x = (1..100).map { |xx| xx / 10.0}
+    x = (1..100).map { |xx| xx / 10.0 }
     y = x.map { |xx| 3.0 * Math.exp(xx / 3) }
     @data = [x, y]
   end
@@ -33,7 +33,7 @@ describe 'GnuplotRB::fit' do
     end
   end
 
-  context "fitting data" do
+  context 'fitting data' do
     it 'should throw error in case of wrong input' do
       expect { fit(@data, formula: 'wrong_formula') }.to raise_error(GnuplotError)
     end

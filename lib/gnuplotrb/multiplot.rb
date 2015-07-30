@@ -2,8 +2,7 @@ module GnuplotRB
   ##
   # === Overview
   # Multiplot allows to place several plots on one layout.
-  # It's usage is covered in {multiplot notebook}
-  # [https://github.com/dilcom/gnuplotrb/blob/master/notebooks/multiplot_layout.ipynb].
+  # It's usage is covered in {multiplot notebook}[http://nbviewer.ipython.org/github/dilcom/gnuplotrb/blob/master/notebooks/multiplot_layout.ipynb].
   class Multiplot
     include Plottable
     ##
@@ -134,6 +133,7 @@ module GnuplotRB
     end
 
     private
+
     ##
     # Default options to be used for that plot
     def default_options
