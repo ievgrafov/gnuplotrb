@@ -178,12 +178,14 @@ describe Plot do
       available_terminals = {
         'png'      => 'image/png',
         'pngcairo' => 'image/png',
-        'jpeg'     => 'image/jpeg',
+      #  'jpeg'     => 'image/jpeg',
         'svg'      => 'image/svg+xml',
         'dumb'     => 'text/plain'
       }
       available_terminals.each do |term, type|
-        expect(Plot.new(['sin(x)'], term: term).to_iruby[0]).to eql(type)
+        if OptionHandling::valid_terminal?(term)
+          expect(Plot.new('sin(x)', term: term).to_iruby[0]).to eql(type)
+        end
       end
     end
 
