@@ -30,6 +30,8 @@ module GnuplotRB
         format_z
         format_cb
         timefmt
+        dt
+        dashtype
       )
 
       ##
