@@ -178,7 +178,7 @@ describe Plot do
       available_terminals = {
         'png'      => 'image/png',
         'pngcairo' => 'image/png',
-      #  'jpeg'     => 'image/jpeg',
+        'jpeg'     => 'image/jpeg',
         'svg'      => 'image/svg+xml',
         'dumb'     => 'text/plain'
       }
