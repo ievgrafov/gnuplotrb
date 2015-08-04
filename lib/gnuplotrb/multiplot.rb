@@ -2,7 +2,16 @@ module GnuplotRB
   ##
   # === Overview
   # Multiplot allows to place several plots on one layout.
-  # It's usage is covered in {multiplot notebook}[http://nbviewer.ipython.org/github/dilcom/gnuplotrb/blob/master/notebooks/multiplot_layout.ipynb].
+  # It's usage is covered in
+  # {multiplot notebook}[http://nbviewer.ipython.org/github/dilcom/gnuplotrb/blob/master/notebooks/multiplot_layout.ipynb].
+  #
+  # === Options
+  # Most of Multiplot options are the same as in Plot.
+  # There are only 2 specific options:
+  # * title - set title for the whole layout (above all the plots)
+  # * layout - set layout size, examples:
+  #   { layout : [1, 3] } - 3 plots, 1 row, 3 columns
+  #   { layout : [2, 2] } - 4 plots, 2 rows, 2 columns
   class Multiplot
     include Plottable
     ##
