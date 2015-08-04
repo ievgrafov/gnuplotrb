@@ -17,6 +17,15 @@ module GnuplotRB
         stream.puts 'exit'
         Process.waitpid(stream.pid)
       end
+
+      ##
+      # Plot test page for given term_name into file
+      # with file_name (optional).
+      #
+      # Test page contains possibilities of the term.
+      def test(term_name, file_name = nil)
+        Terminal.new.set(term: term_name).test(file_name)
+      end
     end
 
     ##
@@ -163,6 +172,17 @@ module GnuplotRB
     def close
       check_errors
       Terminal.close_arg(@in)
+    end
+
+
+    ##
+    # Plot test page into file with file_name (optional).
+    #
+    # Test page contains possibilities of the term.
+    def test(file_name = nil)
+      set(output: file_name) if file_name
+      stream_puts('test')
+      unset(:output)
     end
   end
 end
