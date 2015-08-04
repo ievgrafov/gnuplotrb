@@ -3,7 +3,21 @@ module GnuplotRB
   # === Overview
   # Animation allows to create gif animation with given plots
   # as frames. Possible frames: Plot, Splot, Multiplot.
-  # More about its usage in {animation notebook}[http://nbviewer.ipython.org/github/dilcom/gnuplotrb/blob/master/notebooks/animated_plots.ipynb].
+  # More about its usage in
+  # {animation notebook}[http://nbviewer.ipython.org/github/dilcom/gnuplotrb/blob/master/notebooks/animated_plots.ipynb].
+  #
+  # === Options
+  # Animations has several specific options:
+  # * animate - allows to get animated gif's. Possible values are true (just turn on animation),
+  #   ot hash with suboptions (:loop - count of loops, default 0 - infinity$; 
+  #   :delay - delay between frames; :optimize - boolean, reduces file size).
+  # * size - size of gif file in pixels (size: [500, 500]) or (size: 500)
+  # * background - background color
+  # * transparent
+  # * enhanced
+  # * font
+  # * fontscale
+  # * crop
   class Animation < Multiplot
     ##
     # *Plot* here is also named as *frame*
