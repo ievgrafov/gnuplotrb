@@ -19,9 +19,6 @@ module GnuplotRB
   #   Range (xrange: 0..100), or String (yrange: '[0:100]').
   # * title - plot's title. Takes String (title: 'Some new plot').
   # * polar (parametric) - plot in polar or parametric space. Takes boolean (true).
-  # * using - choose which columns of input data gnuplot should use. Takes String
-  #   (using: 'xtic(1):2:3'). If Daru::Dataframe passed one can use column names
-  #   instead of numbers (using: 'index:value1:summ' - value1 and summ here are column names).
   # * style_data - set style for plotting data. Takes string, possible values: histogram,
   #   points, lines, linespoints, boxes etc. See gnuplot docs for more.
   # * term - select terminal used by gnuplot. Examples: { term: 'png' },

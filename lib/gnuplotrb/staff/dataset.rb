@@ -4,6 +4,20 @@ module GnuplotRB
   # Dataset keeps control of Datablock or String (some math functions like
   # this 'x*sin(x)' or filename) and options related to original dataset
   # in gnuplot (with, title, using etc).
+  #
+  # === Options
+  # Dataset options are explained in
+  # {gnuplot docs}[http://www.gnuplot.info/docs_5.0/gnuplot.pdf](pp. 80-101).
+  # Several common options:
+  # * with - set plot style for dataset ('lines', 'points', 'impulses' etc)  
+  # * using - choose which columns of input data gnuplot should use. Takes String
+  #   (using: 'xtic(1):2:3'). If Daru::Dataframe passed one can use column names
+  #   instead of numbers (using: 'index:value1:summ' - value1 and summ here are column names).
+  # * linewidth (lw) - integer line width
+  # * dashtype (dt) - takes pattern with dash style. Examples: '.. ', '-- ', '.-  '.
+  # * pointtype (pt) - takes integer number of point type (works only when :with option is set to
+  #   'points'). One can call Terminal::test(term_name)
+  #   or Terminal#test in order to see which point types are supported by terminal.
   class Dataset
     include Plottable
     ##
