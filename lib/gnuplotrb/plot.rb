@@ -1,7 +1,39 @@
 module GnuplotRB
   ##
   # === Overview
-  # Plot correspond to simple 2D visualisation
+  # Class corresponding to simple 2D visualisation.
+  #
+  # === Notebooks
+  #
+  # * {Heatmaps}[http://nbviewer.ipython.org/github/dilcom/gnuplotrb/blob/master/notebooks/heatmaps.ipynb]
+  # * {Vector field}[http://nbviewer.ipython.org/github/dilcom/gnuplotrb/blob/master/notebooks/vector_field.ipynb]
+  # * {Math equations}[http://nbviewer.ipython.org/github/dilcom/gnuplotrb/blob/master/notebooks/math_plots.ipynb]
+  # * {Histogram}[http://nbviewer.ipython.org/github/dilcom/gnuplotrb/blob/master/notebooks/histogram.ipynb]
+  # * {Updating plots with new data}[http://nbviewer.ipython.org/github/dilcom/gnuplotrb/blob/master/notebooks/updating_data.ipynb]
+  #
+  # === Options
+  # All possible options are exaplained in 
+  # {gnuplot docs}[http://www.gnuplot.info/docs_5.0/gnuplot.pdf](pp. 105-190).
+  # Several common ones:
+  # * xrange(yrange, zrange, urange, vrange) - set range for a variable. Takes
+  #   Range (xrange: 0..100), or String (yrange: '[0:100]').
+  # * title - plot's title. Takes String (title: 'Some new plot').
+  # * polar (parametric) - plot in polar or parametric space. Takes boolean (true).
+  # * using - choose which columns of input data gnuplot should use. Takes String
+  #   (using: 'xtic(1):2:3'). If Daru::Dataframe passed one can use column names
+  #   instead of numbers (using: 'index:value1:summ' - value1 and summ here are column names).
+  # * style_data - set style for plotting data. Takes string, possible values: histogram,
+  #   points, lines, linespoints, boxes etc. See gnuplot docs for more.
+  # * term - select terminal used by gnuplot. Examples: { term: 'png' },
+  #   { term: ['svg', size: [600, 600]] }. Deprecated due to existance of #to_<term_name> methods.
+  #   One can use #to_png and #to_svg(size: [600, 600]) instead of passing previous options.
+  # * output - select filename to output plot to. Should be used together with term. Deprecated
+  #   due to existance of #to_<term_name> methods. One should use #to_png('file.png') instead of
+  #   passing { term: 'png', output: 'file.png' }.
+  # Every option may be passed to constructor in order to create plot with it.
+  # Methods #options(several: options, ...) and bunch of #option_name(only_an: option) such as
+  # #xrange, #using, #polar etc create new Plot object based on existing but with a new options.
+  # See notebooks for examples.
   class Plot
     include Plottable
     ##
@@ -13,7 +45,7 @@ module GnuplotRB
     #   [data, **dataset_options] arrays from which Dataset may be created
     # * *options* will be considered as 'settable' options of gnuplot
     #   ('set xrange [1:10]' for { xrange: 1..10 },
-    #   "set title 'plot'" for { title: 'plot' } etc)
+    #   "set title 'plot'" for { title: 'plot' } etc).
     def initialize(*datasets)
       # had to relace **options arg with this because in some cases
       # Daru::DataFrame was mentioned as hash and added to options
@@ -33,7 +65,7 @@ module GnuplotRB
     # ====== Overview
     # This outputs plot to term (if given) or to this plot's own terminal.
     # ====== Arguments
-    # * *term* - Terminal to plot to
+    # * *term* - Terminal object to plot to
     # * *multiplot_part* - part of a multiplot. Option for inner usage
     # * *options* - will be considered as 'settable' options of gnuplot
     #   ('set xrange [1:10]', 'set title 'plot'' etc)
