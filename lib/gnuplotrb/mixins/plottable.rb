@@ -46,10 +46,16 @@ module GnuplotRB
     #   content = multiplot.to_svg(size: [100, 100], fname: 'Arial', fsize: 12)
     def method_missing(meth_id, *args)
       meth = meth_id.id2name
-      if meth[0..2] == 'to_'
+      case
+      when meth[0..2] == 'to_'
         term = meth[3..-1]
         super unless OptionHandling.valid_terminal?(term)
         to_specific_term(term, *args)
+      when meth[-1] == '!'
+        option!(meth[0..-2].to_sym, *args)
+      when meth[-1] == '='
+        option!(meth[0..-2].to_sym, *args)
+        option(meth[0..-2].to_sym)
       else
         option(meth_id, *args)
       end

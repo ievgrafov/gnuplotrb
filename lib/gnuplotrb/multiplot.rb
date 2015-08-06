@@ -83,6 +83,14 @@ module GnuplotRB
 
     alias_method :update, :update_plot
 
+    def update_plot!(position = 0, **options)
+      return self unless block_given? if options.empty?
+      replacement = @plots[position].options!(options)
+      yield(replacement) if block_given?
+    end
+
+    alias_method :update!, :update_plot!
+
     ##
     # ====== Overview
     # Create new Multiplot object where plot (Plot or Splot object)
@@ -99,6 +107,13 @@ module GnuplotRB
     end
 
     alias_method :replace, :replace_plot
+
+    def replace_plot!(position = 0, plot)
+      @plots = @plots.set(position, plot)
+    end
+
+    alias_method :replace!, :replace_plot!
+    alias_method :[]=, :replace_plot!
 
     ##
     # ====== Overview
@@ -119,6 +134,14 @@ module GnuplotRB
     alias_method :<<, :add_plots
     alias_method :add, :add_plots
 
+    def add_plots!(*plots)
+      plots.unshift(0) unless plots[0].is_a?(Numeric)
+      @plots = @plots.insert(*plots)
+    end
+
+    alias_method :add_plot!, :add_plots!
+    alias_method :add!, :add_plots!
+
     ##
     # ====== Overview
     # Create new Multiplot without plot at given position
@@ -133,6 +156,12 @@ module GnuplotRB
     end
 
     alias_method :remove, :remove_plot
+
+    def remove_plot!(position = -1)
+      @plots = @plots.delete_at(position)
+    end
+
+    alias_method :remove!, :remove_plot!
 
     ##
     # ====== Overview

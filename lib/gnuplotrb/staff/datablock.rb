@@ -41,6 +41,16 @@ module GnuplotRB
       end
     end
 
+    def update!(data)
+      data_str = data.to_gnuplot_points
+      if @stored_in_file
+        File.open(@file_name, 'a') { |f| f.puts "\n#{data_str}" }
+      else
+        @data = "#{@data}\n#{data_str}"
+      end
+      self
+    end
+
     ##
     # ====== Overview
     # Returns quoted filename if datablock stored in file or outputs

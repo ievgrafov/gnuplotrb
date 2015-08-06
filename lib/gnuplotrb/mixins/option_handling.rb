@@ -147,6 +147,13 @@ module GnuplotRB
       end
     end
 
+    ##
+    # Destructive twin of #options
+    def options!(**options)
+      @options = @options ? @options.merge(options) : Hamster::Hash.new(options)
+      self
+    end
+
     private
 
     ##
@@ -161,6 +168,15 @@ module GnuplotRB
       else
         options(key => value)
       end
+    end
+
+    def option!(key, *value)
+      options!(key => value)
+    end
+
+    def option=(key, *value)
+      options!(key => value)
+      @options[key]
     end
   end
 end

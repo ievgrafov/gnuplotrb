@@ -123,6 +123,12 @@ module GnuplotRB
       end
     end
 
+    def update!(data = nil, **options)
+      @data.update!(data) if data
+      options!(options)
+      self
+    end
+
     ##
     # ====== Overview
     # Own implementation of #clone. Creates new Dataset if

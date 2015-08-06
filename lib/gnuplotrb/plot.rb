@@ -107,6 +107,10 @@ module GnuplotRB
       new_ds.equal?(old_ds) ? self : replace_dataset(position, new_ds)
     end
 
+    def update_dataset!(position = 0, data: nil, **options)
+      @datasets[position].update!(data, options)
+    end
+
     ##
     # ====== Overview
     # Create new Plot object where dataset at *position* will
@@ -124,6 +128,12 @@ module GnuplotRB
       self.class.new(@datasets.set(position, dataset_from_any(dataset)), @options)
     end
 
+    def replace_dataset!(position = 0, dataset)
+      @datasets = @datasets.set(position, dataset_from_any(dataset))
+    end
+
+    alias_method :[]=, :replace_dataset!
+
     ##
     # ====== Overview
     # Create new Plot object where given datasets will
@@ -139,12 +149,20 @@ module GnuplotRB
     #   cosx_and_sinx = sinx << ['cos(x)']
     def add_datasets(*datasets)
       datasets.map! { |ds| ds.is_a?(Numeric) ? ds : dataset_from_any(ds) }
+      # first element is position where to add datasets
       datasets.unshift(0) unless datasets[0].is_a?(Numeric)
       self.class.new(@datasets.insert(*datasets), @options)
     end
 
     alias_method :add_dataset, :add_datasets
     alias_method :<<, :add_datasets
+
+    def add_datasets(*datasets)
+      datasets.map! { |ds| ds.is_a?(Numeric) ? ds : dataset_from_any(ds) }
+      # first element is position where to add datasets
+      datasets.unshift(0) unless datasets[0].is_a?(Numeric)
+      @datasets = @datasets.insert(*datasets)
+    end
 
     ##
     # ====== Overview
@@ -159,6 +177,10 @@ module GnuplotRB
     #   cosx = sinx_and_cosx.remove_dataset(0)
     def remove_dataset(position = -1)
       self.class.new(@datasets.delete_at(position), @options)
+    end
+
+    def remove_dataset!(position = -1)
+      @datasets = @datasets.delete_at(position)
     end
 
     ##
