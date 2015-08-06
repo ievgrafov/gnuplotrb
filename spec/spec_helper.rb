@@ -12,6 +12,8 @@ require 'gnuplotrb'
 
 include ChunkyPNG::Color
 include GnuplotRB
+include GnuplotRB::Fit
+
 $RSPEC_TEST = true
 
 def same_images?(*imgs)
