@@ -87,6 +87,7 @@ module GnuplotRB
       return self unless block_given? if options.empty?
       replacement = @plots[position].options!(options)
       yield(replacement) if block_given?
+      self
     end
 
     alias_method :update!, :update_plot!
@@ -110,6 +111,7 @@ module GnuplotRB
 
     def replace_plot!(position = 0, plot)
       @plots = @plots.set(position, plot)
+      self
     end
 
     alias_method :replace!, :replace_plot!
@@ -137,6 +139,7 @@ module GnuplotRB
     def add_plots!(*plots)
       plots.unshift(0) unless plots[0].is_a?(Numeric)
       @plots = @plots.insert(*plots)
+      self
     end
 
     alias_method :add_plot!, :add_plots!
@@ -159,6 +162,7 @@ module GnuplotRB
 
     def remove_plot!(position = -1)
       @plots = @plots.delete_at(position)
+      self
     end
 
     alias_method :remove!, :remove_plot!

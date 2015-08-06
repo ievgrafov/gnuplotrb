@@ -109,6 +109,7 @@ module GnuplotRB
 
     def update_dataset!(position = 0, data: nil, **options)
       @datasets[position].update!(data, options)
+      self
     end
 
     ##
@@ -130,6 +131,7 @@ module GnuplotRB
 
     def replace_dataset!(position = 0, dataset)
       @datasets = @datasets.set(position, dataset_from_any(dataset))
+      self
     end
 
     alias_method :[]=, :replace_dataset!
@@ -162,6 +164,7 @@ module GnuplotRB
       # first element is position where to add datasets
       datasets.unshift(0) unless datasets[0].is_a?(Numeric)
       @datasets = @datasets.insert(*datasets)
+      self
     end
 
     ##
@@ -181,6 +184,7 @@ module GnuplotRB
 
     def remove_dataset!(position = -1)
       @datasets = @datasets.delete_at(position)
+      self
     end
 
     ##
