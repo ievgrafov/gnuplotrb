@@ -159,13 +159,15 @@ module GnuplotRB
     alias_method :add_dataset, :add_datasets
     alias_method :<<, :add_datasets
 
-    def add_datasets(*datasets)
+    def add_datasets!(*datasets)
       datasets.map! { |ds| ds.is_a?(Numeric) ? ds : dataset_from_any(ds) }
       # first element is position where to add datasets
       datasets.unshift(0) unless datasets[0].is_a?(Numeric)
       @datasets = @datasets.insert(*datasets)
       self
     end
+
+    alias_method :add_dataset!, :add_datasets!
 
     ##
     # ====== Overview
