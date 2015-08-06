@@ -1,18 +1,20 @@
 module GnuplotRB
   ##
   # ====== Overview
-  # Fit given data with function. Covered in {fit notebook}[http://nbviewer.ipython.org/github/dilcom/gnuplotrb/blob/master/notebooks/fitting_data.ipynb].
+  # Fit given data with function. Covered in
+  # {fit notebook}[http://nbviewer.ipython.org/github/dilcom/gnuplotrb/blob/master/notebooks/fitting_data.ipynb].
   # ====== Arguments
   # * *data* - method accepts the same sources as Dataset.new
   #   and Dataset object
   # * *:function* - function to fit data with. Default 'a2*x*x+a1*x+a0'
   # * *:initials* - initial values for coefficients used in fitting.
   #   Default: {a2: 1, a1: 1, a0: 1}
-  # * *:via* - coefficients that Gnuplot should change during fitting.
-  #   Default: initials#keys
   # * *:term_options* - terminal options that should be setted to terminal before fit.
-  #   For example *xrange*, *yrange* etc
-  # * *options* - options passed to Gnuplot's fit such as *using*
+  #   You can see them in Plot's documentation (or even better in gnuplot doc).
+  #   Most useful here are ranges (xrange, yrange etc) and fit option which tunes fit parameters
+  #   (see {gnuplot doc}[http://www.gnuplot.info/docs_5.0/gnuplot.pdf] p. 122).
+  # * *options* - options passed to Gnuplot's fit such as *using*. They are covered in
+  #   {gnuplot doc}[http://www.gnuplot.info/docs_5.0/gnuplot.pdf](pp. 69-74)
   # ====== Return value
   # Fit returns hash of 4 elements:
   # * *:formula_ds* - dataset with best fit curve as data
