@@ -23,7 +23,6 @@ module GnuplotRB
       end
       message = "Error in previous command (\"#{command}\"): \"#{rest}\""
       fail GnuplotError, message
-      self
     end
 
     private
