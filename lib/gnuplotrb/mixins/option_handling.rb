@@ -173,10 +173,5 @@ module GnuplotRB
     def option!(key, *value)
       options!(key => value)
     end
-
-    def option=(key, *value)
-      options!(key => value)
-      @options[key]
-    end
   end
 end
