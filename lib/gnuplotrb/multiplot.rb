@@ -67,7 +67,7 @@ module GnuplotRB
     # @param position [Integer] position of plot which you need to update
     #   (by default first plot is updated)
     # @param options [Hash] options to set into updated plot
-    # @return [Multiplot] - self
+    # @return [Multiplot] self
     # @yieldparam plot [Plot, Splot] a new plot
     # @yieldreturn [Plot, Splot] changed plot
     # @example
@@ -86,7 +86,7 @@ module GnuplotRB
     ##
     # Destructive version of #update_plot.
     #
-    # @return [Multiplot] - self
+    # @return [Multiplot] self
     # @example
     #   Multiplot.new(Plot.new('sin(x)'), Plot.new('cos(x)'), layout: [2,1])
     #   mp.update_plot!(title: 'Sin(x) and Exp(x)') { |sinx| sinx.add!('exp(x)') }
@@ -107,7 +107,7 @@ module GnuplotRB
     # @param position [Integer] position of plot which you need to replace
     #   (by default first plot is replace)
     # @param plot [Plot, Splot] replacement
-    # @return [Multiplot] - self
+    # @return [Multiplot] self
     # @example
     #   mp = Multiplot.new(Plot.new('sin(x)'), Plot.new('cos(x)'), layout: [2,1])
     #   mp_with_replaced_plot = mp.replace_plot(Plot.new('exp(x)', title: 'exp instead of sin'))
@@ -121,7 +121,7 @@ module GnuplotRB
     ##
     # Destructive version of #replace_plot.
     #
-    # @return [Multiplot] - self
+    # @return [Multiplot] self
     # @example
     #   mp = Multiplot.new(Plot.new('sin(x)'), Plot.new('cos(x)'), layout: [2,1])
     #   mp.replace_plot!(Plot.new('exp(x)', title: 'exp instead of sin'))
@@ -141,7 +141,7 @@ module GnuplotRB
     # @param position [Integer] position of plot which you need to replace
     #   (by default first plot is replace)
     # @param plots [Sequence of Plot or Splot] plots you want to add
-    # @return [Multiplot] - self
+    # @return [Multiplot] self
     # @example
     #   mp = Multiplot.new(Plot.new('sin(x)'), Plot.new('cos(x)'), layout: [2,1])
     #   enlarged_mp = mp.add_plots(Plot.new('exp(x)')).layout([3,1])
@@ -158,7 +158,7 @@ module GnuplotRB
     ##
     # Destructive version of #add_plots.
     #
-    # @return [Multiplot] - self
+    # @return [Multiplot] self
     # @example
     #   mp = Multiplot.new(Plot.new('sin(x)'), Plot.new('cos(x)'), layout: [2,1])
     #   mp.add_plots!(Plot.new('exp(x)')).layout([3,1])
@@ -178,7 +178,7 @@ module GnuplotRB
     #
     # @param position [Integer] position of plot which you need to remove
     #   (by default last plot is removed)
-    # @return [Multiplot] - self
+    # @return [Multiplot] self
     # @example
     #   mp = Multiplot.new(Plot.new('sin(x)'), Plot.new('cos(x)'), layout: [2,1])
     #   mp_with_only_cos = mp.remove_plot(0)
@@ -192,7 +192,7 @@ module GnuplotRB
     ##
     # Destructive version of #remove_plot.
     #
-    # @return [Multiplot] - self
+    # @return [Multiplot] self
     # @example
     #   mp = Multiplot.new(Plot.new('sin(x)'), Plot.new('cos(x)'), layout: [2,1])
     #   mp.remove_plot!(0)
