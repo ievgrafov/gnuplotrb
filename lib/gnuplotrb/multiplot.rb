@@ -1,30 +1,29 @@
 module GnuplotRB
   ##
-  # === Overview
   # Multiplot allows to place several plots on one layout.
   # It's usage is covered in
   # {multiplot notebook}[http://nbviewer.ipython.org/github/dilcom/gnuplotrb/blob/master/notebooks/multiplot_layout.ipynb].
   #
-  # === Options
-  # Most of Multiplot options are the same as in Plot.
+  # == Options
+  # Most of Multiplot options are the same as in Plot so one can also set any options related
+  # to Plot and they will be considered by all nested plots
+  # (if they does not override it with their own values).
+  #
   # There are only 2 specific options:
   # * title - set title for the whole layout (above all the plots)
   # * layout - set layout size, examples:
-  #   { layout : [1, 3] } - 3 plots, 1 row, 3 columns
-  #   { layout : [2, 2] } - 4 plots, 2 rows, 2 columns
+  #     { layout : [1, 3] } # 3 plots, 1 row, 3 columns
+  #     { layout : [2, 2] } # 4 plots, 2 rows, 2 columns
   class Multiplot
     include Plottable
     ##
-    # Array of plots contained by this object.
+    # @return [Array] Array of plots contained by this object
     attr_reader :plots
 
     ##
-    # ====== Arguments
-    # * *plots* are Plot or Splot objects which should be placed
-    #   on this multiplot layout
-    # * *options* will be considered as 'settable' options of gnuplot
-    #   ('set xrange [1:10]' for { xrange: 1..10 } etc) just as in Plot.
-    #   Special options of Multiplot are :layout and :title.
+    # @param plots [Plot, Splot, Hamster::Vector] Hamster vector (or just sequence) with Plot
+    #   or Splot objects which should be placed on this multiplot layout
+    # @param options [Hash] see options in top class docs
     def initialize(*plots, **options)
       @plots = plots[0].is_a?(Hamster::Vector) ? plots[0] : Hamster::Vector.new(plots)
       @options = Hamster.hash(options)
@@ -32,16 +31,13 @@ module GnuplotRB
     end
 
     ##
-    # ====== Overview
-    # This outputs all the plots to term (if given) or to this
-    # Multiplot's own terminal.
-    # ====== Arguments
-    # * *term* - Terminal to plot to
-    # * *options* - will be considered as 'settable' options of gnuplot
-    #   ('set xrange [1:10]', 'set title 'plot'' etc)
-    # Options passed here have priority over already existing.
-    # Inner options of Plots have the highest priority (except
-    # :term and :output which are ignored in this case).
+    # Output all the plots to term (if given) or to this Multiplot's own terminal.
+    #
+    # @param term [Terminal] Terminal to plot to
+    # @param multiplot_part [Boolean] placeholder, does not really needed and should not be used
+    # @param options [Hash] see options in top class docs.
+    #   Options passed here have priority over already set.
+    # @return [Multiplot] self
     def plot(term = nil, multiplot_part: false, **options)
       plot_options = mix_options(options) do |plot_opts, mp_opts|
         plot_opts.merge(multiplot: mp_opts.to_h)
@@ -59,21 +55,25 @@ module GnuplotRB
     end
 
     ##
-    # ====== Overview
-    # Create new Multiplot object where plot (Plot or Splot object)
-    # at *position* will
+    # Create new updated Multiplot object
+    # where plot (Plot or Splot object) at *position* will
     # be replaced with the new one created from it by updating.
     # To update a plot you can pass some options for it or a
     # block, that should take existing plot (with new options if
     # you gave them) and return a plot too.
-    # ====== Arguments
-    # * *position* - position of plot which you need to update
+    #
+    # Method yields new created Plot or Splot to allow you update it manually.
+    #
+    # @param position [Integer] position of plot which you need to update
     #   (by default first plot is updated)
-    # * *options* - options to update plot with
-    # * *&block* - method also may take a block which returns a plot
-    # ====== Example
+    # @param options [Hash] options to set into updated plot
+    # @return [Multiplot] - self
+    # @yieldparam plot [Plot, Splot] a new plot
+    # @yieldreturn [Plot, Splot] changed plot
+    # @example
     #   mp = Multiplot.new(Plot.new('sin(x)'), Plot.new('cos(x)'), layout: [2,1])
-    #   updated_mp = mp.update_plot(title: 'Sin(x) and Exp(x)') { |sinx| sinx.add('exp(x)') }
+    #   updated_mp = mp.update_plot(title: 'Sin(x) and Exp(x)') { |sinx| sinx.add!('exp(x)') }
+    #   # mp IS NOT affected
     def update_plot(position = 0, **options)
       return self unless block_given? if options.empty?
       replacement = @plots[position].options(options)
@@ -83,6 +83,14 @@ module GnuplotRB
 
     alias_method :update, :update_plot
 
+    ##
+    # Destructive version of #update_plot.
+    #
+    # @return [Multiplot] - self
+    # @example
+    #   Multiplot.new(Plot.new('sin(x)'), Plot.new('cos(x)'), layout: [2,1])
+    #   mp.update_plot!(title: 'Sin(x) and Exp(x)') { |sinx| sinx.add!('exp(x)') }
+    #   # mp IS affected
     def update_plot!(position = 0, **options)
       return self unless block_given? if options.empty?
       replacement = @plots[position].options!(options)
@@ -93,22 +101,31 @@ module GnuplotRB
     alias_method :update!, :update_plot!
 
     ##
-    # ====== Overview
     # Create new Multiplot object where plot (Plot or Splot object)
     # at *position* will be replaced with the given one.
-    # ====== Arguments
-    # * *position* - position of plot which you need to update
-    #   (by default first plot is updated)
-    # * *plot* - replacement for existing plot
-    # ====== Example
+    #
+    # @param position [Integer] position of plot which you need to replace
+    #   (by default first plot is replace)
+    # @param plot [Plot, Splot] replacement
+    # @return [Multiplot] - self
+    # @example
     #   mp = Multiplot.new(Plot.new('sin(x)'), Plot.new('cos(x)'), layout: [2,1])
     #   mp_with_replaced_plot = mp.replace_plot(Plot.new('exp(x)', title: 'exp instead of sin'))
+    #   # mp IS NOT affected
     def replace_plot(position = 0, plot)
       self.class.new(@plots.set(position, plot), @options)
     end
 
     alias_method :replace, :replace_plot
 
+    ##
+    # Destructive version of #replace_plot.
+    #
+    # @return [Multiplot] - self
+    # @example
+    #   mp = Multiplot.new(Plot.new('sin(x)'), Plot.new('cos(x)'), layout: [2,1])
+    #   mp.replace_plot!(Plot.new('exp(x)', title: 'exp instead of sin'))
+    #   # mp IS affected
     def replace_plot!(position = 0, plot)
       @plots = @plots.set(position, plot)
       self
@@ -118,15 +135,17 @@ module GnuplotRB
     alias_method :[]=, :replace_plot!
 
     ##
-    # ====== Overview
     # Create new Multiplot with given *plots* added before plot at given *position*.
     # (by default it adds plot at the front).
-    # ====== Arguments
-    # * *position* - position before which you want to add a plot
-    # * *plots* - sequence of plots you want to add
-    # ====== Example
+    #
+    # @param position [Integer] position of plot which you need to replace
+    #   (by default first plot is replace)
+    # @param plots [Sequence of Plot or Splot] plots you want to add
+    # @return [Multiplot] - self
+    # @example
     #   mp = Multiplot.new(Plot.new('sin(x)'), Plot.new('cos(x)'), layout: [2,1])
     #   enlarged_mp = mp.add_plots(Plot.new('exp(x)')).layout([3,1])
+    #   # mp IS NOT affected
     def add_plots(*plots)
       plots.unshift(0) unless plots[0].is_a?(Numeric)
       self.class.new(@plots.insert(*plots), @options)
@@ -136,6 +155,14 @@ module GnuplotRB
     alias_method :<<, :add_plots
     alias_method :add, :add_plots
 
+    ##
+    # Destructive version of #add_plots.
+    #
+    # @return [Multiplot] - self
+    # @example
+    #   mp = Multiplot.new(Plot.new('sin(x)'), Plot.new('cos(x)'), layout: [2,1])
+    #   mp.add_plots!(Plot.new('exp(x)')).layout([3,1])
+    #   # mp IS affected
     def add_plots!(*plots)
       plots.unshift(0) unless plots[0].is_a?(Numeric)
       @plots = @plots.insert(*plots)
@@ -146,20 +173,30 @@ module GnuplotRB
     alias_method :add!, :add_plots!
 
     ##
-    # ====== Overview
     # Create new Multiplot without plot at given position
     # (by default last plot is removed).
-    # ====== Arguments
-    # * *position* - position of plot you want to remove
-    # ====== Example
+    #
+    # @param position [Integer] position of plot which you need to remove
+    #   (by default last plot is removed)
+    # @return [Multiplot] - self
+    # @example
     #   mp = Multiplot.new(Plot.new('sin(x)'), Plot.new('cos(x)'), layout: [2,1])
     #   mp_with_only_cos = mp.remove_plot(0)
+    #   # mp IS NOT affected
     def remove_plot(position = -1)
       self.class.new(@plots.delete_at(position), @options)
     end
 
     alias_method :remove, :remove_plot
 
+    ##
+    # Destructive version of #remove_plot.
+    #
+    # @return [Multiplot] - self
+    # @example
+    #   mp = Multiplot.new(Plot.new('sin(x)'), Plot.new('cos(x)'), layout: [2,1])
+    #   mp.remove_plot!(0)
+    #   # mp IS affected
     def remove_plot!(position = -1)
       @plots = @plots.delete_at(position)
       self
@@ -168,7 +205,6 @@ module GnuplotRB
     alias_method :remove!, :remove_plot!
 
     ##
-    # ====== Overview
     # Equal to #plots[*args]
     def [](*args)
       @plots[*args]
