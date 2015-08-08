@@ -206,11 +206,11 @@ module GnuplotRB
       return unless data.is_a?(Daru::DataFrame) || data.is_a?(Daru::Vector)
       return unless data.index.first.is_a?(DateTime)
       return if using[0..1] != '1:'
-      @options = @options.merge(
+      @options = Hamster::Hash.new(
         xdata: 'time',
         timefmt: '%Y-%m-%dT%H:%M:%S',
         format_x: '%d\n%b\n%Y'
-      )
+      ).merge(@options)
     end
 
     ##
