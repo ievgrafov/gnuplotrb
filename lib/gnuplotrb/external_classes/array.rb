@@ -2,6 +2,7 @@
 # Methods to take data for GnuplotRB plots.
 class Array
   # taken for example from current gnuplot bindings
+  # @return [String] array converted to Gnuplot format
   def to_gnuplot_points
     return '' if self.empty?
     case self[0]

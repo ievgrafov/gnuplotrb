@@ -80,7 +80,7 @@ describe Plot do
     end
   end
 
-  context 'modifying datasets' do
+  context 'safe datasets update' do
     before do
       @plot_math = Plot.new(['sin(x)', title: 'Just a sin'])
       @dataset = Dataset.new('exp(-x)')
@@ -173,6 +173,40 @@ describe Plot do
     end
   end
 
+  context 'destructive datasets update' do
+    before :each do
+      @plot = Plot.new('sin(x)')
+    end
+
+    it 'should update datasets in the existing Plot' do
+      expect(@plot.update_dataset!(lw: 3)).to equal(@plot)
+      expect(@plot.datasets[0].lw).to eql(3)
+    end
+
+    it 'should replace dataset in the existing Plot' do
+      expect(@plot.replace_dataset!('exp(x)')).to equal(@plot)
+      expect(@plot.datasets[0].data).to eql('exp(x)')
+      @plot[0] = 'cos(x)'
+      expect(@plot.datasets[0].data).to eql('cos(x)')
+    end
+
+    it 'should add datasets to the existing Plot' do
+      expect(@plot.add_dataset!('exp(x)')).to equal(@plot)
+      expect(@plot.datasets[0].data).to eql('exp(x)')
+      expect(@plot.datasets[1].data).to eql('sin(x)')
+    end
+
+    it 'should remove dataset from the existing Plot' do
+      @plot.add_dataset!(1, 'exp(x)', 'cos(x)')
+      expect(@plot.datasets.size).to eql(3)
+      expect(@plot.remove_dataset!).to equal(@plot)
+      expect(@plot.datasets.size).to eql(2)
+      expect(@plot.datasets[0].data).to eql('sin(x)')
+      expect(@plot.datasets[1].data).to eql('exp(x)')
+      expect(@plot.datasets[2]).to be nil
+    end
+  end
+
   context '#to_iruby' do
     it 'should handle output to iRuby' do
       available_terminals = {
@@ -183,7 +217,9 @@ describe Plot do
         'dumb'     => 'text/plain'
       }
       available_terminals.each do |term, type|
-        expect(Plot.new(['sin(x)'], term: term).to_iruby[0]).to eql(type)
+        if OptionHandling::valid_terminal?(term)
+          expect(Plot.new('sin(x)', term: term).to_iruby[0]).to eql(type)
+        end
       end
     end
 

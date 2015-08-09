@@ -1,7 +1,7 @@
 require 'bundler/gem_tasks'
 require 'rspec/core/rake_task'
 require 'rspec/core'
-require 'rdoc/task'
+require 'yard'
 require 'rubocop/rake_task'
 
 RSpec::Core::RakeTask.new(:spec) do |spec|
@@ -9,9 +9,8 @@ RSpec::Core::RakeTask.new(:spec) do |spec|
   spec.rspec_opts = '--format documentation'
 end
 
-RDoc::Task.new(:doc) do |rdoc|
-  rdoc.main = 'README.rdoc'
-  rdoc.rdoc_files.include %w(README.rdoc lib)
+YARD::Rake::YardocTask.new(:doc) do |t|
+  t.files   = %w(README.rdoc lib)   # optional
 end
 
 RuboCop::RakeTask.new(:cop)

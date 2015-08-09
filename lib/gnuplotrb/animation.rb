@@ -1,9 +1,29 @@
 module GnuplotRB
   ##
-  # === Overview
   # Animation allows to create gif animation with given plots
   # as frames. Possible frames: Plot, Splot, Multiplot.
-  # More about its usage in {animation notebook}[http://nbviewer.ipython.org/github/dilcom/gnuplotrb/blob/master/notebooks/animated_plots.ipynb].
+  # More about its usage in
+  # {animation notebook}[http://nbviewer.ipython.org/github/dilcom/gnuplotrb/blob/master/notebooks/animated_plots.ipynb].
+  #
+  # == Options
+  # Animations has several specific options:
+  # * animate - allows to get animated gif's. Possible values are true (just turn on animation),
+  #   ot hash with suboptions (:loop - count of loops, default 0 - infinity$; 
+  #   :delay - delay between frames; :optimize - boolean, reduces file size).
+  # * size - size of gif file in pixels (size: [500, 500]) or (size: 500)
+  # * background - background color
+  # * transparent
+  # * enhanced
+  # * font
+  # * fontscale
+  # * crop
+  #
+  # Animation ignores :term option and does not have methods like #to_png or #to_svg.
+  # One can also set animation any options related to Plot and they will be considered
+  # by all nested plots (if they does not override it with their own values).
+  #
+  # Animation inherits all plot array handling methods from Multiplot
+  # and adds aliases for them (#plots -> #frames; #update_frame! -> #update_plot!; etc).
   class Animation < Multiplot
     ##
     # *Plot* here is also named as *frame*
@@ -13,18 +33,25 @@ module GnuplotRB
     alias_method :add_frame, :add_plot
     alias_method :add_frames, :add_plots
     alias_method :remove_frame, :remove_plot
+    alias_method :update_frame!, :update_plot!
+    alias_method :replace_frame!, :replace_plot!
+    alias_method :add_frame!, :add_plot!
+    alias_method :add_frames!, :add_plots!
+    alias_method :remove_frame!, :remove_plot!
 
     ##
-    # ====== Overview
     # This method creates a gif animation where frames are plots
     # already contained by Animation object.
-    # ====== Arguments
-    # * *term* - Terminal to plot to
-    # * *options* - will be considered as 'settable' options of gnuplot
-    #   ('set xrange [1:10]', 'set title 'plot'' etc)
-    # Options passed here have priority over already existing.
+    #
+    # Options passed in #plot have priority over those which were set before.
+    #
     # Inner options of Plots have the highest priority (except
     # :term and :output which are ignored).
+    #
+    # @param path [String] path to new gif file that will be created as a result
+    # @param options [Hash] see note about available options in top class documentation
+    # @return [nil] if path to output file given
+    # @return [String] gif file contents if no path to output file given
     def plot(path = nil, **options)
       options[:output] ||= path
       plot_options = mix_options(options) do |plot_opts, anim_opts|
@@ -46,7 +73,7 @@ module GnuplotRB
     end
 
     ##
-    # #to_<term_name> methods are not supported by animation
+    # #to_|term_name| methods are not supported by animation
     def to_specific_term(*_)
       fail 'Specific terminals are not supported by Animation'
     end

@@ -55,7 +55,7 @@ describe Multiplot do
     end
   end
 
-  context 'handling plots as container' do
+  context 'safe plot array update' do
     before :each do
       @sinx = Plot.new('sin(x)')
       @plot3d = Splot.new('sin(x)*cos(y)')
@@ -120,6 +120,52 @@ describe Multiplot do
       mp = Multiplot.new(@sinx, @exp, @plot3d)
       (0..2).each { |i| expect(mp[i]).to be_equal(mp.plots[i]) }
       expect(mp[0..-1]).to be_eql(mp.plots)
+    end
+  end
+
+  context 'destructive plot array update' do
+    before :each do
+      plots = [
+        Plot.new('sin(x)'),
+        Splot.new('sin(x)*cos(y)'),
+        Plot.new('exp(x)')
+      ]
+      @mp = Multiplot.new(*plots, layout: [1, 3])
+    end
+
+    it 'should update plots in the existing Plot' do
+      @mp.update!(0) do |plot|
+        plot.options!(title: 'Updated plot')
+        plot.replace_dataset!('exp(x)')
+        plot[0].lw!(3)
+      end
+      expect(@mp[0].title).to eql('Updated plot')
+      expect(@mp[0][0].data).to eql('exp(x)')
+      expect(@mp[0][0].lw).to eql(3)
+    end
+
+    it 'should replace plot in the existing Multiplot' do
+      plot = Plot.new('cos(x)', title: 'Second plot')
+      expect(@mp.replace!(1, plot)).to equal(@mp)
+      expect(@mp[1].title).to eql('Second plot')
+      @mp[0] = Plot.new('cos(x)', title: 'First plot')
+      expect(@mp[0].title).to eql('First plot')
+    end
+
+    it 'should add plots to the existing Multiplot' do
+      plot = Plot.new('cos(x)', title: 'First plot')
+      expect(@mp.add!(plot)).to equal(@mp)
+      expect(@mp[0].title).to eql('First plot')
+      expect(@mp.plots.size).to eql(4)
+    end
+
+    it 'should remove plot from the existing Multiplot' do
+      plot = Plot.new('cos(x)', title: 'Last plot')
+      expect(@mp.add!(-1, plot)).to equal(@mp)
+      expect(@mp.plots.size).to eql(4)
+      expect(@mp.remove!).to equal(@mp)
+      expect(@mp.plots.size).to eql(3)
+      expect(@mp.plots.last.title).to eql('Last plot')
     end
   end
 end

@@ -1,7 +1,6 @@
 ##
 # Methods to take data for GnuplotRB plots.
 class String
-  def to_gnuplot_points
-    clone
-  end
+  # @return [String] data converted to Gnuplot format
+  alias_method :to_gnuplot_points, :clone
 end

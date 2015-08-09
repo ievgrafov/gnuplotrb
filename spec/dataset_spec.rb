@@ -1,6 +1,16 @@
 require 'spec_helper.rb'
 
 describe Dataset do
+  before(:all) do
+    @tmp_dir = File.join('spec', 'tmp')
+    Dir.mkdir(@tmp_dir)
+    @datafile_path = File.join('spec', 'points.data')
+  end
+
+  after(:all) do
+    FileUtils.rm_r(@tmp_dir)
+  end
+
   context 'creation' do
     before do
       x = (0..10).to_a
@@ -121,7 +131,7 @@ describe Dataset do
     end
   end
 
-  context 'updating' do
+  context 'safe update' do
     before do
       x = (0..10).to_a
       y = x.map { |xx| Math.exp(-xx) }
@@ -163,6 +173,56 @@ describe Dataset do
       size_after_update = File.size(filename)
       expect(updated.data).to equal(@temp_file_dataset.data)
       expect(size_after_update).to be > size_before_update
+    end
+  end
+
+  context 'destructive update' do
+    before :each do
+      x = (0..10).to_a
+      y = x.map { |xx| Math.exp(-xx) }
+      @data = [x, y]
+      @ds = Dataset.new(@data)
+      @ds_file = Dataset.new(@data, file: true)
+    end
+
+    it 'should update an option of existing object' do
+      expect(@ds.lw!(3)).to equal(@ds)
+      expect(@ds.lw).to eql(3)
+      @ds.pt = 8
+      expect(@ds.pt).to eql(8)
+    end
+
+    it 'should update several options of existing object at once via #options!' do
+      expect(@ds.options!(lw: 3, pt: 8)).to equal(@ds)
+      expect(@ds.lw).to eql(3)
+      expect(@ds.pt).to eql(8)
+    end
+
+    it 'should update several options of existing object at once via #update!' do
+      expect(@ds.update!(lw: 3, pt: 8)).to equal(@ds)
+      expect(@ds.lw).to eql(3)
+      expect(@ds.pt).to eql(8)
+    end
+
+    it 'should update data of existing in-memory datablock at once' do
+      paths = (0..1).map { |i| File.join(@tmp_dir, "#{i}plot.png") }
+      options0 = { term: ['png', size: [300, 300]], output: paths[0] }
+      options1 = { term: ['png', size: [300, 300]], output: paths[1] }
+      x1 = (11..15).to_a
+      y1 = x1.map { |xx| Math.exp(-xx) }
+      @ds.plot(options0)
+      expect(@ds.update!([x1, y1])).to equal(@ds)
+      @ds.plot(options1)
+      expect(same_images?(*paths)).to be_falsey
+    end
+
+    it 'should update data of existing in-file datablock at once' do
+      x1 = (11..15).to_a
+      y1 = x1.map { |xx| Math.exp(-xx) }
+      size_before = File.size(@ds_file.data.to_s[1..-2])
+      expect(@ds_file.update!([x1, y1])).to equal(@ds_file)
+      size_after = File.size(@ds_file.data.to_s[1..-2])
+      expect(size_after).to be > size_before
     end
   end
 end

@@ -1,6 +1,6 @@
 require 'spec_helper.rb'
 
-describe 'GnuplotRB::fit' do
+describe GnuplotRB::Fit do
   before(:all) do
     @tmp_dir = File.join('spec', 'tmp')
     Dir.mkdir(@tmp_dir)
