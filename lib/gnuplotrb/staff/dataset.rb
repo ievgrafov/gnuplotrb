@@ -6,7 +6,7 @@ module GnuplotRB
   #
   # == Options
   # Dataset options are explained in
-  # {gnuplot docs}[http://www.gnuplot.info/docs_5.0/gnuplot.pdf](pp. 80-101).
+  # {gnuplot docs}[http://www.gnuplot.info/docs_5.0/gnuplot.pdf] (pp. 80-101).
   # Several common options:
   # * with - set plot style for dataset ('lines', 'points', 'impulses' etc)  
   # * using - choose which columns of input data gnuplot should use. Takes String

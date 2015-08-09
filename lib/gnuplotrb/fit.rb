@@ -3,8 +3,8 @@ module GnuplotRB
   # Contains methods relating to Gnuplot's fit function. Covered in
   # {fit notebook}[http://nbviewer.ipython.org/github/dilcom/gnuplotrb/blob/master/notebooks/fitting_data.ipynb].
   #
-  # You can also see original gnuplot's fit in gnuplot
-  # doc - http://www.gnuplot.info/docs_5.0/gnuplot.pdf p. 122.
+  # You can also see original gnuplot's fit in
+  # {gnuplot doc}[http://www.gnuplot.info/docs_5.0/gnuplot.pdf] p. 122.
   module Fit
     ##
     # Fit given data with function.
@@ -19,9 +19,9 @@ module GnuplotRB
     # @param :term_options [Hash] terminal options that should be setted to terminal before fit.
     #   You can see them in Plot's documentation (or even better in gnuplot doc)
     #   Most useful here are ranges (xrange, yrange etc) and fit option which tunes fit parameters
-    #   (see gnuplot doc - http://www.gnuplot.info/docs_5.0/gnuplot.pdf p. 122)
+    #   (see {gnuplot doc}[http://www.gnuplot.info/docs_5.0/gnuplot.pdf] p. 122)
     # @param options [Hash] options passed to Gnuplot's fit such as *using*. They are covered in
-    #   gnuplot doc - http://www.gnuplot.info/docs_5.0/gnuplot.pdf (pp. 69-74)
+    #   {gnuplot doc}[http://www.gnuplot.info/docs_5.0/gnuplot.pdf] (pp. 69-74)
     #
     # @return [Hash] hash with four elements:
     #   - :formula_ds - dataset with best fit curve as data

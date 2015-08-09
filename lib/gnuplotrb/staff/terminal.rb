@@ -81,7 +81,7 @@ module GnuplotRB
     ##
     # Convert given options to gnuplot format.
     #
-    # For {opt1: val1, .. , optN: valN} it returns
+    # For "{ opt1: val1, .. , optN: valN }" it returns
     #   set opt1 val1
     #   ..
     #   set optN valN
@@ -103,7 +103,7 @@ module GnuplotRB
     ##
     # Applie given options to current gnuplot instance.
     #
-    # For {opt1: val1, .. , optN: valN} it will output to gnuplot
+    # For "{ opt1: val1, .. , optN: valN }" it will output to gnuplot
     #   set opt1 val1
     #   ..
     #   set optN valN

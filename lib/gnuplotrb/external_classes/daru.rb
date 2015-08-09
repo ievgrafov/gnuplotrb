@@ -6,6 +6,10 @@ if defined? Daru
     ##
     # Methods to take data for GnuplotRB plots.
     class DataFrame
+      ##
+      # Convert DataFrame to Gnuplot format.
+      #
+      # @return [String] data converted to Gnuplot format
       def to_gnuplot_points
         result = ''
         each_row_with_index do |row, index|
@@ -21,6 +25,10 @@ if defined? Daru
     ##
     # Methods to take data for GnuplotRB plots.
     class Vector
+      ##
+      # Convert Vector to Gnuplot format.
+      #
+      # @return [String] data converted to Gnuplot format
       def to_gnuplot_points
         result = ''
         each_with_index do |value, index|

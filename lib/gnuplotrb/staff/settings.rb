@@ -2,6 +2,8 @@ module GnuplotRB
   ##
   # This module takes care of path to gnuplot executable and checking its version.
   module Settings
+    ##
+    # GnuplotRB can work with Gnuplot 5.0+
     MIN_GNUPLOT_VERSION = 5.0
 
     class << self
