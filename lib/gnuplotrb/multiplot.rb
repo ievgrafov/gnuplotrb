@@ -28,6 +28,7 @@ module GnuplotRB
       @plots = plots[0].is_a?(Hamster::Vector) ? plots[0] : Hamster::Vector.new(plots)
       @options = Hamster.hash(options)
       OptionHandling.validate_terminal_options(@options)
+      yield(self) if block_given?
     end
 
     ##

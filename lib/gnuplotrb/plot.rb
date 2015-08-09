@@ -1,9 +1,8 @@
 module GnuplotRB
   ##
-  # === Overview
   # Class corresponding to simple 2D visualisation.
   #
-  # === Notebooks
+  # == Notebooks
   #
   # * {Heatmaps}[http://nbviewer.ipython.org/github/dilcom/gnuplotrb/blob/master/notebooks/heatmaps.ipynb]
   # * {Vector field}[http://nbviewer.ipython.org/github/dilcom/gnuplotrb/blob/master/notebooks/vector_field.ipynb]
@@ -11,10 +10,12 @@ module GnuplotRB
   # * {Histogram}[http://nbviewer.ipython.org/github/dilcom/gnuplotrb/blob/master/notebooks/histogram.ipynb]
   # * {Updating plots with new data}[http://nbviewer.ipython.org/github/dilcom/gnuplotrb/blob/master/notebooks/updating_data.ipynb]
   #
-  # === Options
+  # == Options
   # All possible options are exaplained in 
-  # {gnuplot docs}[http://www.gnuplot.info/docs_5.0/gnuplot.pdf](pp. 105-190).
+  # {gnuplot docs}[http://www.gnuplot.info/docs_5.0/gnuplot.pdf] (pp. 105-190).
+  #
   # Several common ones:
+  #
   # * xrange(yrange, zrange, urange, vrange) - set range for a variable. Takes
   #   Range (xrange: 0..100), or String (yrange: '[0:100]').
   # * title - plot's title. Takes String (title: 'Some new plot').
@@ -28,21 +29,22 @@ module GnuplotRB
   #   due to existance of #to_<term_name> methods. One should use #to_png('file.png') instead of
   #   passing { term: 'png', output: 'file.png' }.
   # Every option may be passed to constructor in order to create plot with it.
+  #
   # Methods #options(several: options, ...) and bunch of #option_name(only_an: option) such as
   # #xrange, #using, #polar etc create new Plot object based on existing but with a new options.
-  # See notebooks for examples.
+  #
+  # Methods with the same names ending with '!' or '=' ('plot.xrange!(1..3)',
+  # 'plot.title = "New title"') are destructive and modify state of existing object just as
+  # "Array#sort!" do with Array object. See notebooks for examples.
   class Plot
     include Plottable
     ##
     # Array of datasets which are plotted by this object.
     attr_reader :datasets
     ##
-    # ====== Arguments
-    # * *datasets* are either instances of Dataset class or
-    #   [data, **dataset_options] arrays from which Dataset may be created
-    # * *options* will be considered as 'settable' options of gnuplot
-    #   ('set xrange [1:10]' for { xrange: 1..10 },
-    #   "set title 'plot'" for { title: 'plot' } etc).
+    # @param *datasets [Sequence of Dataset or Array] either instances of Dataset class or
+    #   "[data, **dataset_options]"" arrays
+    # @param options [Hash] see Plot top level doc for options examples
     def initialize(*datasets)
       # had to relace **options arg with this because in some cases
       # Daru::DataFrame was mentioned as hash and added to options
@@ -59,14 +61,13 @@ module GnuplotRB
     end
 
     ##
-    # ====== Overview
-    # This outputs plot to term (if given) or to this plot's own terminal.
-    # ====== Arguments
-    # * *term* - Terminal object to plot to
-    # * *multiplot_part* - part of a multiplot. Option for inner usage
-    # * *options* - will be considered as 'settable' options of gnuplot
-    #   ('set xrange [1:10]', 'set title 'plot'' etc)
-    # Options passed here have priority over already existing.
+    # Output plot to term (if given) or to this plot's own terminal.
+    #
+    # @param term [Terminal] Terminal object to plot to
+    # @param :multiplot_part [Boolean] true if this plot is part of a multiplot. For inner use!
+    # @param options [Hash] see options in Plot top level doc.
+    #   Options passed here have priority over already existing.
+    # @return [Plot] self
     def plot(term = nil, multiplot_part: false, **options)
       fail ArgumentError, 'Empty plots are not supported!' if @datasets.empty?
       inner_opts = if multiplot_part
@@ -91,44 +92,68 @@ module GnuplotRB
     alias_method :replot, :plot
 
     ##
-    # ====== Overview
     # Create new Plot object where dataset at *position* will
     # be replaced with the new one created from it by updating.
-    # ====== Arguments
-    # * *position* - position of dataset which you need to update
+    #
+    # @param position [Integer] position of dataset which you need to update
     #   (by default first dataset is updated)
-    # * *data* - data to update dataset with
-    # * *options* - options to update dataset with
-    # ====== Example
+    # @param data [#to_gnuplot_points] data to update dataset with
+    # @param options [Hash] options to update dataset with, see Dataset top level doc
+    #
+    # @example
     #   updated_plot = plot.update_dataset(data: [x1,y1], title: 'After update')
+    #   # plot IS NOT affected (if dataset did not store data in a file)
     def update_dataset(position = 0, data: nil, **options)
       old_ds = @datasets[position]
       new_ds = old_ds.update(data, options)
       new_ds.equal?(old_ds) ? self : replace_dataset(position, new_ds)
     end
 
+    ##
+    # Updates existing Plot object by replacing dataset at *position*
+    # with the new one created from it by updating.
+    #
+    # @param position [Integer] position of dataset which you need to update
+    #   (by default first dataset is updated)
+    # @param data [#to_gnuplot_points] data to update dataset with
+    # @param options [Hash] options to update dataset with, see Dataset top level doc
+    #
+    # @example
+    #   plot.update_dataset!(data: [x1,y1], title: 'After update')
+    #   # plot IS affected anyway
     def update_dataset!(position = 0, data: nil, **options)
       @datasets[position].update!(data, options)
       self
     end
 
     ##
-    # ====== Overview
     # Create new Plot object where dataset at *position* will
     # be replaced with the given one.
-    # ====== Arguments
-    # * *position* - position of dataset which you need to update
+    #
+    # @param position [Integer] position of dataset which you need to replace
     #   (by default first dataset is replaced)
-    # * *dataset* - dataset to replace the old one. You can also
-    #   give here [data, **dataset_options] array from
-    #   which Dataset may be created.
-    # ====== Example
+    # @param dataset [Dataset, Array] dataset to replace the old one. You can also
+    #   give here "[data, **dataset_options]"" array from which Dataset may be created.
+    # @example
     #   sinx = Plot.new('sin(x)')
     #   cosx = sinx.replace_dataset(['cos(x)'])
+    #   # sinx IS NOT affected
     def replace_dataset(position = 0, dataset)
       self.class.new(@datasets.set(position, dataset_from_any(dataset)), @options)
     end
 
+    ##
+    # Updates existing Plot object by replacing dataset at *position*
+    # with the given one.
+    #
+    # @param position [Integer] position of dataset which you need to replace
+    #   (by default first dataset is replaced)
+    # @param dataset [Dataset, Array] dataset to replace the old one. You can also
+    #   give here "[data, **dataset_options]"" array from which Dataset may be created.
+    # @example
+    #   sinx = Plot.new('sin(x)')
+    #   sinx.replace_dataset!(['cos(x)'])
+    #   # sinx IS affected
     def replace_dataset!(position = 0, dataset)
       @datasets = @datasets.set(position, dataset_from_any(dataset))
       self
@@ -137,18 +162,19 @@ module GnuplotRB
     alias_method :[]=, :replace_dataset!
 
     ##
-    # ====== Overview
     # Create new Plot object where given datasets will
     # be inserted into dataset list before given position
     # (position = 0 by default).
-    # ====== Arguments
-    # * *position* - position where to insert given datasets
-    # * *datasets* - sequence of datasets to add
-    # ====== Example
+    #
+    # @param position [Integer] position of dataset BEFORE which datasets will be placed.
+    #   0 by default.
+    # @param *datasets [ Sequence of Dataset or Array] datasets to insert
+    # @example
     #   sinx = Plot.new('sin(x)')
     #   sinx_and_cosx_with_expx = sinx.add(['cos(x)'], ['exp(x)'])
     #
     #   cosx_and_sinx = sinx << ['cos(x)']
+    #   # sinx IS NOT affected in both cases
     def add_datasets(*datasets)
       datasets.map! { |ds| ds.is_a?(Numeric) ? ds : dataset_from_any(ds) }
       # first element is position where to add datasets
@@ -159,6 +185,17 @@ module GnuplotRB
     alias_method :add_dataset, :add_datasets
     alias_method :<<, :add_datasets
 
+    ##
+    # Updates existing Plot object by inserting given datasets
+    # into dataset list before given position (position = 0 by default).
+    #
+    # @param position [Integer] position of dataset BEFORE which datasets will be placed.
+    #   0 by default.
+    # @param *datasets [ Sequence of Dataset or Array] datasets to insert
+    # @example
+    #   sinx = Plot.new('sin(x)')
+    #   sinx.add!(['cos(x)'], ['exp(x)'])
+    #   # sinx IS affected
     def add_datasets!(*datasets)
       datasets.map! { |ds| ds.is_a?(Numeric) ? ds : dataset_from_any(ds) }
       # first element is position where to add datasets
@@ -170,28 +207,37 @@ module GnuplotRB
     alias_method :add_dataset!, :add_datasets!
 
     ##
-    # ====== Overview
     # Create new Plot object where dataset at given position
     # will be removed from dataset list.
-    # ====== Arguments
-    # * *position* - position of dataset that should be
+    #
+    # @param position [Integer] position of dataset that should be
     #   removed (by default last dataset is removed)
-    # ====== Example
+    # @example
     #   sinx_and_cosx = Plot.new('sin(x)', 'cos(x)')
     #   sinx = sinx_and_cosx.remove_dataset
     #   cosx = sinx_and_cosx.remove_dataset(0)
+    #   # sinx_and_cosx IS NOT affected in both cases
     def remove_dataset(position = -1)
       self.class.new(@datasets.delete_at(position), @options)
     end
 
+    ##
+    # Updates existing Plot object by removing dataset at given position.
+    #
+    # @param position [Integer] position of dataset that should be
+    #   removed (by default last dataset is removed)
+    # @example
+    #   sinx_and_cosx = Plot.new('sin(x)', 'cos(x)')
+    #   sinx_and_cosx!.remove_dataset
+    #   sinx_and_cosx!.remove_dataset
+    #   # sinx_and_cosx IS affected and now is empty
     def remove_dataset!(position = -1)
       @datasets = @datasets.delete_at(position)
       self
     end
 
     ##
-    # ====== Overview
-    # The same as Plot#datasets[args]
+    # The same as #datasets[*args]
     def [](*args)
       @datasets[*args]
     end
