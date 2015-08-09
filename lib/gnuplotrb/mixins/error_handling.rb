@@ -9,7 +9,6 @@ module GnuplotRB
   # handle errors from its stderr.
   module ErrorHandling
     ##
-    # ====== Overview
     # Check if there were errors in previous commands.
     # Throws GnuplotError in case of any errors.
     def check_errors
@@ -28,7 +27,6 @@ module GnuplotRB
     private
 
     ##
-    # ====== Overview
     # Start new thread that will read stderr given as stream
     # and add errors into @err_array.
     def handle_stderr(stream)
