@@ -3,6 +3,11 @@ require 'hamster'
 require 'open3'
 require 'base64'
 
+##
+# Require gem if it's available in current gemspace.
+#
+# @param name [String] gem name
+# @return [Boolean] true if gem was loaded, false otherwise
 def require_if_available(name)
   require name
 rescue LoadError
