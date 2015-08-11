@@ -73,14 +73,18 @@ module GnuplotRB
     # @param terminal [Terminal] must be given if data given as Datablock and
     #   it does not use temp file so data should be piped out
     #   to gnuplot via terminal before use
+    # @param :without_options [Boolean] do not add options to dataset if set
+    #   to true. Used by Fit::fit
     # @return [String] gnuplot dataset
     # @example
     #   Dataset.new('points.data', with: 'lines', title: 'Points from file').to_s
-    #   #=> "'points.data' with lines title 'Points form file'"
+    #   #=> "'points.data' with lines title 'Points from file'"
     #   Dataset.new(points, with: 'points', title: 'Points').to_s
     #   #=> "$DATA1 with points title 'Points'"
-    def to_s(terminal = nil)
-      "#{@type == :datablock ? @data.name(terminal) : @data} #{options_to_string}"
+    def to_s(terminal = nil, without_options: false)
+      result = "#{@type == :datablock ? @data.name(terminal) : @data} "
+      result += options_to_string unless without_options
+      result
     end
 
     ##
