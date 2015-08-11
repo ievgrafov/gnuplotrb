@@ -267,7 +267,8 @@ module GnuplotRB
             "#{Regexp.last_match(1)}#{array_index + 2}#{Regexp.last_match(2)}"
           end
         end
-        options[:using].gsub!('index', '1').strip!
+        options[:using].gsub!('index', '1')
+        options[:using].strip!
       else
         options[:using] = get_daru_columns(data, data.vectors.size + 1)
       end
