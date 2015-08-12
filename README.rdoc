@@ -2,7 +2,7 @@
 
 GnuplotRB is a plot generator for Ruby based on {Gnuplot}[http://www.gnuplot.info].
 
-This software has been developed as a product in Google Summer of Code 2015 (GSoC2015). Its progress may be saw in {SciRuby mailing list}[https://groups.google.com/forum/?fromgroups#!topic/sciruby-dev/lhWvb5hWc3k] or in {project's blog}[http://dilcom.github.io/gnuplotrb/]. 
+This software has been developed as a product in Google Summer of Code 2015 (GSoC2015). Its progress may be saw in {SciRuby mailing list}[https://groups.google.com/forum/?fromgroups#!topic/sciruby-dev/lhWvb5hWc3k] or in {project's blog}[http://www.evgrafov.work/gnuplotrb/].
 
 {<img src="https://badge.fury.io/rb/gnuplotrb.svg" alt="Gem Version" />}[https://rubygems.org/gems/gnuplotrb]
 
@@ -14,7 +14,8 @@ This software has been developed as a product in Google Summer of Code 2015 (GSo
 
 == Table of contents
 * {Installation}[https://github.com/dilcom/gnuplotrb#installation]
-* {Examples}[https://github.com/dilcom/gnuplotrb#examples]
+* {Getting started}[https://github.com/dilcom/gnuplotrb#getting-started]
+  * {Plottable classes}[https://github.com/dilcom/gnuplotrb#plottable-classes]
   * {Notebooks}[https://github.com/dilcom/gnuplotrb#notebooks]
   * {Plain examples}[https://github.com/dilcom/gnuplotrb#plain-examples]
 * {Contributing}[https://github.com/dilcom/gnuplotrb#contributing]
@@ -38,7 +39,63 @@ This software has been developed as a product in Google Summer of Code 2015 (GSo
   bundle install
   rake install
 
-== Examples
+== Getting started
+
+GnuplotRB gem is based on {Gnuplot}[http://www.gnuplot.info/] so I would recommend to use {Gnuplot doc}[http://www.gnuplot.info/docs_5.0/gnuplot.pdf] and {GnuplotRB doc at Rubydoc}[https://rubygems.org/gems/gnuplotrb] in cases when docs and examples (as notebooks and plain examples) present here are not enough to explain how to plot something.
+
+=== Plottable classes
+
+Each of plottable classes may be outputted to image file using ```#to_png```, ```#to_svg```, ```#to_gif``` and so on methods. You can read more about it in {GnuplotRB doc}[https://rubygems.org/gems/gnuplotrb] related to Plottable module or see examples in {beginners notebook}[http://nbviewer.ipython.org/github/dilcom/gnuplotrb/blob/master/notebooks/basic_usage.ipynb].
+
+==== Dataset
+Single dataset may be created with math formula ('sin(x)') or some data. If your data is stored in a file you can just pass a filename (e.g. 'gnuplotrb.data'). Dataset may also be constructed out of data contained in Ruby classes (Array, Daru containers), see {example notebooks}[https://github.com/dilcom/gnuplotrb#possible-datasources].
+
+Dataset have several possible options which are explained in {gnuplot doc}[http://www.gnuplot.info/docs_5.0/gnuplot.pdf] (pp. 80-102). Options are passed to Dataset.new as hash and are tranlated into gnuplot format before plotting:
+  Dataset.new(data, with: 'lines', using: '1:2')
+Examples of option translation (nested containers allowed):
+* Hash:
+    { key1: "value1", key2: { nested_key1: "nested_value1" } }
+    # =>
+    "key1 value1 key2 nested key1 nested_value1"
+* Range:
+    { xrange: 0..100 }
+    # =>
+    "xrange [0:100]"
+* Array (often used with nested hashes) and Array of Numeric
+    ['png', { size: [400, 500] }]
+    # =>
+    "png size 400,500"
+* Others
+    some_object
+    # =>
+    some_object.to_s
+
+Once Dataset created, it may be updated with new data or options. Methods related to updating are explained in {a notebook}[http://nbviewer.ipython.org/github/dilcom/gnuplotrb/blob/master/notebooks/updating_data.ipynb].
+
+Just as other Plottable object Dataset has several plotting methods which are desribed in {beginners notebook}[http://nbviewer.ipython.org/github/dilcom/gnuplotrb/blob/master/notebooks/basic_usage.ipynb].
+
+==== Plot
+Plot is a container for several datasets and layout options:
+  Plot.new(ds1, ds2, ds2, xrange: 1..10)
+
+Datasets contained bu Plot are outputted on single xy plain.
+
+Plot's options are explained in {gnuplot doc}[http://www.gnuplot.info/docs_5.0/gnuplot.pdf] (pp. 105-181). Plot options are translated into gnuplot format the same way as Dataset's (except adding 'set' before each option). Plot's datasets and Plot itself may be updated with almost the same methods as desribed in Dataset section above.
+
+==== Splot
+Almost the same as Plot but for 3-D plots. See Plot section.
+
+==== Multiplot
+
+Container for several Plot or Splot objects, each of them is plotted in its own xy(z) space. So Multiplot offers single layout (image file\window) for several plots. It's grid is tuned by :layout option, and you can also set layout's title:
+  Multiplot.new(plot1, plot2, splot1, layout: [3, 1], title: 'Three plots on a layout')
+
+Updating methods for Multiplot are almost the same as Plot's and Dataset's and are covered in Multiplot's docs and {multiplot notebook}[http://nbviewer.ipython.org/github/dilcom/gnuplotrb/blob/master/notebooks/multiplot_layout.ipynb]. See examples there.
+
+==== Animation
+
+Animation is a container for several Plot, Splot or Multiplot objects. Each of contained items is considered as frame in gif animation which is creating by ```#plot``` call. Animation's frames and options may be modifyed or updated just as other classes above. Animation does not support methods like ```#to_png``` and may be plotted only with ```#plot``` method. Please see {related notebook}[http://nbviewer.ipython.org/github/dilcom/gnuplotrb/blob/master/notebooks/animated_plots.ipynb] and docs at RubyDoc for examples.
+
 === Notebooks
 
 This notebooks are powered by {Ruby kernel}[https://github.com/SciRuby/iruby/] for {IPython/Jupyter}[https://jupyter.org/].
