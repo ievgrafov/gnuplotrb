@@ -57,6 +57,10 @@ Examples of option translation (nested containers allowed):
     { key1: "value1", key2: { nested_key1: "nested_value1" } }
     # =>
     "key1 value1 key2 nested key1 nested_value1"
+* Hashes with underscored keys (see {#7}[https://github.com/dilcom/gnuplotrb/issues/7]):
+    { style_data: 'histograms' }
+    #=> 
+    "style data histograms"
 * Range:
     { xrange: 0..100 }
     # =>
