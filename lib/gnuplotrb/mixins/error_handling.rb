@@ -11,7 +11,7 @@ module GnuplotRB
     ##
     # Check if there were errors in previous commands.
     # Throws GnuplotError in case of any errors.
-    def check_errors
+    def check_errors(raw: false)
       return if @err_array.empty?
       command = ''
       rest = ''
@@ -20,7 +20,11 @@ module GnuplotRB
         rest = @err_array[1..-1].join('; ')
         @err_array.clear
       end
-      message = "Error in previous command (\"#{command}\"): \"#{rest}\""
+      message = if raw
+        "#{command};#{rest}}"
+      else
+        "Error in previous command (\"#{command}\"): \"#{rest}\""
+      end
       fail GnuplotError, message
     end
 

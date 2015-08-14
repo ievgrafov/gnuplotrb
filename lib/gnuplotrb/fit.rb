@@ -144,7 +144,7 @@ module GnuplotRB
       output = ''
       until output_ready?(output, variables)
         begin
-          term.check_errors
+          term.check_errors(raw: true)
         rescue GnuplotRB::GnuplotError => e
           output += e.message
         end
