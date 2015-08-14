@@ -186,7 +186,8 @@ module GnuplotRB
       term = Terminal.new
       term.set(term_options)
       initials.each { |var_name, value| term.stream_puts "#{var_name} = #{value}" }
-      command = "fit #{function} #{data.to_s(term)} #{options} via #{variables.join(',')}"
+      command = "fit #{function} #{data.to_s(term, without_options: true)} " \
+                "#{options} via #{variables.join(',')}"
       term.stream_puts(command)
       output = wait_for_output(term, variables)
       begin
