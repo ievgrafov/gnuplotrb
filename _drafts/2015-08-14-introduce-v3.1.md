@@ -9,6 +9,8 @@ Hi, I'm Ivan Evgrafov and this summer I've been participating in [Google Summer 
  for [SciRuby](). GSoC is almost over and I'm releasing v0.3.1 of GnuplotRB as a [gem]().
  In this blog post I want to introduce the gem and highlight some of its capabilities.
 
+![Plot example]({{ site.url }}/images/plots.jpg)
+
 ### Features
 
 There are several existing plotting tools for Ruby such as Nyaplot, Plotrb, Rubyvis
@@ -41,7 +43,7 @@ There are vast of plotting styles supported by Gnuplot(RB):
 - heatmap
 - etc (full list in [gnuplot doc](http://www.gnuplot.info/docs_5.0/gnuplot.pdf) p. 47)
 
-For examples please see repository README, notebooks and examples.
+For examples please see repository README, notebooks and examples folder.
 
 #### Multiplot
 
@@ -59,13 +61,6 @@ Gnuplot(RB) may output any plot to gif file but GnuplotRB::Animation allows
 Although the main GnuplotRB's purpose is to provide you with swift, robust and
  easy-to-use plotting tool, it also offers Fit module that contains several
  methods for fitting given data with a function.
-
-Example:
-
-
-Shortcuts:
-- fit_log\exp\sin
-- fit_polynomial
 
 #### Integration with other SciRuby tools
 
