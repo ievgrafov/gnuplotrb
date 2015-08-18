@@ -41,34 +41,18 @@ There are vast of plotting styles supported by Gnuplot(RB):
 - heatmap
 - etc (full list in [gnuplot doc](http://www.gnuplot.info/docs_5.0/gnuplot.pdf) p. 47)
 
-Example of basic plot:
-  code here
-<img here\>
-
-More examples:
-- Notebooks list here
+For examples please see repository README, notebooks and examples.
 
 #### Multiplot
 
 GnuplotRB::Multiplot allows users to place several plots on a single layout and output
  them at once (e.g. to png file).
 
-Basic example:
-  code here
-<img here\>
-
-More examples:
-- something here
-
 #### Animated plots
 
 Gnuplot(RB) may output any plot to gif file but GnuplotRB::Animation allows
  to make this gif animated. It takes several Plot or Splot objects just as
  Multiplot does and outputs them one-by-one as frames of gif animation.
-
-Example:
-
-More examples:
 
 #### Fit
 
@@ -80,18 +64,23 @@ Example:
 
 
 Shortcuts:
-- fit log\exp\sin
-- fit polynomial
+- fit_log\exp\sin
+- fit_polynomial
 
-#### Integration
+#### Integration with other SciRuby tools
 
 ##### Embedding plots into iRuby notebooks
 
-
+GnuplotRB plots may be embedded into iRuby notebooks as jpeg\png\svg
+ images, as ASCI-art or gif animations (Animation class). This functionality
+ explained in [a notebook]().
 
 ##### Using data from Daru containers
 
-
+To link GnuplotRB with other Scir\Ruby tools I implemented plot
+ creation from data given in Daru containers (Dataframe and Vector).
+ One can use 'daru' gem in order to work with statistical SciRuby gems
+ and plotting with GnuplotRB. [Notebooks with examples]().
 
 #### Possible datasources for plots
 
@@ -103,6 +92,8 @@ You can pass to Plot (or Splot or Dataset) constructor data in following forms:
   - Array
   - Daru::Dataframe
   - Daru::Vector
+
+See examples in notebooks.
 
 ### Additional links
 
