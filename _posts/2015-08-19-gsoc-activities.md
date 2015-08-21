@@ -30,7 +30,7 @@ For documenting I used RDoc until I realized that Rubydoc uses YARD to parse gem
 
 From the very beginning GnuplotRB's classes were immutable. Every time
  user changed it, a new object with given parameters was instantiated.
- Now it`s true for simple methods (not the ones ending with `!` or `=`).
+ Now that's true for simple methods (not the ones ending with `!` or `=`).
  Destructive update methods (`#option!(value)` or `#option = value`) change
  state of existing object. The idea is taken from Ruby standart library (e.g., `Array#sort`
  and `Array#sort!`).
