@@ -13,7 +13,7 @@ if defined? Daru
       def to_gnuplot_points
         result = ''
         each_row_with_index do |row, index|
-          quoted = index.is_a?(String) || index.is_a?(Symbol)
+          quoted = (index.is_a?(String) || index.is_a?(Symbol)) && index.length > 0
           result += quoted ? "\"#{index}\" " : "#{index} "
           result += row.to_a.join(' ')
           result += "\n"
@@ -32,7 +32,7 @@ if defined? Daru
       def to_gnuplot_points
         result = ''
         each_with_index do |value, index|
-          quoted = index.is_a?(String) || index.is_a?(Symbol)
+          quoted = (index.is_a?(String) || index.is_a?(Symbol)) && index.length > 0
           result += quoted ? "\"#{index}\" " : "#{index} "
           result += "#{value}\n"
         end
